@@ -1,1221 +1,213 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<meta name="color-scheme" content="dark" />
-<meta name="theme-color" content="#070a09" />
-<title>Not Quite My Tempo — BPM + Tuner</title>
-<style>
-  :root{
-    --bg:#070a09;
-    --panel:#0b100e;
-    --line:#1b2420;
-    --silk:#cbd6d1;
-    --dim:#60706a;
-    --phos:#00ff88;
-    --phos-soft:#7dffc4;
-    --amber:#ffb454;
-    --red:#ff5f56;
-    --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
-    --sans:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-  }
-
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{
-    background:radial-gradient(1200px 700px at 50% 0%, rgba(0,255,136,.06), transparent 60%), var(--bg);
-    color:var(--silk);
-    font-family:var(--sans);
-    display:flex;
-    justify-content:center;
-    padding:18px 14px 36px;
-    -webkit-font-smoothing:antialiased;
-  }
-
-  /* ambient bass glow */
-  #glow{
-    position:fixed; inset:-20%;
-    pointer-events:none;
-    opacity:0;
-    background:
-      radial-gradient(closest-side at 50% 30%, rgba(0,255,136,.18), transparent 65%),
-      radial-gradient(closest-side at 20% 70%, rgba(255,180,84,.10), transparent 70%);
-    filter: blur(10px);
-    transition: opacity .1s linear;
-  }
-
-  #app{
-    width:100%;
-    max-width:520px;
-    position:relative;
-    z-index:1;
-    display:none;
-    gap:14px;
-    flex-direction:column;
-  }
-
-  /* top bar */
-  #hdr{
-    display:flex; align-items:center; justify-content:space-between;
-    margin-bottom:4px;
-  }
-  #hdr h1{
-    font-size:10px;
-    font-weight:700;
-    letter-spacing:.34em;
-    text-transform:uppercase;
-    color:var(--dim);
-  }
-
-  .lamp{
-    display:flex; align-items:center; gap:8px;
-    font-family:var(--mono);
-    font-size:10px;
-    letter-spacing:.14em;
-    color:var(--silk);
-    user-select:none;
-  }
-  .lamp i{
-    width:9px; height:9px; border-radius:50%;
-    background:#2a3330;
-    box-shadow:none;
-    transition:background .2s, box-shadow .2s;
-  }
-  .lamp.paused i{background:#2a3330}
-  .lamp.nosignal i{background:var(--amber); box-shadow:0 0 10px rgba(255,180,84,.65)}
-  .lamp.listening i{background:var(--amber); box-shadow:0 0 10px rgba(255,180,84,.65)}
-  .lamp.tracking i{background:#9fb4ac; box-shadow:0 0 10px rgba(159,180,172,.5)}
-  .lamp.locked i{background:var(--phos); box-shadow:0 0 12px rgba(0,255,136,.85)}
-
-  /* device selector */
-  #device{
-    width:100%;
-    background:var(--panel);
-    color:var(--dim);
-    border:1px solid var(--line);
-    border-radius:12px;
-    font-family:var(--mono);
-    font-size:11px;
-    padding:10px 12px;
-    cursor:pointer;
-  }
-  #device:focus-visible{outline:2px solid var(--phos); outline-offset:2px}
-
-  /* BPM block */
-  #bpmCard{
-    border:1px solid var(--line);
-    border-radius:18px;
-    background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
-    padding:16px 14px 14px;
-    position:relative;
-    overflow:hidden;
-  }
-
-  #bpm{
-    margin-top:6px;
-    font-family:var(--mono);
-    font-variant-numeric: tabular-nums;
-    font-size:clamp(84px,24vw,140px);
-    font-weight:800;
-    line-height:1;
-    color:var(--phos);
-    text-shadow:0 0 18px rgba(0,255,136,.32);
-    will-change:transform,text-shadow;
-    user-select:none;
-    text-align:center;
-  }
-  #bpmSub{
-    margin-top:8px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-  }
-  .unit{
-    font-size:10px;
-    letter-spacing:.42em;
-    text-transform:uppercase;
-    color:var(--dim);
-  }
-  .mini{
-    background:rgba(255,255,255,.01);
-    border:1px solid var(--line);
-    border-radius:9px;
-    color:var(--silk);
-    font-family:var(--mono);
-    font-size:11px;
-    padding:6px 10px;
-    cursor:pointer;
-  }
-  .mini.on{color:var(--phos); border-color:#0a5c38}
-  .mini:focus-visible{outline:2px solid var(--phos); outline-offset:2px}
-
-  #confidence{
-    margin-top:12px;
-    display:flex;
-    align-items:center;
-    gap:10px;
-    justify-content:center;
-    font-family:var(--mono);
-    font-size:10px;
-    color:var(--dim);
-    letter-spacing:.12em;
-    text-transform:uppercase;
-  }
-  #confTrack{
-    width:140px;height:6px;border-radius:999px;
-    background:#0e1412;border:1px solid var(--line);
-    overflow:hidden;
-  }
-  #confFill{height:100%; width:0%; background:var(--phos);}
-
-  /* Mode bar: Tuner visually prioritized over Key */
-  #modebar{
-    display:flex; gap:10px;
-    margin-top:14px;
-  }
-  .mode{
-    flex:1;
-    padding:12px 12px;
-    border-radius:14px;
-    border:1px solid var(--line);
-    background:rgba(255,255,255,.015);
-    color:var(--silk);
-    font-family:var(--mono);
-    letter-spacing:.24em;
-    font-size:11px;
-    cursor:pointer;
-    user-select:none;
-  }
-  .mode.primary{
-    border-color:rgba(0,255,136,.30);
-  }
-  .mode.on.primary{
-    background:linear-gradient(180deg, rgba(0,255,136,.12), rgba(0,0,0,0));
-    color:var(--phos);
-    box-shadow:0 0 26px rgba(0,255,136,.12);
-  }
-  .mode.on.secondary{
-    background:linear-gradient(180deg, rgba(125,255,196,.08), rgba(0,0,0,0));
-    color:var(--phos-soft);
-  }
-  .mode:focus-visible{outline:2px solid var(--phos); outline-offset:2px}
-
-  /* Panels */
-  .panel{
-    border:1px solid var(--line);
-    border-radius:18px;
-    background:rgba(255,255,255,.012);
-    padding:14px;
-  }
-
-  /* Tuner */
-  #stringrow{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:8px;
-  }
-  .str{
-    padding:10px 0;
-    border-radius:12px;
-    border:1px solid var(--line);
-    background:transparent;
-    color:var(--silk);
-    font-family:var(--mono);
-    font-size:14px;
-    cursor:pointer;
-  }
-  .str.on{
-    border-color:rgba(0,255,136,.50);
-    background:rgba(0,255,136,.09);
-    color:var(--phos);
-  }
-  #tunermain{
-    margin-top:14px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:8px;
-  }
-  #note{
-    font-family:var(--mono);
-    font-size:44px;
-    letter-spacing:.08em;
-    color:var(--phos-soft);
-  }
-  #tunerstate{
-    font-family:var(--mono);
-    font-size:11px;
-    letter-spacing:.22em;
-    text-transform:uppercase;
-    color:var(--dim);
-  }
-  #centswrap{width:100%; max-width:440px; display:flex; flex-direction:column; gap:8px; align-items:center;}
-  #centsbar{
-    width:100%; height:10px; border-radius:999px;
-    background:#0e1412; border:1px solid var(--line);
-    overflow:hidden; position:relative;
-  }
-  #centsneedle{
-    position:absolute; top:-5px; left:50%;
-    width:2px; height:20px; background:rgba(255,255,255,.28);
-  }
-  #centsfill{
-    height:100%;
-    width:100%;
-    transform:translateX(0%);
-    background:linear-gradient(90deg,
-      rgba(255,95,86,.85),
-      rgba(255,180,84,.85),
-      rgba(0,255,136,.9),
-      rgba(255,180,84,.85),
-      rgba(255,95,86,.85)
-    );
-    opacity:.95;
-  }
-  #centsread,#hz{
-    font-family:var(--mono);
-    font-size:12px;
-    color:var(--dim);
-    letter-spacing:.10em;
-  }
-
-  /* Key (optional, secondary) */
-  #key{
-    font-family:var(--mono);
-    font-size:20px;
-    letter-spacing:.08em;
-    color:var(--phos-soft);
-    min-height:26px;
-    text-align:center;
-  }
-  #key.pending{
-    color:var(--dim);
-    font-size:11px;
-    letter-spacing:.22em;
-    text-transform:uppercase;
-  }
-  #key .cam{
-    margin-left:10px;
-    font-size:12px;
-    color:var(--bg);
-    background:var(--phos-soft);
-    border-radius:7px;
-    padding:2px 8px;
-    font-weight:800;
-    vertical-align:3px;
-  }
-
-  /* Disc + waveform */
-  #discRow{display:flex; flex-direction:column; align-items:center; gap:10px;}
-  #disc{
-    width:176px;height:176px;border-radius:50%;
-    background:#0b100e;border:1px solid var(--line);
-    box-shadow:0 0 0 6px rgba(0,255,136,.06), inset 0 1px 0 rgba(255,255,255,.04);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-    will-change:transform;
-  }
-  #disc.paused{opacity:.45}
-  #disc:focus-visible{outline:2px solid var(--phos); outline-offset:4px}
-  #wave{width:124px;height:48px}
-  #dischint{font-size:9px; letter-spacing:.26em; text-transform:uppercase; color:#3a4642}
-
-  /* Level */
-  #lvlrow{display:flex;align-items:center;gap:10px;margin-top:4px; width:100%}
-  #lvltrack{flex:1;height:8px;background:#151d1a;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-  #lvlfill{height:100%;width:0%;background:var(--phos)}
-  #lvldb{font-family:var(--mono);font-size:10px;color:var(--dim);width:62px;text-align:right}
-  #warn{margin-top:8px;font-size:12px;color:var(--amber);min-height:16px;text-align:center}
-
-  footer{
-    margin-top:6px;
-    font-size:9px;
-    letter-spacing:.2em;
-    text-transform:uppercase;
-    color:#3a4642;
-    text-align:center;
-  }
-
-  /* Overlay start */
-  #overlay{
-    position:fixed; inset:0; z-index:9;
-    display:flex; flex-direction:column;
-    align-items:center; justify-content:center;
-    gap:18px; text-align:center;
-    background:var(--bg);
-    padding:24px;
-  }
-  #overlay h2{font-size:12px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;color:var(--silk)}
-  #overlay p{font-size:13px;color:var(--dim);max-width:360px;line-height:1.6}
-  #startbtn{
-    width:156px;height:156px;border-radius:50%;
-    font-family:var(--mono);
-    font-size:14px;
-    letter-spacing:.12em;
-    font-weight:800;
-    color:#04140c;
-    background:var(--phos);
-    border:none;
-    cursor:pointer;
-    box-shadow:0 0 54px rgba(0,255,136,.35);
-  }
-  #startbtn:hover{box-shadow:0 0 74px rgba(0,255,136,.55)}
-  #err{color:var(--red); font-size:12px; max-width:420px; line-height:1.5; display:none}
-
-  @media (prefers-reduced-motion:reduce){
-    #bpm,#disc{transform:none !important}
-    #glow{transition:none}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Andrew Crena</title>
+  <meta name="description" content="A minimal landing page for projects and notes." />
+  <meta name="color-scheme" content="dark light" />
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --card: rgba(255,255,255,.04);
+      --border: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.88);
+      --muted: rgba(255,255,255,.62);
+      --accent: #9ae6ff;
+      --shadow: 0 18px 60px rgba(0,0,0,.40);
+      --radius: 18px;
+      --max: 980px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f7f7fb;
+        --card: rgba(0,0,0,.03);
+        --border: rgba(0,0,0,.10);
+        --text: rgba(0,0,0,.88);
+        --muted: rgba(0,0,0,.58);
+        --accent:#0b7cff;
+        --shadow: 0 18px 60px rgba(0,0,0,.10);
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font: 15.5px/1.55 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background: radial-gradient(1200px 700px at 20% -10%, rgba(154,230,255,.16), transparent 55%),
+                  radial-gradient(900px 600px at 100% 20%, rgba(108,99,255,.12), transparent 55%),
+                  var(--bg);
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:56px 20px 64px}
+    header{display:flex; gap:18px; align-items:flex-start; justify-content:space-between; margin-bottom:34px}
+    .title h1{margin:0; font-size:28px; letter-spacing:-0.02em}
+    .title p{margin:8px 0 0; color:var(--muted); max-width:56ch}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:transparent;
+      text-decoration:none;
+      color:var(--text);
+      backdrop-filter: blur(10px);
+    }
+    .btn:hover{border-color: rgba(255,255,255,.22)}
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+    .panel{
+      grid-column: span 12;
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel-head{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 16px;
+      border-bottom:1px solid var(--border);
+    }
+    .panel-head h2{margin:0; font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+    .search{
+      width:min(420px, 100%);
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(0,0,0,.06);
+    }
+    @media (prefers-color-scheme: light){ .search{background: rgba(255,255,255,.6)} }
+    .search input{
+      width:100%;
+      border:0; outline:0; background:transparent;
+      color:var(--text);
+      font-size:14px;
+    }
+    .list{padding:10px}
+    .item{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      padding:12px 12px;
+      border-radius: 14px;
+      text-decoration:none;
+    }
+    .item:hover{background: rgba(255,255,255,.06)}
+    @media (prefers-color-scheme: light){ .item:hover{background: rgba(0,0,0,.05)} }
+    .left{min-width:0}
+    .name{font-weight:600; letter-spacing:-0.01em}
+    .desc{margin-top:4px; color:var(--muted); font-size:13px}
+    .tag{
+      flex:0 0 auto;
+      padding:6px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    footer{margin-top:18px; color:var(--muted); font-size:13px}
+    .hint{color:var(--muted); font-size:12.5px; padding:0 16px 14px}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
+  </style>
 </head>
-
 <body>
-<div id="glow"></div>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>Andrew Crena</h1>
+        <p>Notes, small tools, and projects. Add a new page in <span class="mono">/pages</span> and it will appear here automatically.</p>
+      </div>
+      <div class="actions">
+        <a class="btn" href="https://github.com/andrew-crena" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="btn" href="pages/" title="Browse the pages folder">Pages</a>
+      </div>
+    </header>
 
-<div id="app">
-  <div id="hdr">
-    <h1>Not Quite My Tempo</h1>
-    <div class="lamp listening" id="lamp"><i></i><span id="lamptext">LISTENING</span></div>
-  </div>
-
-  <select id="device" aria-label="Audio input device"></select>
-
-  <div id="bpmCard">
-    <div id="bpm">---</div>
-    <div id="bpmSub">
-      <span class="unit">BPM</span>
-      <button class="mini" id="half" title="Show half tempo">÷2</button>
-      <button class="mini" id="dbl" title="Show double tempo">×2</button>
-    </div>
-
-    <div id="confidence" aria-label="Tempo confidence">
-      <span>CONF</span>
-      <div id="confTrack" aria-hidden="true"><div id="confFill"></div></div>
-    </div>
-
-    <div id="modebar" role="tablist" aria-label="Modes">
-      <button id="modeTuner" class="mode primary on" role="tab" aria-selected="true">TUNER</button>
-      <button id="modeKey" class="mode secondary" role="tab" aria-selected="false">KEY</button>
-    </div>
-  </div>
-
-  <section id="tunerPanel" class="panel" aria-label="Guitar tuner (EADGBE)">
-    <div id="stringrow" aria-label="Select string">
-      <button class="str on" data-str="E2">E</button>
-      <button class="str" data-str="A2">A</button>
-      <button class="str" data-str="D3">D</button>
-      <button class="str" data-str="G3">G</button>
-      <button class="str" data-str="B3">B</button>
-      <button class="str" data-str="E4">E</button>
-    </div>
-
-    <div id="tunermain">
-      <div id="note" aria-live="polite">—</div>
-
-      <div id="centswrap">
-        <div id="centsbar" aria-label="Tuning meter">
-          <div id="centsfill"></div>
-          <div id="centsneedle" aria-hidden="true"></div>
-        </div>
-        <div id="centsread" aria-live="polite">— cents</div>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Links</h2>
+        <label class="search" aria-label="Search links">
+          <span style="color:var(--muted); font-size:13px;">Search</span>
+          <input id="q" type="search" placeholder="Type to filter…" autocomplete="off" />
+        </label>
       </div>
 
-      <div id="hz" aria-live="polite">— Hz</div>
-      <div id="tunerstate" aria-live="polite">Listening…</div>
-    </div>
-  </section>
+      <div class="hint">
+        Pages are discovered from <span class="mono">pages/manifest.json</span> (auto-generated or manually maintained).
+      </div>
 
-  <section id="keyPanel" class="panel" aria-label="Key detection" hidden>
-    <div id="key" class="pending">Key detection is off</div>
-  </section>
+      <div class="list" id="list"></div>
+    </section>
 
-  <div id="discRow">
-    <div id="disc" role="button" tabindex="0" aria-label="Pause or resume listening">
-      <canvas id="wave"></canvas>
-    </div>
-    <div id="dischint">Tap to pause</div>
+    <footer>
+      <span id="count"></span>
+    </footer>
   </div>
 
-  <div id="lvlrow">
-    <div id="lvltrack"><div id="lvlfill"></div></div>
-    <span id="lvldb">-- dB</span>
-  </div>
-  <div id="warn"></div>
+  <script>
+    const listEl = document.getElementById('list');
+    const qEl = document.getElementById('q');
+    const countEl = document.getElementById('count');
 
-  <footer>spectral flux · autocorrelation · optional chromagram · optional tuner</footer>
-</div>
-
-<div id="overlay">
-  <h2>Not Quite My Tempo</h2>
-  <p>Click START and it begins listening. Use a USB interface for the best vinyl accuracy.</p>
-  <button id="startbtn">START</button>
-  <p id="err"></p>
-</div>
-
-<script>
-(() => {
-'use strict';
-
-/* ============================== DSP: FFT ============================== */
-function makeFFT(n) {
-  const levels = Math.round(Math.log2(n));
-  const cos = new Float32Array(n / 2), sin = new Float32Array(n / 2);
-  for (let i = 0; i < n / 2; i++) { cos[i] = Math.cos(2 * Math.PI * i / n); sin[i] = Math.sin(2 * Math.PI * i / n); }
-  const rev = new Uint32Array(n);
-  for (let i = 0; i < n; i++) { let r = 0; for (let j = 0; j < levels; j++) r = (r << 1) | ((i >>> j) & 1); rev[i] = r; }
-  return function fft(re, im) {
-    for (let i = 0; i < n; i++) {
-      const j = rev[i];
-      if (j > i) { let t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; }
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[m]));
     }
-    for (let size = 2; size <= n; size <<= 1) {
-      const half = size >> 1, step = n / size;
-      for (let i = 0; i < n; i += size) {
-        for (let j = i, k = 0; j < i + half; j++, k += step) {
-          const l = j + half;
-          const tre = re[l] * cos[k] + im[l] * sin[k];
-          const tim = im[l] * cos[k] - re[l] * sin[k];
-          re[l] = re[j] - tre; im[l] = im[j] - tim;
-          re[j] += tre; im[j] += tim;
-        }
-      }
-    }
-  };
-}
 
-/* ============================== DSP: tempo from onset envelope ============================== */
-function tempoFromEnv(env, envRate, anchorBpm) {
-  if (env.length < Math.floor(envRate * 4)) return null;
-  const A = Math.min(env.length, Math.floor(envRate * 16));
-  const off = env.length - A;
-  const seg = new Float32Array(A);
-  const wts = new Float32Array(A);
-  const tau = envRate * 7;
+    let items = [];
 
-  let mean = 0, wsum = 0;
-  for (let i = 0; i < A; i++) {
-    const w = Math.exp(-(A - 1 - i) / tau);
-    wts[i] = w;
-    seg[i] = env[off + i];
-    mean += seg[i] * w;
-    wsum += w;
-  }
-  mean /= (wsum || 1);
-
-  let e0 = 0;
-  for (let i = 0; i < A; i++) { seg[i] -= mean; e0 += seg[i] * seg[i] * wts[i]; }
-  if (e0 < 1e-9) return null;
-
-  const Lmin = Math.max(4, Math.round(envRate * 60 / 200)); // 200
-  const Lmax = Math.min(A - 4, Math.round(envRate * 60 / 60)); // 60
-  if (Lmax <= Lmin + 2) return null;
-  const maxLag = Math.min(A - 1, Lmax * 3 + 2);
-
-  const acf = new Float32Array(maxLag + 1);
-  for (let L = Lmin; L <= maxLag; L++) {
-    let s = 0;
-    for (let i = 0; i < A - L; i++) s += seg[i] * seg[i + L] * wts[i + L];
-    acf[L] = (s / e0) * (A / (A - L));
-  }
-
-  const score = new Float32Array(Lmax + 2);
-  for (let L = Lmin; L <= Lmax; L++) {
-    const bpm = 60 * envRate / L;
-    const prior = Math.exp(-0.5 * Math.pow(Math.log2(bpm / 125) / 1.3, 2));
-    let s = acf[L];
-    if (2 * L <= maxLag) s += 0.5 * acf[2 * L];
-    if (3 * L <= maxLag) s += 0.33 * acf[3 * L];
-    score[L] = s * prior;
-  }
-
-  const peaks = [];
-  for (let L = Lmin + 1; L < Lmax; L++) {
-    if (score[L] >= score[L - 1] && score[L] >= score[L + 1] && score[L] > 0) peaks.push({ L, s: score[L] });
-  }
-  if (!peaks.length) return null;
-  peaks.sort((a, b) => b.s - a.s);
-  const top = peaks.slice(0, 6);
-  const topMax = top[0].s;
-
-  let bestL = top[0].L, bestAdj = topMax;
-  if (anchorBpm) {
-    let a = anchorBpm;
-    // keep anchor in-range
-    while (60 * envRate / a < Lmin) a /= 2;
-    while (60 * envRate / a > Lmax) a *= 2;
-    const anchorL = 60 * envRate / a;
-
-    for (const p of top) {
-      const octDist = Math.min(
-        Math.abs(Math.log2(p.L / anchorL)),
-        Math.abs(Math.log2(p.L / (anchorL * 2))),
-        Math.abs(Math.log2(p.L / (anchorL / 2))),
-        Math.abs(Math.log2(p.L / (anchorL * 1.5))),
-        Math.abs(Math.log2(p.L / (anchorL / 1.5)))
+    function render(filter=""){
+      const f = filter.trim().toLowerCase();
+      const filtered = !f ? items : items.filter(it =>
+        (it.title||"").toLowerCase().includes(f) ||
+        (it.description||"").toLowerCase().includes(f) ||
+        (it.tags||[]).join(" ").toLowerCase().includes(f)
       );
-      const boost = 1 + 0.6 * Math.exp(-0.5 * Math.pow(octDist / 0.1, 2));
-      const adj = p.s * boost;
-      if (adj > bestAdj) { bestAdj = adj; bestL = p.L; }
-    }
-  }
 
-  // parabolic interpolation
-  let Lstar = bestL;
-  if (bestL > Lmin && bestL < Lmax) {
-    const a = score[bestL - 1], b = score[bestL], c = score[bestL + 1];
-    const den = a - 2 * b + c;
-    if (den < 0) {
-      const d = 0.5 * (a - c) / den;
-      if (d > -1 && d < 1) Lstar = bestL + d;
-    }
-  }
+      listEl.innerHTML = filtered.map(it => {
+        const tag = it.label || (it.tags && it.tags[0]) || "page";
+        return `
+          <a class="item" href="${escapeHtml(it.href)}">
+            <div class="left">
+              <div class="name">${escapeHtml(it.title || it.href)}</div>
+              ${it.description ? `<div class="desc">${escapeHtml(it.description)}</div>` : ``}
+            </div>
+            <div class="tag">${escapeHtml(tag)}</div>
+          </a>
+        `;
+      }).join("");
 
-  const conf = Math.max(0, Math.min(1, topMax / 1.1));
-  return { bpm: 60 * envRate / Lstar, conf };
-}
-
-/* ============================== DSP: key (optional) ============================== */
-const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-const MAJ_PROF = [6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88];
-const MIN_PROF = [6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17];
-const MAJ_CAM = ['8B','3B','10B','5B','12B','7B','2B','9B','4B','11B','6B','1B'];
-const MIN_CAM = ['5A','12A','7A','2A','9A','4A','11A','6A','1A','8A','3A','10A'];
-
-function pearson(x, y) {
-  const n = x.length;
-  let mx = 0, my = 0;
-  for (let i = 0; i < n; i++) { mx += x[i]; my += y[i]; }
-  mx /= n; my /= n;
-  let sxy = 0, sxx = 0, syy = 0;
-  for (let i = 0; i < n; i++) {
-    const a = x[i] - mx, b = y[i] - my;
-    sxy += a * b; sxx += a * a; syy += b * b;
-  }
-  const d = Math.sqrt(sxx * syy);
-  return d > 0 ? sxy / d : 0;
-}
-
-function keyFromChroma(c) {
-  let sum = 0; for (let i = 0; i < 12; i++) sum += c[i];
-  if (sum < 1e-6) return null;
-  const results = [];
-  for (let root = 0; root < 12; root++) {
-    const maj = new Array(12), min = new Array(12);
-    for (let p = 0; p < 12; p++) { maj[p] = MAJ_PROF[(p - root + 12) % 12]; min[p] = MIN_PROF[(p - root + 12) % 12]; }
-    results.push({ root, minor: false, r: pearson(c, maj) });
-    results.push({ root, minor: true, r: pearson(c, min) });
-  }
-  results.sort((a, b) => b.r - a.r);
-  const best = results[0];
-  return {
-    id: best.root + (best.minor ? 12 : 0),
-    name: NOTE_NAMES[best.root] + (best.minor ? ' MINOR' : ' MAJOR'),
-    camelot: best.minor ? MIN_CAM[best.root] : MAJ_CAM[best.root],
-    r: best.r,
-    margin: best.r - results[1].r,
-  };
-}
-
-/* ============================== DSP: tuner (YIN) ============================== */
-function yinPitchDetector(floatBuf, sampleRate){
-  const bufSize = floatBuf.length;
-  const maxTau = Math.floor(bufSize / 2);
-  const yin = new Float32Array(maxTau);
-
-  for(let tau=1; tau<maxTau; tau++){
-    let sum = 0;
-    for(let i=0; i<maxTau; i++){
-      const d = floatBuf[i] - floatBuf[i+tau];
-      sum += d*d;
-    }
-    yin[tau] = sum;
-  }
-
-  yin[0] = 1;
-  let runningSum = 0;
-  for(let tau=1; tau<maxTau; tau++){
-    runningSum += yin[tau];
-    yin[tau] = yin[tau] * tau / (runningSum || 1);
-  }
-
-  const threshold = 0.12;
-  let tauEstimate = -1;
-  for(let tau=2; tau<maxTau; tau++){
-    if(yin[tau] < threshold){
-      while(tau+1 < maxTau && yin[tau+1] < yin[tau]) tau++;
-      tauEstimate = tau;
-      break;
-    }
-  }
-  if(tauEstimate === -1) return null;
-
-  const x0 = tauEstimate > 1 ? tauEstimate - 1 : tauEstimate;
-  const x2 = tauEstimate + 1 < maxTau ? tauEstimate + 1 : tauEstimate;
-  const s0 = yin[x0], s1 = yin[tauEstimate], s2 = yin[x2];
-  const a = (s0 + s2 - 2*s1) / 2;
-  const b = (s2 - s0) / 2;
-  const betterTau = a ? (tauEstimate - b/(2*a)) : tauEstimate;
-
-  const freq = sampleRate / betterTau;
-  if(!isFinite(freq) || freq < 60 || freq > 400) return null; // guitar-ish
-  return freq;
-}
-function centsOff(freq, targetFreq){ return 1200 * Math.log2(freq/targetFreq); }
-function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
-
-/* ============================== DOM ============================== */
-const $ = id => document.getElementById(id);
-const ui = {
-  app:$('app'), overlay:$('overlay'), start:$('startbtn'), err:$('err'),
-  glow:$('glow'),
-  lamp:$('lamp'), lamptext:$('lamptext'),
-  device:$('device'),
-
-  bpm:$('bpm'), half:$('half'), dbl:$('dbl'),
-  confFill:$('confFill'),
-
-  modeTuner:$('modeTuner'), modeKey:$('modeKey'),
-  tunerPanel:$('tunerPanel'),
-  keyPanel:$('keyPanel'),
-  key:$('key'),
-
-  disc:$('disc'), wave:$('wave'), dischint:$('dischint'),
-  lvlfill:$('lvlfill'), lvldb:$('lvldb'), warn:$('warn'),
-
-  note:$('note'), centsFill:$('centsfill'), centsRead:$('centsread'), hz:$('hz'), tunerstate:$('tunerstate'),
-};
-const waveCtx = ui.wave.getContext('2d');
-const strButtons = [...document.querySelectorAll('.str')];
-
-/* ============================== STATE ============================== */
-let actx=null, stream=null, src=null, tapNode=null;
-let rawAn=null, lowAn=null, rawBuf=null, lowBuf=null;
-let running=false, paused=false, session=0;
-
-let DEC=4, decSr=11025, envRate=172;
-const FLUX_N=512, FLUX_HOP=64;
-const CHROMA_N=4096, CHROMA_HOP=2048;
-const fftFlux = makeFFT(FLUX_N);
-const fftChroma = makeFFT(CHROMA_N);
-const hannF = new Float32Array(FLUX_N);
-const hannC = new Float32Array(CHROMA_N);
-for (let i=0;i<FLUX_N;i++) hannF[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/FLUX_N);
-for (let i=0;i<CHROMA_N;i++) hannC[i] = 0.5 - 0.5*Math.cos(2*Math.PI*i/CHROMA_N);
-
-const CAP = 1 << 17, MASK = CAP - 1;
-const ring = new Float32Array(CAP);
-let wAbs=0, fluxPos=0, chromaPos=0;
-let decSum=0, decCnt=0;
-
-const fRe = new Float32Array(FLUX_N), fIm = new Float32Array(FLUX_N);
-const cRe = new Float32Array(CHROMA_N), cIm = new Float32Array(CHROMA_N);
-let prevMag = new Float32Array(FLUX_N/2 + 1);
-let curMag  = new Float32Array(FLUX_N/2 + 1);
-
-let env=[];
-let displayBpm=null, conf=0, mult=1;
-let pendingBpm=null, pendingN=0, pendingSum=0, lastCommitT=0;
-
-const chromaAcc = new Float32Array(12);
-let tunX=0, tunY=0, keyShown=null, keyCand=null, keyCandN=0;
-
-let bassSm=0, curDb=-100, silenceSince=null;
-
-let showKey = false;
-
-// Tuner state
-const standard = [
-  { name:'E2', label:'E', freq:82.4069 },
-  { name:'A2', label:'A', freq:110.0000 },
-  { name:'D3', label:'D', freq:146.8324 },
-  { name:'G3', label:'G', freq:195.9977 },
-  { name:'B3', label:'B', freq:246.9417 },
-  { name:'E4', label:'E', freq:329.6276 },
-];
-let target = standard[0];
-let smoothFreq = null;
-const tunerBuf = new Float32Array(2048);
-
-/* ============================== AUDIO WORKLET TAP ============================== */
-const WORKLET_SRC = `
-class Fwd extends AudioWorkletProcessor {
-  constructor(){ super(); this.buf = new Float32Array(2048); this.n = 0; }
-  process(inputs){
-    const ch = inputs[0] && inputs[0][0];
-    if (ch) {
-      let i = 0;
-      while (i < ch.length) {
-        const c = Math.min(ch.length - i, 2048 - this.n);
-        this.buf.set(ch.subarray(i, i + c), this.n);
-        this.n += c; i += c;
-        if (this.n === 2048) {
-          this.port.postMessage(this.buf);
-          this.buf = new Float32Array(2048); this.n = 0;
-        }
-      }
-    }
-    return true;
-  }
-}
-registerProcessor('fwd', Fwd);`;
-
-async function startAudio(deviceId){
-  session++;
-  const mySession = session;
-
-  if (stream) stream.getTracks().forEach(tr => tr.stop());
-  if (tapNode) { try { tapNode.disconnect(); } catch {} tapNode = null; }
-  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
-  await actx.resume();
-
-  DEC = Math.max(1, Math.round(actx.sampleRate / 11025));
-  decSr = actx.sampleRate / DEC;
-  envRate = decSr / FLUX_HOP;
-
-  stream = await navigator.mediaDevices.getUserMedia({
-    audio: {
-      deviceId: deviceId ? { exact: deviceId } : undefined,
-      echoCancellation:false,
-      noiseSuppression:false,
-      autoGainControl:false,
-    }
-  });
-  if (mySession !== session) { stream.getTracks().forEach(tr => tr.stop()); return; }
-
-  if (src) { try { src.disconnect(); } catch {} }
-  src = actx.createMediaStreamSource(stream);
-
-  rawAn = actx.createAnalyser(); rawAn.fftSize = 2048;
-  rawAn.smoothingTimeConstant = 0.0;
-
-  const lp = actx.createBiquadFilter();
-  lp.type='lowpass'; lp.frequency.value=150; lp.Q.value=1;
-
-  lowAn = actx.createAnalyser(); lowAn.fftSize = 1024;
-  lowAn.smoothingTimeConstant = 0.0;
-
-  src.connect(rawAn);
-  src.connect(lp); lp.connect(lowAn);
-
-  rawBuf = new Float32Array(rawAn.fftSize);
-  lowBuf = new Float32Array(lowAn.fftSize);
-
-  // Tap PCM
-  let ok = false;
-  if (actx.audioWorklet) {
-    try {
-      const url = URL.createObjectURL(new Blob([WORKLET_SRC], { type:'application/javascript' }));
-      await actx.audioWorklet.addModule(url);
-      if (mySession !== session) return;
-      tapNode = new AudioWorkletNode(actx, 'fwd');
-      tapNode.port.onmessage = ev => { if (mySession === session) ingest(ev.data); };
-      src.connect(tapNode);
-      ok = true;
-    } catch { ok = false; }
-  }
-  if (!ok) {
-    tapNode = actx.createScriptProcessor(2048, 1, 1);
-    tapNode.onaudioprocess = ev => { if (mySession === session) ingest(ev.inputBuffer.getChannelData(0)); };
-    const sink = actx.createGain(); sink.gain.value = 0;
-    src.connect(tapNode); tapNode.connect(sink); sink.connect(actx.destination);
-  }
-
-  resetAnalysis();
-
-  running=true; paused=false;
-  ui.disc.classList.remove('paused');
-  ui.dischint.textContent = 'Tap to pause';
-
-  requestAnimationFrame(function loop(){
-    if (mySession !== session || !running) return;
-    visualFrame();
-    requestAnimationFrame(loop);
-  });
-}
-
-function resetAnalysis(){
-  wAbs=0; fluxPos=0; chromaPos=0; decSum=0; decCnt=0;
-  prevMag.fill(0);
-  env=[];
-  displayBpm=null; conf=0;
-  pendingBpm=null; pendingN=0; pendingSum=0; lastCommitT=0;
-  chromaAcc.fill(0); tunX=0; tunY=0; keyShown=null; keyCand=null; keyCandN=0;
-  silenceSince=null;
-
-  ui.key.className='pending';
-  ui.key.textContent = showKey ? 'Listening for key…' : 'Key detection is off';
-
-  smoothFreq = null;
-}
-
-/* ============================== DEVICES ============================== */
-async function populateDevices(){
-  const devs = await navigator.mediaDevices.enumerateDevices();
-  const inputs = devs.filter(d => d.kind === 'audioinput');
-  const cur = ui.device.value;
-  ui.device.innerHTML='';
-  inputs.forEach((d,i)=>{
-    const o=document.createElement('option');
-    o.value=d.deviceId;
-    o.textContent='INPUT: ' + (d.label || ('Device ' + (i+1)));
-    ui.device.appendChild(o);
-  });
-  if (cur && inputs.some(d=>d.deviceId===cur)) ui.device.value = cur;
-}
-
-/* ============================== INGEST ============================== */
-function ingest(chunk){
-  if (paused) return;
-
-  // copy for tuner (time domain, full SR)
-  // (we only keep latest 2048 samples in tunerBuf)
-  // chunk is length 2048 from worklet, so direct set:
-  if (chunk.length === tunerBuf.length) tunerBuf.set(chunk);
-
-  // decimate into ring for BPM/key
-  for (let i=0;i<chunk.length;i++){
-    decSum += chunk[i];
-    if (++decCnt === DEC){
-      ring[wAbs & MASK] = decSum / DEC;
-      wAbs++; decSum=0; decCnt=0;
-    }
-  }
-
-  if (wAbs - fluxPos > CAP) fluxPos = wAbs - (CAP >> 1);
-  if (wAbs - chromaPos > CAP) chromaPos = wAbs - (CAP >> 1);
-
-  processFlux();
-  if (showKey) processChroma();
-}
-
-function processFlux(){
-  while (wAbs - fluxPos >= FLUX_N){
-    for (let i=0;i<FLUX_N;i++){
-      fRe[i] = ring[(fluxPos+i) & MASK] * hannF[i];
-      fIm[i] = 0;
-    }
-    fftFlux(fRe,fIm);
-
-    let flux=0;
-    for (let b=1;b<=FLUX_N/2;b++){
-      const m = Math.sqrt(fRe[b]*fRe[b] + fIm[b]*fIm[b]);
-      curMag[b] = m;
-      const d = Math.log1p(m) - Math.log1p(prevMag[b]);
-      if (d>0) flux += d;
-    }
-    const t = prevMag; prevMag = curMag; curMag = t;
-    env.push(flux);
-    fluxPos += FLUX_HOP;
-  }
-  const maxEnv = Math.floor(envRate * 20);
-  if (env.length > maxEnv + 256) env.splice(0, env.length - maxEnv);
-}
-
-function processChroma(){
-  while (wAbs - chromaPos >= CHROMA_N){
-    for (let i=0;i<CHROMA_N;i++){
-      cRe[i] = ring[(chromaPos+i) & MASK] * hannC[i];
-      cIm[i] = 0;
-    }
-    fftChroma(cRe,cIm);
-
-    const NB = CHROMA_N / 2;
-    const peaks = [];
-    let mPrev=0, mCur=0;
-    for (let b=2;b<NB;b++){
-      const m = Math.sqrt(cRe[b]*cRe[b] + cIm[b]*cIm[b]);
-      if (b>2 && mCur>mPrev && mCur>=m){
-        const f = (b-1) * decSr / CHROMA_N;
-        if (f>=55 && f<=5000 && mCur>1e-4) peaks.push({ p: 12*Math.log2(f/440)+69, w: Math.log1p(mCur) });
-      }
-      mPrev=mCur; mCur=m;
+      countEl.textContent = `${filtered.length} link${filtered.length===1?"":"s"}`;
     }
 
-    tunX *= 0.99; tunY *= 0.99;
-    for (const pk of peaks){
-      const frac = pk.p - Math.round(pk.p);
-      tunX += pk.w * Math.cos(2*Math.PI*frac);
-      tunY += pk.w * Math.sin(2*Math.PI*frac);
+    async function main(){
+      // You control this file. Add entries for new pages and the landing updates.
+      const res = await fetch("pages/manifest.json", { cache: "no-store" });
+      const data = await res.json();
+      items = (data.items || []).map(it => ({
+        title: it.title,
+        description: it.description,
+        href: it.href,
+        tags: it.tags || [],
+        label: it.label
+      }));
+      render();
     }
-    const tuning = (tunX || tunY) ? Math.atan2(tunY, tunX) / (2*Math.PI) : 0;
 
-    for (let i=0;i<12;i++) chromaAcc[i] *= 0.994;
-    for (const pk of peaks){
-      const pc = ((Math.round(pk.p - tuning)) % 12 + 12) % 12;
-      chromaAcc[pc] += pk.w;
-    }
-    chromaPos += CHROMA_HOP;
-  }
-}
-
-/* ============================== UPDATE LOOP (4×/sec) ============================== */
-setInterval(()=>{
-  if (!running || paused) return;
-  const now = performance.now()/1000;
-  const signal = curDb > -50;
-
-  // BPM
-  if (signal){
-    const est = tempoFromEnv(env, envRate, displayBpm);
-    if (est){
-      if (displayBpm === null){
-        displayBpm = est.bpm; lastCommitT = now;
-      } else if (Math.abs(est.bpm - displayBpm) < displayBpm * 0.025) {
-        displayBpm += (est.bpm - displayBpm) * 0.14;  // slightly faster glide
-        pendingBpm=null; pendingN=0; pendingSum=0;
-      } else {
-        if (pendingBpm !== null && Math.abs(est.bpm - pendingBpm) < pendingBpm * 0.02){
-          pendingN++; pendingSum += est.bpm;
-        } else {
-          pendingBpm = est.bpm; pendingN = 1; pendingSum = est.bpm;
-        }
-        if (pendingN >= 4 && est.conf > 0.3){ // ~1 sec agreement (faster display response)
-          displayBpm = pendingSum / pendingN;
-          pendingBpm=null; pendingN=0; pendingSum=0;
-          lastCommitT = now;
-        }
-      }
-      conf = est.conf;
-    }
-  } else conf *= 0.92;
-
-  ui.bpm.textContent = displayBpm !== null ? (displayBpm * mult).toFixed(1) : '---';
-  ui.confFill.style.width = (Math.max(0, Math.min(1, conf)) * 100).toFixed(0) + '%';
-
-  // Key (optional)
-  if (showKey){
-    const k = keyFromChroma(chromaAcc);
-    if (k && signal && k.r > 0.5 && k.margin > 0.015 && wAbs > decSr * 8){
-      if (keyCand === k.id) keyCandN++; else { keyCand = k.id; keyCandN = 1; }
-      if (keyCandN >= 4 && keyShown !== k.id){
-        keyShown = k.id;
-        ui.key.className = '';
-        ui.key.innerHTML = '';
-        ui.key.appendChild(document.createTextNode(k.name));
-        const cam = document.createElement('span');
-        cam.className = 'cam'; cam.textContent = k.camelot;
-        ui.key.appendChild(cam);
-      }
-    }
-  }
-
-  // Lamp + warnings
-  let state, label;
-  if (silenceSince !== null && now - silenceSince > 2) { state='nosignal'; label='NO SIGNAL'; }
-  else if (displayBpm === null)                        { state='listening'; label='LISTENING'; }
-  else {
-    if (conf > 0.4 && now - lastCommitT > 3) { state='locked'; label='LOCKED'; }
-    else                                     { state='tracking'; label='TRACKING'; }
-  }
-  ui.lamp.className = 'lamp ' + state;
-  ui.lamptext.textContent = label;
-
-  if (state === 'nosignal') ui.warn.textContent = 'No signal — check input device + interface levels.';
-  else if (curDb < -42 && curDb > -60) ui.warn.textContent = 'Input is quiet — raise gain for faster lock.';
-  else ui.warn.textContent = '';
-
-  // Tuner always runs (panel can be hidden but still useful)
-  updateTuner();
-
-}, 250);
-
-/* ============================== TUNER UPDATE ============================== */
-function updateTuner(){
-  // If input is basically silent, don't thrash the readout
-  if (curDb < -60){
-    ui.note.textContent = '—';
-    ui.hz.textContent = '— Hz';
-    ui.centsRead.textContent = '— cents';
-    ui.tunerstate.textContent = 'Listening…';
-    ui.centsFill.style.transform = 'translateX(0%)';
-    return;
-  }
-
-  const f0 = yinPitchDetector(tunerBuf, actx.sampleRate);
-  if (!f0){
-    ui.note.textContent = '—';
-    ui.hz.textContent = '— Hz';
-    ui.centsRead.textContent = '— cents';
-    ui.tunerstate.textContent = 'Listening…';
-    ui.centsFill.style.transform = 'translateX(0%)';
-    return;
-  }
-
-  // smooth to reduce jitter
-  if (smoothFreq == null) smoothFreq = f0;
-  smoothFreq = smoothFreq * 0.86 + f0 * 0.14;
-
-  const f = smoothFreq;
-  ui.hz.textContent = f.toFixed(1) + ' Hz';
-
-  const c = centsOff(f, target.freq);
-  const cClamped = clamp(c, -50, 50);
-  // translate entire gradient so center aligns with needle at 0
-  ui.centsFill.style.transform = `translateX(${(cClamped/50) * 18}%)`;
-  ui.centsRead.textContent = `${c.toFixed(1)} cents vs ${target.name}`;
-
-  ui.note.textContent = target.label;
-
-  const abs = Math.abs(c);
-  if (abs < 3) ui.tunerstate.textContent = 'IN TUNE';
-  else if (c < 0) ui.tunerstate.textContent = 'TUNE UP';
-  else ui.tunerstate.textContent = 'TUNE DOWN';
-}
-
-/* ============================== VISUALS (per frame) ============================== */
-function visualFrame(){
-  if (paused || document.hidden) return;
-  const t = performance.now()/1000;
-
-  rawAn.getFloatTimeDomainData(rawBuf);
-  let sum = 0;
-  for (let i=0;i<rawBuf.length;i++) sum += rawBuf[i]*rawBuf[i];
-  const rms = Math.sqrt(sum/rawBuf.length);
-  curDb = rms>0 ? 20*Math.log10(rms) : -100;
-
-  if (rms < 0.0028) { if (silenceSince === null) silenceSince = t; }
-  else silenceSince = null;
-
-  lowAn.getFloatTimeDomainData(lowBuf);
-  let ls=0;
-  for (let i=0;i<lowBuf.length;i++) ls += lowBuf[i]*lowBuf[i];
-  bassSm += (Math.sqrt(ls/lowBuf.length) - bassSm) * 0.25;
-
-  const pct = Math.max(0, Math.min(1, (curDb + 60) / 60));
-  ui.lvlfill.style.width = (pct*100).toFixed(1) + '%';
-  ui.lvlfill.style.background = curDb > -3 ? 'var(--red)' : curDb > -8 ? 'var(--amber)' : 'var(--phos)';
-  ui.lvldb.textContent = (curDb <= -99 ? '-∞' : curDb.toFixed(1)) + ' dB';
-
-  // glow + disc + bpm light pulse
-  const k = Math.min(1, bassSm * 9);
-  ui.glow.style.opacity = k.toFixed(2);
-  ui.disc.style.transform = 'scale(' + (1 + k*0.050).toFixed(4) + ')';
-  ui.bpm.style.textShadow = '0 0 ' + (16 + k*36).toFixed(0) + 'px rgba(0,255,136,' + (0.28 + k*0.52).toFixed(2) + ')';
-
-  // waveform
-  const dpr = window.devicePixelRatio || 1;
-  const r = ui.wave.getBoundingClientRect();
-  const w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
-  if (ui.wave.width !== w || ui.wave.height !== h) { ui.wave.width = w; ui.wave.height = h; }
-  waveCtx.clearRect(0,0,w,h);
-  waveCtx.strokeStyle = 'rgba(0,255,136,.85)';
-  waveCtx.lineWidth = Math.max(1, dpr);
-  waveCtx.beginPath();
-  const step = Math.max(1, Math.floor(rawBuf.length / 96));
-  for (let i=0,x=0;i<rawBuf.length;i+=step,x++){
-    const px = (x/95)*w;
-    const py = h/2 - rawBuf[i]*h*1.4;
-    if (x===0) waveCtx.moveTo(px,py); else waveCtx.lineTo(px,py);
-  }
-  waveCtx.stroke();
-}
-
-/* ============================== CONTROLS ============================== */
-function setMult(m){
-  mult = (mult === m) ? 1 : m;
-  ui.half.classList.toggle('on', mult === 0.5);
-  ui.dbl.classList.toggle('on', mult === 2);
-  if (displayBpm !== null) ui.bpm.textContent = (displayBpm * mult).toFixed(1);
-}
-ui.half.addEventListener('click', ()=>setMult(0.5));
-ui.dbl.addEventListener('click', ()=>setMult(2));
-
-async function togglePause(){
-  if (!running) return;
-  paused = !paused;
-  ui.disc.classList.toggle('paused', paused);
-  ui.dischint.textContent = paused ? 'Paused — tap to resume' : 'Tap to pause';
-
-  if (paused){
-    ui.lamp.className='lamp paused';
-    ui.lamptext.textContent='PAUSED';
-    ui.glow.style.opacity=0;
-    ui.disc.style.transform='scale(1)';
-    await actx.suspend();
-  } else {
-    await actx.resume();
-    fluxPos = wAbs; chromaPos = wAbs;
-    env=[]; prevMag.fill(0);
-    pendingBpm=null; pendingN=0; pendingSum=0;
-    if (showKey){
-      chromaAcc.fill(0); tunX=0; tunY=0; keyShown=null; keyCand=null; keyCandN=0;
-      ui.key.className='pending';
-      ui.key.textContent='Listening for key…';
-    }
-  }
-}
-ui.disc.addEventListener('click', ()=>togglePause().catch(()=>{}));
-ui.disc.addEventListener('keydown', ev=>{
-  if (ev.code==='Space' || ev.code==='Enter'){ ev.preventDefault(); togglePause().catch(()=>{}); }
-});
-
-function setModeKey(on){
-  showKey = on;
-  ui.modeKey.classList.toggle('on', on);
-  ui.modeTuner.classList.toggle('on', !on);
-  ui.modeKey.setAttribute('aria-selected', String(on));
-  ui.modeTuner.setAttribute('aria-selected', String(!on));
-  ui.keyPanel.hidden = !on;
-  ui.tunerPanel.hidden = on ? false : false; // tuner always available; keep visible
-
-  if (!on){
-    ui.key.className='pending';
-    ui.key.textContent='Key detection is off';
-    chromaAcc.fill(0); tunX=0; tunY=0; keyShown=null; keyCand=null; keyCandN=0;
-  } else {
-    ui.key.className='pending';
-    ui.key.textContent='Listening for key…';
-  }
-}
-ui.modeTuner.addEventListener('click', ()=>setModeKey(false));
-ui.modeKey.addEventListener('click', ()=>setModeKey(true));
-setModeKey(false);
-
-function setTarget(name){
-  const t = standard.find(s=>s.name===name) || standard[0];
-  target = t;
-  strButtons.forEach(b=>b.classList.toggle('on', b.dataset.str===name));
-}
-strButtons.forEach(b=>b.addEventListener('click', ()=>setTarget(b.dataset.str)));
-setTarget('E2');
-
-// keyboard: change string
-window.addEventListener('keydown', (e)=>{
-  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-  const idx = standard.findIndex(s=>s.name===target.name);
-  const next = e.key === 'ArrowLeft' ? Math.max(0, idx-1) : Math.min(standard.length-1, idx+1);
-  setTarget(standard[next].name);
-});
-
-ui.device.addEventListener('change', ()=>startAudio(ui.device.value).catch(showErr));
-if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
-  navigator.mediaDevices.addEventListener('devicechange', ()=>populateDevices().catch(()=>{}));
-}
-
-function showErr(e){
-  ui.err.style.display='block';
-  if (e && e.name==='NotAllowedError') ui.err.textContent='Microphone access blocked. Allow it in browser permissions and retry.';
-  else if (e && e.name==='NotFoundError') ui.err.textContent='No audio input found. Plug in your interface and retry.';
-  else ui.err.textContent='Could not start audio: ' + (e && e.message ? e.message : e);
-}
-
-ui.start.addEventListener('click', async ()=>{
-  ui.err.style.display='none';
-  try{
-    await startAudio();
-    await populateDevices();
-    ui.overlay.style.display='none';
-    ui.app.style.display='flex';
-  } catch(e){ showErr(e); }
-});
-
-if (location.protocol === 'file:') {
-  ui.err.style.display='block';
-  ui.err.textContent='Mic access is blocked on file:// pages. Use GitHub Pages or a local server (python -m http.server).';
-}
-})();
-</script>
+    qEl.addEventListener('input', e => render(e.target.value));
+    main().catch(err => {
+      listEl.innerHTML = `<div style="padding:16px;color:var(--muted)">
+        Couldn’t load <span class="mono">pages/manifest.json</span>.
+        Create it and refresh.
+      </div>`;
+      console.error(err);
+    });
+  </script>
 </body>
 </html>
