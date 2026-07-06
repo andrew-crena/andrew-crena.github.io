@@ -120,11 +120,10 @@
     <header>
       <div class="title">
         <h1>Andrew Crena</h1>
-        <p>Notes, small tools, and projects. Add a new page in <span class="mono">/pages</span> and it will appear here automatically.</p>
+          <p>Notes, small tools, and projects.</p>
       </div>
       <div class="actions">
         <a class="btn" href="https://github.com/andrew-crena" target="_blank" rel="noreferrer">GitHub</a>
-        <a class="btn" href="pages/" title="Browse the pages folder">Pages</a>
       </div>
     </header>
 
@@ -137,9 +136,6 @@
         </label>
       </div>
 
-      <div class="hint">
-        Pages are discovered from <span class="mono">pages/manifest.json</span> (auto-generated or manually maintained).
-      </div>
 
       <div class="list" id="list"></div>
     </section>
@@ -149,65 +145,55 @@
     </footer>
   </div>
 
-  <script>
-    const listEl = document.getElementById('list');
-    const qEl = document.getElementById('q');
-    const countEl = document.getElementById('count');
+<script>
+  const listEl = document.getElementById('list');
+  const qEl = document.getElementById('q');
+  const countEl = document.getElementById('count');
 
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-      }[m]));
+  const items = [
+    {
+      title: "My Digital Garden",
+      description: "Notes and ideas in progress.",
+      href: "https://andrew-crena.github.io/my-digital-garden/",
+      label: "garden"
+    },
+    {
+      title: "Not Quite My Tempo",
+      description: "Music / rhythm-related experiments.",
+      href: "https://andrew-crena.github.io/not-quite-my-tempo/",
+      label: "project"
     }
+  ];
 
-    let items = [];
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[m]));
+  }
 
-    function render(filter=""){
-      const f = filter.trim().toLowerCase();
-      const filtered = !f ? items : items.filter(it =>
-        (it.title||"").toLowerCase().includes(f) ||
-        (it.description||"").toLowerCase().includes(f) ||
-        (it.tags||[]).join(" ").toLowerCase().includes(f)
-      );
+  function render(filter=""){
+    const f = filter.trim().toLowerCase();
+    const filtered = !f ? items : items.filter(it =>
+      (it.title||"").toLowerCase().includes(f) ||
+      (it.description||"").toLowerCase().includes(f) ||
+      (it.label||"").toLowerCase().includes(f)
+    );
 
-      listEl.innerHTML = filtered.map(it => {
-        const tag = it.label || (it.tags && it.tags[0]) || "page";
-        return `
-          <a class="item" href="${escapeHtml(it.href)}">
-            <div class="left">
-              <div class="name">${escapeHtml(it.title || it.href)}</div>
-              ${it.description ? `<div class="desc">${escapeHtml(it.description)}</div>` : ``}
-            </div>
-            <div class="tag">${escapeHtml(tag)}</div>
-          </a>
-        `;
-      }).join("");
+    listEl.innerHTML = filtered.map(it => `
+      <a class="item" href="${escapeHtml(it.href)}">
+        <div class="left">
+          <div class="name">${escapeHtml(it.title)}</div>
+          ${it.description ? `<div class="desc">${escapeHtml(it.description)}</div>` : ``}
+        </div>
+        <div class="tag">${escapeHtml(it.label || "link")}</div>
+      </a>
+    `).join("");
 
-      countEl.textContent = `${filtered.length} link${filtered.length===1?"":"s"}`;
-    }
+    countEl.textContent = `${filtered.length} link${filtered.length===1?"":"s"}`;
+  }
 
-    async function main(){
-      // You control this file. Add entries for new pages and the landing updates.
-      const res = await fetch("pages/manifest.json", { cache: "no-store" });
-      const data = await res.json();
-      items = (data.items || []).map(it => ({
-        title: it.title,
-        description: it.description,
-        href: it.href,
-        tags: it.tags || [],
-        label: it.label
-      }));
-      render();
-    }
-
-    qEl.addEventListener('input', e => render(e.target.value));
-    main().catch(err => {
-      listEl.innerHTML = `<div style="padding:16px;color:var(--muted)">
-        Couldn’t load <span class="mono">pages/manifest.json</span>.
-        Create it and refresh.
-      </div>`;
-      console.error(err);
-    });
+  qEl.addEventListener('input', e => render(e.target.value));
+  render();
   </script>
 </body>
 </html>
