@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Andrew Crena</title>
   <meta name="description" content="A minimal landing page for projects and notes." />
   <meta name="color-scheme" content="dark light" />
@@ -30,38 +30,42 @@
       }
     }
     *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%}
     body{
       margin:0;
-      font: 15.5px/1.55 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      font: 15.5px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
       color:var(--text);
       background: radial-gradient(1200px 700px at 20% -10%, rgba(154,230,255,.16), transparent 55%),
                   radial-gradient(900px 600px at 100% 20%, rgba(108,99,255,.12), transparent 55%),
                   var(--bg);
+      background-attachment: fixed;
+      min-height:100dvh;
+      overflow-x:hidden;
     }
     a{color:inherit}
-    .wrap{max-width:var(--max); margin:0 auto; padding:56px 20px 64px}
-    header{display:flex; gap:18px; align-items:flex-start; justify-content:space-between; margin-bottom:34px}
-    .title h1{margin:0; font-size:28px; letter-spacing:-0.02em}
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding: calc(40px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom));
+    }
+    header{
+      display:flex; gap:18px; align-items:flex-start; justify-content:space-between;
+      margin-bottom:28px; flex-wrap:wrap;
+    }
+    .title h1{margin:0; font-size:clamp(24px, 6vw, 30px); letter-spacing:-0.02em}
     .title p{margin:8px 0 0; color:var(--muted); max-width:56ch}
-    .actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .actions{display:flex; gap:10px; flex-wrap:wrap}
     .btn{
       display:inline-flex; align-items:center; gap:8px;
-      padding:10px 12px;
+      min-height:44px; padding:10px 16px;
       border:1px solid var(--border);
       border-radius:999px;
-      background:transparent;
-      text-decoration:none;
-      color:var(--text);
+      background:transparent; text-decoration:none; color:var(--text);
       backdrop-filter: blur(10px);
+      transition: border-color .15s ease;
     }
-    .btn:hover{border-color: rgba(255,255,255,.22)}
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:14px;
-    }
+    .btn:hover, .btn:focus-visible{border-color: var(--accent)}
     .panel{
-      grid-column: span 12;
       border:1px solid var(--border);
       border-radius: var(--radius);
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -70,49 +74,40 @@
     }
     .panel-head{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:14px 16px;
-      border-bottom:1px solid var(--border);
+      padding:14px 16px; border-bottom:1px solid var(--border);
+      flex-wrap:wrap;
     }
-    .panel-head h2{margin:0; font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+    .panel-head h2{margin:0; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
     .search{
-      width:min(420px, 100%);
+      flex:1 1 240px; max-width:420px;
       display:flex; align-items:center; gap:10px;
-      padding:10px 12px;
-      border:1px solid var(--border);
-      border-radius: 999px;
+      padding:10px 14px; border:1px solid var(--border); border-radius:999px;
       background: rgba(0,0,0,.06);
     }
     @media (prefers-color-scheme: light){ .search{background: rgba(255,255,255,.6)} }
-    .search input{
-      width:100%;
-      border:0; outline:0; background:transparent;
-      color:var(--text);
-      font-size:14px;
-    }
+    .search span{color:var(--muted); font-size:13px}
+    .search input{width:100%; border:0; outline:0; background:transparent; color:var(--text); font-size:16px}
     .list{padding:10px}
     .item{
       display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      padding:12px 12px;
-      border-radius: 14px;
-      text-decoration:none;
+      padding:14px 12px; border-radius:14px; text-decoration:none; min-height:44px;
+      transition: background .15s ease;
     }
-    .item:hover{background: rgba(255,255,255,.06)}
-    @media (prefers-color-scheme: light){ .item:hover{background: rgba(0,0,0,.05)} }
+    .item:hover, .item:focus-visible{background: rgba(255,255,255,.06)}
+    @media (prefers-color-scheme: light){ .item:hover, .item:focus-visible{background: rgba(0,0,0,.05)} }
     .left{min-width:0}
     .name{font-weight:600; letter-spacing:-0.01em}
     .desc{margin-top:4px; color:var(--muted); font-size:13px}
     .tag{
-      flex:0 0 auto;
-      padding:6px 10px;
-      border:1px solid var(--border);
-      border-radius:999px;
-      font-size:12px;
-      color:var(--muted);
-      white-space:nowrap;
+      flex:0 0 auto; padding:6px 10px;
+      border:1px solid var(--border); border-radius:999px;
+      font-size:12px; color:var(--muted); white-space:nowrap;
     }
     footer{margin-top:18px; color:var(--muted); font-size:13px}
-    .hint{color:var(--muted); font-size:12.5px; padding:0 16px 14px}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
+    @media (max-width:520px){
+      .panel-head{flex-direction:column; align-items:stretch}
+      .search{max-width:none}
+    }
   </style>
 </head>
 <body>
@@ -120,7 +115,7 @@
     <header>
       <div class="title">
         <h1>Andrew Crena</h1>
-          <p>Notes, small tools, and projects.</p>
+        <p>Notes, small tools, and projects.</p>
       </div>
       <div class="actions">
         <a class="btn" href="https://github.com/andrew-crena" target="_blank" rel="noreferrer">GitHub</a>
@@ -131,25 +126,20 @@
       <div class="panel-head">
         <h2>Links</h2>
         <label class="search" aria-label="Search links">
-          <span style="color:var(--muted); font-size:13px;">Search</span>
+          <span>Search</span>
           <input id="q" type="search" placeholder="Type to filter…" autocomplete="off" />
         </label>
       </div>
-
-
       <div class="list" id="list"></div>
     </section>
 
-    <footer>
-      <span id="count"></span>
-    </footer>
+    <footer><span id="count"></span></footer>
   </div>
 
 <script>
-  const listEl = document.getElementById('list');
-  const qEl = document.getElementById('q');
-  const countEl = document.getElementById('count');
-
+  /* ============================================================
+     EDIT YOUR LINKS HERE — add/remove objects, keep the commas.
+     ============================================================ */
   const items = [
     {
       title: "My Digital Garden",
@@ -170,6 +160,11 @@
       label: "project"
     }
   ];
+  /* ============================================================ */
+
+  const listEl = document.getElementById('list');
+  const qEl = document.getElementById('q');
+  const countEl = document.getElementById('count');
 
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, m => ({
@@ -186,7 +181,7 @@
     );
 
     listEl.innerHTML = filtered.map(it => `
-      <a class="item" href="${escapeHtml(it.href)}">
+      <a class="item" href="${escapeHtml(it.href)}" ${/^https?:\/\//.test(it.href) ? 'target="_blank" rel="noreferrer"' : ''}>
         <div class="left">
           <div class="name">${escapeHtml(it.title)}</div>
           ${it.description ? `<div class="desc">${escapeHtml(it.description)}</div>` : ``}
@@ -200,6 +195,6 @@
 
   qEl.addEventListener('input', e => render(e.target.value));
   render();
-  </script>
+</script>
 </body>
 </html>
