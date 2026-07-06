@@ -3,14 +3,14 @@
     {
       "title": "My Digital Garden",
       "description": "Notes and ideas in progress.",
-      "href": "pages/my-digital-garden.html",
+      "href": "my-digital-garden.html",
       "tags": ["notes"],
       "label": "garden"
     },
     {
       "title": "Not Quite My Tempo",
       "description": "Music / rhythm-related experiments.",
-      "href": "pages/not-quite-my-tempo.html",
+      "href": "not-quite-my-tempo.html",
       "tags": ["music"],
       "label": "project"
     }
