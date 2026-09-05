@@ -1,210 +1,372 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Andrew Crena</title>
-  <meta name="description" content="A minimal landing page for projects and notes." />
-  <meta name="color-scheme" content="dark light" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="A jazz kissa in the open. Live records, a place to listen, and no need to stay.">
+  <meta name="theme-color" content="#ede4d1">
+  <title>From a Fountain — live vinyl</title>
   <style>
-    :root{
-      --bg: #0b0f14;
-      --card: rgba(255,255,255,.04);
-      --border: rgba(255,255,255,.10);
-      --text: rgba(255,255,255,.88);
-      --muted: rgba(255,255,255,.62);
-      --accent: #9ae6ff;
-      --shadow: 0 18px 60px rgba(0,0,0,.40);
-      --radius: 18px;
-      --max: 980px;
+    :root { color-scheme: light; background: #ede4d1; color: #211b12; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    [hidden] { display: none !important; }
+    .fountain {
+      --paper: #ede4d1; --light: #f4ecda; --ink: #211b12;
+      --muted: #5c5241; --patina: #3e6b5e; --edge: #b4a78d;
+      max-width: 620px; margin: 0 auto;
+      padding: 28px max(20px, env(safe-area-inset-right))
+        max(32px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
     }
-    @media (prefers-color-scheme: light){
-      :root{
-        --bg:#f7f7fb;
-        --card: rgba(0,0,0,.03);
-        --border: rgba(0,0,0,.10);
-        --text: rgba(0,0,0,.88);
-        --muted: rgba(0,0,0,.58);
-        --accent:#0b7cff;
-        --shadow: 0 18px 60px rgba(0,0,0,.10);
-      }
+    header { text-align: center; border-bottom: 1px solid var(--edge); padding-bottom: 24px; }
+    .eyebrow { font-size: 12px; letter-spacing: .18em; color: var(--muted); text-transform: uppercase; }
+    h1 { margin: 18px 0 16px; font: italic 400 clamp(34px, 9vw, 62px)/1.08 Georgia, serif; }
+    .invitation { max-width: 29em; margin: auto; font-size: 16px; line-height: 1.6; color: var(--muted); }
+    .surface { height: 96px; display: grid; place-items: center; color: #897c66; }
+    .surface svg { width: 150px; height: 78px; }
+    .surface .ring { opacity: .3; }
+    .fountain[data-state="playing"] .surface { color: var(--patina); }
+    .fountain[data-state="playing"] .surface .ring { opacity: .8; }
+    .actions { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; }
+    button { font: inherit; touch-action: manipulation; cursor: pointer; }
+    .action {
+      min-width: 0; min-height: 104px; padding: 18px 12px; border: 1px solid var(--edge);
+      border-radius: 14px; color: var(--ink); background: var(--light);
+      box-shadow: 0 5px 14px #211b1210; display: grid; place-content: center; gap: 8px;
     }
-    *{box-sizing:border-box}
-    html{-webkit-text-size-adjust:100%}
-    body{
-      margin:0;
-      font: 15.5px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
-      color:var(--text);
-      background: radial-gradient(1200px 700px at 20% -10%, rgba(154,230,255,.16), transparent 55%),
-                  radial-gradient(900px 600px at 100% 20%, rgba(108,99,255,.12), transparent 55%),
-                  var(--bg);
-      background-attachment: fixed;
-      min-height:100dvh;
-      overflow-x:hidden;
+    #listen { background: var(--patina); color: var(--light); border-color: var(--patina); }
+    .label { font: 400 25px/1.2 Georgia, serif; }
+    .hint { font-size: 12px; line-height: 1.4; }
+    button:focus-visible, a:focus-visible, summary:focus-visible, audio:focus-visible {
+      outline: 3px solid var(--patina); outline-offset: 4px;
     }
-    a{color:inherit}
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding: calc(40px + env(safe-area-inset-top)) 20px calc(48px + env(safe-area-inset-bottom));
-    }
-    header{
-      display:flex; gap:18px; align-items:flex-start; justify-content:space-between;
-      margin-bottom:28px; flex-wrap:wrap;
-    }
-    .title h1{margin:0; font-size:clamp(24px, 6vw, 30px); letter-spacing:-0.02em}
-    .title p{margin:8px 0 0; color:var(--muted); max-width:56ch}
-    .actions{display:flex; gap:10px; flex-wrap:wrap}
-    .btn{
-      display:inline-flex; align-items:center; gap:8px;
-      min-height:44px; padding:10px 16px;
-      border:1px solid var(--border);
-      border-radius:999px;
-      background:transparent; text-decoration:none; color:var(--text);
-      backdrop-filter: blur(10px);
-      transition: border-color .15s ease;
-    }
-    .btn:hover, .btn:focus-visible{border-color: var(--accent)}
-    .panel{
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .panel-head{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:14px 16px; border-bottom:1px solid var(--border);
-      flex-wrap:wrap;
-    }
-    .panel-head h2{margin:0; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
-    .search{
-      flex:1 1 240px; max-width:420px;
-      display:flex; align-items:center; gap:10px;
-      padding:10px 14px; border:1px solid var(--border); border-radius:999px;
-      padding:10px 14px; border:1px solid var(--border); border-radius:12px;
-      background: rgba(0,0,0,.06);
-    }
-    @media (prefers-color-scheme: light){ .search{background: rgba(255,255,255,.6)} }
-    .search span{color:var(--muted); font-size:13px}
-    .search input{width:100%; border:0; outline:0; background:transparent; color:var(--text); font-size:16px}
-    .list{padding:10px}
-    .item{
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-      padding:14px 12px; border-radius:14px; text-decoration:none; min-height:44px;
-      transition: background .15s ease;
-    }
-    .item:hover, .item:focus-visible{background: rgba(255,255,255,.06)}
-    @media (prefers-color-scheme: light){ .item:hover, .item:focus-visible{background: rgba(0,0,0,.05)} }
-    .left{min-width:0}
-    .name{font-weight:600; letter-spacing:-0.01em}
-    .desc{margin-top:4px; color:var(--muted); font-size:13px}
-    .tag{
-      flex:0 0 auto; padding:6px 10px;
-      border:1px solid var(--border); border-radius:999px;
-      font-size:12px; color:var(--muted); white-space:nowrap;
-    }
-    footer{margin-top:18px; color:var(--muted); font-size:13px}
-    @media (max-width:520px){
-      .panel-head{flex-direction:column; align-items:stretch}
-      .search{max-width:none}
-      .panel-head{flex-direction:column; align-items:stretch; gap:10px}
-      .search{max-width:none; width:100%}
-      .item{padding:16px 12px}
-    }
+    .status { min-height: 4.5em; margin: 20px 0 4px; text-align: center; line-height: 1.5; }
+    .badge { display: block; font-weight: 600; font-size: 14px; color: var(--patina); }
+    #message { display: block; font-size: 15px; color: var(--muted); margin-top: 4px; }
+    .audio-panel { padding: 16px; background: var(--light); border: 1px solid var(--edge); border-radius: 14px; }
+    audio { width: 100%; display: block; }
+    .video-frame { background: #181711; border-radius: 12px; overflow: hidden; }
+    .video-frame iframe { display: block; width: 100%; aspect-ratio: 16 / 9; min-height: 200px; border: 0; }
+    .video-note { font-size: 14px; line-height: 1.55; color: var(--muted); }
+    a { color: var(--patina); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    details { margin-top: 16px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    summary { padding: 12px 0; cursor: pointer; }
+    details a { display: inline-block; padding: 12px 0; min-height: 44px; }
+    details p { margin: 4px 0; }
+    footer { border-top: 1px solid var(--edge); padding-top: 18px; margin-top: 24px;
+      text-align: center; font: italic 14px/1.6 Georgia, serif; color: var(--muted); }
+    @media (max-width: 350px) { .actions { gap: 10px; } .label { font-size: 22px; } }
+    @media (forced-colors: active) { #listen { border: 2px solid ButtonText; } }
+    /* The fountain responds through color; no continuous motion or animation. */
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <!-- Configuration: keep the stream URL in the audio element and direct-audio link in sync.
+       Optional: set data-video-id to this session's 11-character YouTube video ID.
+       With no video ID, the existing channel embed is kept as a compatibility fallback.
+       No passwords, tokens, or private server configuration belong in this file. -->
+  <main class="fountain" id="fountain" data-state="ready"
+        data-channel="UCaOM2mNthp-3w-bGoTy8MAg" data-video-id="">
     <header>
-      <div class="title">
-        <h1>Andrew Crena</h1>
-        <p>Notes, small tools, and projects.</p>
-      </div>
-      <div class="actions">
-        <a class="btn" href="https://github.com/andrew-crena" target="_blank" rel="noreferrer">GitHub</a>
-      </div>
+      <div class="eyebrow">Live records · an open invitation</div>
+      <h1>From a Fountain</h1>
+      <p class="invitation">Listen here with your headphones.<br>Stay for a record, or just a moment.</p>
     </header>
-
-    <section class="panel">
-      <div class="panel-head">
-        <h2>Links</h2>
-        <label class="search" aria-label="Search links">
-          <span>Search</span>
-          <input id="q" type="search" placeholder="Type to filter…" autocomplete="off" />
-        </label>
-      </div>
-      <div class="list" id="list"></div>
+    <div class="surface" aria-hidden="true">
+      <svg viewBox="0 0 150 78" fill="none">
+        <path d="M75 8 C71 16 66 20 66 26 A9 9 0 0 0 84 26 C84 20 79 16 75 8Z" fill="currentColor"/>
+        <ellipse cx="75" cy="49" rx="18" ry="4" stroke="currentColor"/>
+        <ellipse class="ring" cx="75" cy="49" rx="38" ry="9" stroke="currentColor"/>
+        <ellipse class="ring" cx="75" cy="49" rx="61" ry="15" stroke="currentColor"/>
+      </svg>
+    </div>
+    <div class="actions" id="actions" hidden>
+      <button class="action" id="listen" type="button" aria-pressed="false" aria-controls="audio-panel">
+        <span class="label" id="listen-label">Listen</span><span class="hint">Live audio · headphones</span>
+      </button>
+      <button class="action" id="watch" type="button" aria-expanded="false" aria-controls="video-panel">
+        <span class="label" id="watch-label">Watch</span><span class="hint">Video with sound</span>
+      </button>
+    </div>
+    <div class="status" role="status" aria-live="polite" aria-atomic="true">
+      <span class="badge" id="badge">A place to listen</span>
+      <span id="message">Press play to join the audio.</span>
+    </div>
+    <section class="audio-panel" id="audio-panel" aria-label="Live audio player">
+      <audio id="audio" controls preload="none" aria-label="Live vinyl audio"
+             src="https://malika-unflaky-loan.ngrok-free.dev/stream.mp3"></audio>
     </section>
-
-    <footer><span id="count"></span></footer>
-  </div>
-
-<script>
-  /* ============================================================
-     EDIT YOUR LINKS HERE — add/remove objects, keep the commas.
-     ============================================================ */
-  const items = [
-    {
-      title: "My Digital Garden",
-      description: "Notes and ideas in progress.",
-      href: "https://andrew-crena.github.io/my-digital-garden/",
-      label: "garden"
-    },
-    {
-      title: "House Collection",
-      description: "my house music",
-      href: "https://andrew-crena.github.io/house-collection/",
-      label: "project"
-    },
-    {
-      title: "Not Quite My Tempo",
-      description: "Music / rhythm-related experiments.",
-      href: "https://andrew-crena.github.io/not-quite-my-tempo/",
-      label: "project"
-    },
-    {
-      title: "From a Fountain",
-      description: "Live vinyl broadcast — watch or listen.",
-      href: "https://andrew-crena.github.io/from-a-fountain/",
-      label: "live"
+    <section id="video-panel" aria-label="Optional live video" hidden>
+      <div class="video-frame" id="video-mount"></div>
+      <p class="video-note">Press play in the video player. Video has its own sound and may be delayed.</p>
+      <p class="video-note"><a id="video-fallback" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live"
+        target="_blank" rel="noopener">Open video on YouTube (new tab)</a></p>
+    </section>
+    <details>
+      <summary>About this listening space</summary>
+      <p>Records played here, shared with whoever happens by. No account or introduction needed.</p>
+      <p>Headphone audio can arrive after the nearby speakers. You can move a little farther away if you hear both.</p>
+      <p>The audio may be quiet between records. If it cannot connect, the set may have ended.</p>
+      <p><a id="direct-audio" href="https://malika-unflaky-loan.ngrok-free.dev/stream.mp3"
+        target="_blank" rel="noopener">Open audio directly (new tab)</a></p>
+      <p><a id="direct-video" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live"
+        target="_blank" rel="noopener">Visit the video on YouTube (new tab)</a></p>
+      <p>This page adds no analytics or account system. Your connection is handled by the hosting and streaming services. YouTube loads when you choose video.</p>
+    </details>
+    <noscript><p>The audio controls above work without JavaScript. Video is available through the YouTube link.</p></noscript>
+    <footer>A jazz kissa in the open · vinyl only</footer>
+  </main>
+  <script>
+  (() => {
+    'use strict';
+    const root = document.getElementById('fountain');
+    if (!root || root.dataset.initialized) return;
+    const get = id => document.getElementById(id);
+    const audio = get('audio');
+    const listen = get('listen');
+    const watch = get('watch');
+    const audioPanel = get('audio-panel');
+    const videoPanel = get('video-panel');
+    const videoMount = get('video-mount');
+    let source;
+    try {
+      source = new URL(audio.getAttribute('src'), document.baseURI);
+      if (source.protocol !== 'https:' || source.username || source.password) throw new Error('Invalid stream URL');
+    } catch (_) {
+      get('message').textContent = 'The audio address needs attention. You can try the video link below.';
+      return; // Leave the plain HTML player and links available.
     }
-  ];
-  /* ============================================================ */
+    root.dataset.initialized = '1';
+    get('direct-audio').href = source.href;
+    const channel = root.dataset.channel || '';
+    const videoId = root.dataset.videoId || '';
+    const validVideo = /^[A-Za-z0-9_-]{11}$/.test(videoId);
+    const validChannel = /^UC[A-Za-z0-9_-]{22}$/.test(channel);
+    const videoURL = validVideo ? 'https://www.youtube.com/watch?v=' + videoId :
+      (validChannel ? 'https://www.youtube.com/channel/' + channel + '/live' : '');
+    if (videoURL) {
+      get('video-fallback').href = videoURL;
+      get('direct-video').href = videoURL;
+    } else {
+      watch.hidden = true;
+      get('direct-video').hidden = true;
+    }
 
-  const listEl = document.getElementById('list');
-  const qEl = document.getElementById('q');
-  const countEl = document.getElementById('count');
+    // Intent belongs to the listener. Player events may report failure, but must
+    // never turn a pause/stop into permission to start again.
+    let mode = 'idle';
+    let intent = false;
+    let phase = 'ready';
+    let generation = 0;
+    let resetting = false;
+    let retries = 0;
+    let retryTimer = null;
+    let watchdog = null;
+    let lastTime = 0;
+    let lastProgress = 0;
+    let stableSince = null;
+    const retryDelays = [1000, 2000, 4000, 8000, 15000, 30000];
+    const silenceTimeout = 12000; // No playback-clock progress, NOT quiet music.
+    const now = () => performance.now();
+    const active = () => mode === 'audio' && intent;
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, m => ({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[m]));
-  }
+    function mediaState(value) {
+      try { if ('mediaSession' in navigator) navigator.mediaSession.playbackState = value; } catch (_) {}
+    }
+    function show(next, badge, message) {
+      phase = next;
+      root.dataset.state = next;
+      if (get('badge').textContent !== badge) get('badge').textContent = badge;
+      if (get('message').textContent !== message) get('message').textContent = message;
+      get('listen-label').textContent = active() ? 'Stop' : 'Listen';
+      listen.setAttribute('aria-pressed', String(active()));
+      get('watch-label').textContent = mode === 'video' ? 'Close video' : 'Watch';
+      watch.setAttribute('aria-expanded', String(mode === 'video'));
+      audioPanel.hidden = !active();
+      videoPanel.hidden = mode !== 'video';
+      mediaState(next === 'playing' ? 'playing' : (mode === 'audio' ? 'paused' : 'none'));
+    }
+    function cancelRetry() {
+      clearTimeout(retryTimer);
+      retryTimer = null;
+    }
+    function clearWork() {
+      cancelRetry();
+      clearInterval(watchdog);
+      watchdog = null;
+    }
+    function releaseAudio() {
+      resetting = true;
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load(); // Disconnect the live response and discard delayed audio.
+    }
+    function removeVideo() {
+      while (videoMount.firstChild) videoMount.removeChild(videoMount.firstChild);
+    }
+    function stop(message = 'Tap Listen whenever you want to rejoin.') {
+      const returnFocus = document.activeElement === audio;
+      intent = false;
+      generation++;
+      clearWork();
+      releaseAudio();
+      removeVideo();
+      mode = 'idle';
+      retries = 0;
+      stableSince = null;
+      show('paused', 'Paused', message);
+      if (returnFocus) listen.focus();
+    }
+    function unavailable() {
+      stop('The audio could not connect. Tap Listen to try again, or use the direct links below.');
+      show('unavailable', 'Audio unavailable', get('message').textContent);
+    }
+    function queueRetry(message = 'The audio connection dropped. Trying to reconnect…') {
+      if (!active() || retryTimer !== null) return;
+      stableSince = null;
+      if (navigator.onLine === false) {
+        show('offline', 'Waiting for connection', 'Your device reports no connection. Listening will retry when it returns.');
+        return;
+      }
+      if (retries >= retryDelays.length) { unavailable(); return; }
+      const delay = retryDelays[retries++] * (.8 + Math.random() * .4);
+      show('reconnecting', 'Reconnecting', message);
+      const ticket = generation;
+      retryTimer = setTimeout(() => {
+        retryTimer = null;
+        if (ticket === generation && active()) connect();
+      }, delay);
+    }
+    function playFailure(error, ticket) {
+      if (ticket !== generation || !active()) return;
+      if (error && error.name === 'NotAllowedError') {
+        stop('Tap Listen again to allow sound, or open the audio directly below.');
+        show('blocked', 'Tap to play', get('message').textContent);
+      } else if (!error || error.name !== 'AbortError') {
+        // A missing mount can surface as NotSupportedError; it is not proof of
+        // a permanently unsupported codec. Retry a bounded number of times.
+        queueRetry('The audio is not available yet. Trying again…');
+      }
+      // A current AbortError remains covered by the connection watchdog.
+    }
+    function markPlaying() {
+      if (!active() || audio.paused || audio.readyState < 2 || audio.error) return;
+      cancelRetry();
+      if (phase !== 'playing') stableSince = now();
+      show('playing', 'Playing', 'You’re listening to the turntable stream.');
+    }
+    function tick() {
+      if (!active()) return;
+      const time = audio.currentTime;
+      if (!audio.paused && time > lastTime + .01) {
+        lastTime = time;
+        lastProgress = now();
+        markPlaying();
+        if (stableSince !== null && now() - stableSince >= 20000) retries = 0;
+      } else if (now() - lastProgress >= silenceTimeout) {
+        queueRetry('The audio has stopped arriving. Trying to reconnect…');
+      }
+    }
+    function connect() {
+      if (!active()) return;
+      cancelRetry();
+      const ticket = ++generation;
+      lastTime = 0;
+      lastProgress = now();
+      stableSince = null;
+      resetting = true;
+      const url = new URL(source.href);
+      url.searchParams.set('_fountain', Date.now() + '-' + ticket);
+      audio.src = url.href;
+      audio.load();
+      show('connecting', 'Connecting', 'Joining the audio…');
+      // Keep play() in the original button event; never await a status fetch first.
+      try {
+        const attempt = audio.play();
+        if (attempt && typeof attempt.catch === 'function') attempt.catch(error => playFailure(error, ticket));
+      } catch (error) { playFailure(error, ticket); }
+      if (active() && watchdog === null) watchdog = setInterval(tick, 1000);
+    }
+    function startListening() {
+      if (active()) return;
+      removeVideo();
+      intent = true;
+      mode = 'audio';
+      retries = 0;
+      try {
+        if ('mediaSession' in navigator && 'MediaMetadata' in window) {
+          navigator.mediaSession.metadata = new MediaMetadata({title: 'From a Fountain', artist: 'Live vinyl'});
+        }
+      } catch (_) {}
+      connect();
+    }
+    function openVideo() {
+      if (mode === 'video') { stop(); return; }
+      stop();
+      if (!videoURL) return;
+      mode = 'video';
+      const frame = document.createElement('iframe');
+      const embed = validVideo ? new URL('https://www.youtube-nocookie.com/embed/' + videoId) :
+        new URL('https://www.youtube.com/embed/live_stream');
+      if (!validVideo) embed.searchParams.set('channel', channel);
+      embed.searchParams.set('playsinline', '1');
+      embed.searchParams.set('rel', '0');
+      embed.searchParams.set('autoplay', '0');
+      frame.src = embed.href;
+      frame.title = 'From a Fountain — optional live video';
+      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      frame.allowFullscreen = true;
+      frame.referrerPolicy = 'strict-origin-when-cross-origin';
+      videoMount.appendChild(frame);
+      // Iframe load is not evidence that a stream exists or that sound is playing.
+      show('video', 'Video player', 'Press play in the video, or open it on YouTube below.');
+    }
 
-  function render(filter=""){
-    const f = filter.trim().toLowerCase();
-    const filtered = !f ? items : items.filter(it =>
-      (it.title||"").toLowerCase().includes(f) ||
-      (it.description||"").toLowerCase().includes(f) ||
-      (it.label||"").toLowerCase().includes(f)
-    );
-
-    listEl.innerHTML = filtered.map(it => `
-      <a class="item" href="${escapeHtml(it.href)}" ${/^https?:\/\//.test(it.href) ? 'target="_blank" rel="noreferrer"' : ''}>
-        <div class="left">
-          <div class="name">${escapeHtml(it.title)}</div>
-          ${it.description ? `<div class="desc">${escapeHtml(it.description)}</div>` : ``}
-        </div>
-        <div class="tag">${escapeHtml(it.label || "link")}</div>
-      </a>
-    `).join("");
-
-    countEl.textContent = `${filtered.length} link${filtered.length===1?"":"s"}`;
-  }
-
-  qEl.addEventListener('input', e => render(e.target.value));
-  render();
-</script>
+    audio.addEventListener('loadstart', () => { resetting = false; });
+    audio.addEventListener('playing', () => {
+      if (!active()) { audio.pause(); return; }
+      lastProgress = now();
+      markPlaying();
+    });
+    audio.addEventListener('waiting', () => {
+      if (!active() || phase === 'connecting' || retryTimer !== null) return;
+      stableSince = null;
+      show('buffering', 'Buffering', 'Waiting for more audio…');
+    });
+    audio.addEventListener('pause', () => {
+      if (active() && audio.paused && !resetting && !audio.error && !audio.ended) stop();
+    });
+    audio.addEventListener('error', () => { if (audio.error) queueRetry('The audio is not available yet. Trying again…'); });
+    audio.addEventListener('ended', () => { if (audio.ended) queueRetry(); });
+    // stalled alone can occur while buffered audio keeps playing. The watchdog
+    // observes actual playback-clock progress and gives recovery 12 seconds.
+    audio.addEventListener('stalled', tick);
+    listen.addEventListener('click', () => { if (active()) stop(); else startListening(); });
+    watch.addEventListener('click', openVideo);
+    for (const id of ['direct-audio', 'direct-video', 'video-fallback']) {
+      get(id).addEventListener('click', () => stop('Playback stopped here. Continue in the new tab.'));
+    }
+    window.addEventListener('online', () => {
+      if (active() && phase !== 'playing') { cancelRetry(); connect(); }
+    });
+    window.addEventListener('offline', () => {
+      if (active() && phase !== 'playing') { cancelRetry(); queueRetry(); }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && active()) tick();
+      // Do not pause on screen lock or tab hiding. The OS controls suspension.
+    });
+    window.addEventListener('pagehide', () => stop());
+    if ('mediaSession' in navigator) {
+      for (const [action, handler] of Object.entries({play: startListening, pause: stop, stop: stop})) {
+        try { navigator.mediaSession.setActionHandler(action, () => handler()); } catch (_) {}
+      }
+    }
+    releaseAudio();
+    get('actions').hidden = false;
+    show('ready', 'A place to listen', 'Tap Listen to join the audio.');
+  })();
+  </script>
 </body>
 </html>
