@@ -53,9 +53,13 @@ window.PROJECTS = [
   {
     id: 'house',
     title: 'House Collection',
-    description: 'My house music.',
+    description: 'My records, synced from Discogs: browse the crate, follow a label through the years, pull a record at random, and find the BPM of the tracks I play.',
     href: '/house-collection/',
     category: 'music',
+    year: 2026,
+    tags: ['vinyl', 'discogs', 'house', 'bpm', 'labels'],
+    links: [{ label: 'Labels', href: '/house-collection/#/labels' }, { label: 'Pull a record', href: '/house-collection/#/pull' }],
+    featured: true,
     repo: 'andrew-crena/house-collection',
   },
   {
