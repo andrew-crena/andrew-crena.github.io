@@ -1,434 +1,197 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="description" content="A jazz kissa in the open. Live records, a place to listen, and no need to stay.">
-  <meta name="theme-color" content="#f1e9d8">
-  <title>From a Fountain — live vinyl</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@500;700&family=Special+Elite&display=swap">
-  <script src="fountain-config.js"></script>
-  <style>
-    /* Paper on a counter: plain readable type for anything to read or tap; handwriting, tape and stamps for character */
-    :root {
-      --paper: #f1e9d8; --card: #fbf6ea; --ink: #1f1b16; --soft: #6b6152; --pencil: #8a8170;
-      --red: #c8402c; --tape: #e9dcae; --line: #cdbf9f;
-      --body: 'Atkinson Hyperlegible', system-ui, sans-serif; --hand: 'Caveat', 'Segoe Print', cursive; --type: 'Special Elite', 'Courier New', monospace;
-      --wobble: 255px 14px 225px 14px / 14px 225px 14px 255px;
-      color-scheme: light; background: var(--paper); color: var(--ink);
-    }
-    * { box-sizing: border-box; }
-    [hidden] { display: none !important; }
-    body { margin: 0; font: 17px/1.5 var(--body); background: var(--paper);
-      background-image: radial-gradient(#00000008 1px, transparent 1px); background-size: 4px 4px; }
-    .fountain { max-width: 520px; margin: 0 auto;
-      padding: max(22px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(36px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
-    button { font: inherit; color: inherit; touch-action: manipulation; cursor: pointer; }
-    button:focus-visible, a:focus-visible, summary:focus-visible, audio:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
-    a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Andrew Crena: notes, small tools, music and projects.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14130f" media="(prefers-color-scheme: dark)">
+<title>Andrew Crena</title>
+<link rel="stylesheet" href="assets/site.css">
+<script src="fountain-config.js"></script>
+<script src="projects.js"></script>
+<style>
+  .hero{padding:8px 0 28px}
+  .hero h1{font:600 clamp(30px,7vw,42px)/1.1 var(--serif);letter-spacing:-.01em;margin:0}
+  .hero p{color:var(--soft);margin:10px 0 0;max-width:40em}
+  .hero .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 
-    .stamp { display: inline-block; border: 2.5px solid var(--pencil); color: var(--pencil); font: 700 13px var(--body);
-      letter-spacing: .14em; padding: 3px 10px; transform: rotate(-4deg); border-radius: 4px; }
-    .stamp.live { border-color: var(--red); color: var(--red); }
-    .box { border: 2px solid var(--ink); border-radius: var(--wobble); }
-    .tape { position: absolute; width: 86px; height: 24px; background: var(--tape); opacity: .85; box-shadow: 0 1px 2px #0002;
-      top: -11px; left: 50%; transform: translateX(-50%) rotate(-3deg); }
+  .onair{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+    padding:14px 16px;margin:0 0 26px;border:1px solid var(--line);border-radius:var(--r);
+    background:var(--card);text-decoration:none;color:inherit}
+  .onair:hover{border-color:var(--accent)}
+  .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
+  @media (prefers-reduced-motion:no-preference){ .dot{animation:pulse 2s ease-in-out infinite} }
+  @keyframes pulse{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 8%,transparent)}}
+  .onair b{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .onair span{display:block;overflow-wrap:anywhere}
+  .onair .go{color:var(--soft);font-size:14px;white-space:nowrap}
 
-    h1 { font: 700 clamp(44px, 13vw, 58px)/1 var(--hand); margin: 14px 0 0; transform: rotate(-1.5deg); }
-    .scribble { display: block; width: 130px; height: 10px; margin: 2px 0 0 4px; }
-    .intro { color: var(--soft); margin: 12px 0 0; max-width: 32em; }
+  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1 1 auto}
+  .chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:0 14px;min-height:40px;font-size:14px;color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .chip .n{color:var(--soft);margin-left:4px;font-size:12px}
+  .chip[aria-pressed="true"] .n{color:inherit;opacity:.7}
+  .search{flex:1 1 220px;max-width:320px;position:relative}
+  .search input{width:100%;min-height:40px;border:1px solid var(--line);border-radius:999px;background:var(--card);
+    padding:0 14px 0 36px;font-size:16px;color:var(--ink)}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--soft)}
 
-    .now { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; margin: 26px 4px 22px;
-      padding: 16px 16px 14px; background: var(--card); color: var(--ink); text-decoration: none; transform: rotate(.8deg); box-shadow: 0 2px 6px #0002; }
-    .rec { width: 64px; height: 64px; border-radius: 50%; position: relative; background: repeating-radial-gradient(circle, #2a2622 0 1.5px, #141210 1.5px 3px);
-      animation: spin 2.4s linear infinite; }
-    .rec::after { content: ''; position: absolute; inset: 23px; border-radius: 50%; background: var(--red); }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (prefers-reduced-motion: reduce) { .rec { animation: none; } }
-    .now .label, .now .song, .now .by { display: block; }
-    .now .label { font: 700 12px var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
-    .now .song { font: 700 19px/1.2 var(--body); margin: 2px 0 0; overflow-wrap: anywhere; }
-    .now .by { color: var(--soft); font-size: 15px; }
-    .now .go { grid-column: 1 / -1; font: 500 20px/1 var(--hand); color: var(--red); margin-top: 2px; }
-
-    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .controls .actions { display: contents; }
-    #listen { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px;
-      background: var(--ink); color: var(--card); border: 0; border-radius: var(--wobble); font: 700 22px var(--body); }
-    #listen .icon::before { content: '▶'; }
-    #listen[aria-pressed="true"] .icon::before { content: '■'; }
-    #listen .hint { font-weight: 400; font-size: 14px; color: #cfc6b3; }
-    .pick { display: grid; gap: 2px; align-content: center; min-height: 76px; padding: 12px 10px; text-align: center; background: var(--card);
-      text-decoration: none; color: var(--ink); font: 700 18px var(--body); }
-    .pick .hint { font: 400 13px/1.3 var(--body); color: var(--soft); }
-    #watch { transform: rotate(-1deg); }
-    .book { transform: rotate(1.2deg); }
-
-    .status { min-height: 4.2em; margin: 22px 0 4px; text-align: center; line-height: 1.45; }
-    .badge { display: block; font: 700 22px/1.1 var(--hand); color: var(--red); }
-    #message { display: block; font-size: 15px; color: var(--soft); margin-top: 4px; }
-    .audio-panel { padding: 14px; background: var(--card); }
-    audio { width: 100%; display: block; }
-    .video-frame { background: #181711; border-radius: 10px; overflow: hidden; border: 2px solid var(--ink); }
-    .video-frame iframe { display: block; width: 100%; aspect-ratio: 16 / 9; min-height: 200px; border: 0; }
-    .video-note { font-size: 14px; line-height: 1.55; color: var(--soft); }
-
-    details { margin-top: 18px; color: var(--soft); font-size: 15px; line-height: 1.55; border-top: 1.5px dashed var(--line); }
-    summary { padding: 12px 0; cursor: pointer; color: var(--ink); font-weight: 700; }
-    details a { display: inline-block; padding: 10px 0; min-height: 44px; }
-    details p { margin: 4px 0; }
-    footer { margin-top: 26px; padding-top: 16px; border-top: 1.5px dashed var(--line); display: flex; justify-content: space-between;
-      align-items: flex-end; gap: 12px; flex-wrap: wrap; color: var(--soft); font-size: 14px; }
-    footer .sig { font: 500 22px/1 var(--hand); color: var(--ink); }
-    footer .kissa { width: 100%; font: 13px var(--type); text-align: center; margin-top: 8px; }
-    footer a { color: var(--soft); }
-    @media (forced-colors: active) { #listen, .box { border: 2px solid ButtonText; } }
-  </style>
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;list-style:none;margin:0;padding:0}
+  .card{position:relative;display:flex;flex-direction:column;gap:8px;height:100%;padding:18px 18px 16px;
+    border:1px solid var(--line);border-radius:var(--r);background:var(--card);transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--accent)}
+  @media (prefers-reduced-motion:no-preference){ .card:hover{transform:translateY(-2px)} }
+  .card:target{outline:3px solid var(--accent);outline-offset:3px}
+  .card h3{margin:0;font:600 20px/1.2 var(--serif)}
+  .card h3 a{color:inherit;text-decoration:none}
+  .card h3 a::after{content:"";position:absolute;inset:0;border-radius:var(--r)}   /* whole card is the link */
+  .card h3 a:focus-visible{outline:none}
+  .card:focus-within{outline:3px solid var(--accent);outline-offset:3px}
+  .card p{margin:0;color:var(--soft);font-size:15px;flex:1}
+  .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
+  .pill{border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--soft)}
+  .pill.live{border-color:var(--accent);color:var(--accent);font-weight:700}
+  .sub{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;position:relative;z-index:1}  /* above the card link */
+  .sub a{color:var(--ink);padding:4px 0}
+  .empty{color:var(--soft);padding:30px 0;text-align:center}
+  #count{color:var(--soft);font-size:14px;margin:14px 0 0}
+</style>
 </head>
 <body>
-  <!-- Configuration: keep the stream URL in the audio element and direct-audio link in sync.
-       Optional: set data-video-id to this session's 11-character YouTube video ID.
-       With no video ID, the existing channel embed is kept as a compatibility fallback.
-       No passwords, tokens, or private server configuration belong in this file. -->
-  <main class="fountain" id="fountain" data-state="ready"
-        data-channel="UCaOM2mNthp-3w-bGoTy8MAg" data-video-id="">
-    <header>
-      <span class="stamp" id="onair">OFF AIR</span>
-      <h1>From a Fountain</h1>
-      <svg class="scribble" viewBox="0 0 130 10" fill="none" stroke="#c8402c" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M2 6 C 27 2, 49 9, 71 5 S 108 3, 128 6"/></svg>
-      <p class="intro">Records played live, for whoever happens by. Put on headphones and stay as long as you like.</p>
-    </header>
-
-    <a class="now box" id="now" href="letters/" hidden>
-      <span class="tape" aria-hidden="true"></span>
-      <span class="rec" aria-hidden="true"></span>
-      <span><span class="label">Playing right now</span>
-        <span class="song" id="now-song"></span>
-        <span class="by" id="now-by"></span></span>
-      <span class="go">Does it remind you of something? Write it down →</span>
-    </a>
-
-    <div class="controls">
-      <div class="actions" id="actions" hidden>
-        <button id="listen" type="button" aria-pressed="false" aria-controls="audio-panel">
-          <span class="icon" aria-hidden="true"></span><span class="label" id="listen-label">Listen</span><span class="hint">headphones on</span>
-        </button>
-        <button class="pick box" id="watch" type="button" aria-expanded="false" aria-controls="video-panel">
-          <span class="label" id="watch-label">Watch</span><span class="hint">video of the turntable</span>
-        </button>
-      </div>
-      <a class="pick box book" href="letters/"><span>Letter book</span><span class="hint">write or read memories</span></a>
+<a class="skip" href="#projects">Skip to projects</a>
+<div class="wrap">
+  <header class="hero">
+    <h1>Andrew Crena</h1>
+    <p>Notes, small tools, and projects.</p>
+    <div class="links">
+      <a class="btn" href="https://github.com/andrew-crena">GitHub</a>
     </div>
+  </header>
 
-    <div class="status" role="status" aria-live="polite" aria-atomic="true">
-      <span class="badge" id="badge">A place to listen</span>
-      <span id="message">Press play to join the audio.</span>
+  <a class="onair" id="onair" href="fountain/" hidden>
+    <span class="dot" aria-hidden="true"></span>
+    <span><b>On air · From a Fountain</b><span id="onair-what">Records playing live now</span></span>
+    <span class="go" aria-hidden="true">Listen →</span>
+  </a>
+
+  <main id="projects" tabindex="-1">
+    <h2 class="sr-only">Projects</h2>
+    <div class="bar">
+      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+      <label class="search">
+        <span class="sr-only">Search projects</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search" autocomplete="off">
+      </label>
     </div>
-    <section class="audio-panel box" id="audio-panel" aria-label="Live audio player">
-      <audio id="audio" controls preload="none" aria-label="Live vinyl audio"
-             src="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"></audio>
-    </section>
-    <section id="video-panel" aria-label="Optional live video" hidden>
-      <div class="video-frame" id="video-mount"></div>
-      <p class="video-note">Press play in the video player. Video has its own sound and may be delayed.</p>
-      <p class="video-note"><a id="video-fallback" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live"
-        target="_blank" rel="noopener">Open video on YouTube (new tab)</a></p>
-    </section>
-    <details>
-      <summary>About this listening space</summary>
-      <p>Records played here, shared with whoever happens by. No account or introduction needed.</p>
-      <p>Headphone audio can arrive after the nearby speakers. You can move a little farther away if you hear both.</p>
-      <p>The audio may be quiet between records. If it cannot connect, the set may have ended.</p>
-      <p><a id="direct-audio" href="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"
-        target="_blank" rel="noopener">Open audio directly (new tab)</a></p>
-      <p><a id="direct-video" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live"
-        target="_blank" rel="noopener">Visit the video on YouTube (new tab)</a></p>
-      <p>This page adds no analytics or account system. Your connection is handled by the hosting and streaming services. YouTube loads when you choose video.</p>
-    </details>
-    <noscript><p>The audio controls above work without JavaScript. Video is available through the YouTube link.</p></noscript>
-    <footer>
-      <span class="sig">— Andrew, on the decks</span>
-      <a href="docent/">docent sign-in</a>
-      <span class="kissa">a jazz kissa in the open · vinyl only</span>
-    </footer>
+    <ul class="grid" id="grid"></ul>
+    <p id="count" role="status" aria-live="polite"></p>
+    <noscript>
+      <ul>
+        <li><a href="fountain/">From a Fountain</a></li>
+        <li><a href="/not-quite-my-tempo/">Not Quite My Tempo</a></li>
+        <li><a href="/house-collection/">House Collection</a></li>
+        <li><a href="/my-digital-garden/">My Digital Garden</a></li>
+      </ul>
+    </noscript>
   </main>
-  <script>
-  (() => {
-    'use strict';
-    const root = document.getElementById('fountain');
-    if (!root || root.dataset.initialized) return;
-    const get = id => document.getElementById(id);
-    const audio = get('audio');
-    const listen = get('listen');
-    const watch = get('watch');
-    const audioPanel = get('audio-panel');
-    const videoPanel = get('video-panel');
-    const videoMount = get('video-mount');
-    let source;
-    try {
-      source = new URL(audio.getAttribute('src'), document.baseURI);
-      if (source.protocol !== 'https:' || source.username || source.password) throw new Error('Invalid stream URL');
-    } catch (_) {
-      get('message').textContent = 'The audio address needs attention. You can try the video link below.';
-      return; // Leave the plain HTML player and links available.
-    }
-    root.dataset.initialized = '1';
-    get('direct-audio').href = source.href;
-    const channel = root.dataset.channel || '';
-    const videoId = root.dataset.videoId || '';
-    const validVideo = /^[A-Za-z0-9_-]{11}$/.test(videoId);
-    const validChannel = /^UC[A-Za-z0-9_-]{22}$/.test(channel);
-    const videoURL = validVideo ? 'https://www.youtube.com/watch?v=' + videoId :
-      (validChannel ? 'https://www.youtube.com/channel/' + channel + '/live' : '');
-    if (videoURL) {
-      get('video-fallback').href = videoURL;
-      get('direct-video').href = videoURL;
-    } else {
-      watch.hidden = true;
-      get('direct-video').hidden = true;
-    }
 
-    // Intent belongs to the listener. Player events may report failure, but must
-    // never turn a pause/stop into permission to start again.
-    let mode = 'idle';
-    let intent = false;
-    let phase = 'ready';
-    let generation = 0;
-    let resetting = false;
-    let retries = 0;
-    let retryTimer = null;
-    let watchdog = null;
-    let lastTime = 0;
-    let lastProgress = 0;
-    let stableSince = null;
-    const retryDelays = [1000, 2000, 4000, 8000, 15000, 30000];
-    const silenceTimeout = 12000; // No playback-clock progress, NOT quiet music.
-    const now = () => performance.now();
-    const active = () => mode === 'audio' && intent;
+  <footer class="foot">
+    <span>Andrew Crena</span>
+    <a href="https://github.com/andrew-crena">github.com/andrew-crena</a>
+  </footer>
+</div>
 
-    function mediaState(value) {
-      try { if ('mediaSession' in navigator) navigator.mediaSession.playbackState = value; } catch (_) {}
-    }
-    function show(next, badge, message) {
-      phase = next;
-      root.dataset.state = next;
-      if (get('badge').textContent !== badge) get('badge').textContent = badge;
-      if (get('message').textContent !== message) get('message').textContent = message;
-      get('listen-label').textContent = active() ? 'Stop' : 'Listen';
-      listen.setAttribute('aria-pressed', String(active()));
-      get('watch-label').textContent = mode === 'video' ? 'Close video' : 'Watch';
-      watch.setAttribute('aria-expanded', String(mode === 'video'));
-      audioPanel.hidden = !active();
-      videoPanel.hidden = mode !== 'video';
-      mediaState(next === 'playing' ? 'playing' : (mode === 'audio' ? 'paused' : 'none'));
-    }
-    function cancelRetry() {
-      clearTimeout(retryTimer);
-      retryTimer = null;
-    }
-    function clearWork() {
-      cancelRetry();
-      clearInterval(watchdog);
-      watchdog = null;
-    }
-    function releaseAudio() {
-      resetting = true;
-      audio.pause();
-      audio.removeAttribute('src');
-      audio.load(); // Disconnect the live response and discard delayed audio.
-    }
-    function removeVideo() {
-      while (videoMount.firstChild) videoMount.removeChild(videoMount.firstChild);
-    }
-    function stop(message = 'Tap Listen whenever you want to rejoin.') {
-      const returnFocus = document.activeElement === audio;
-      intent = false;
-      generation++;
-      clearWork();
-      releaseAudio();
-      removeVideo();
-      mode = 'idle';
-      retries = 0;
-      stableSince = null;
-      show('paused', 'Paused', message);
-      if (returnFocus) listen.focus();
-    }
-    function unavailable() {
-      stop('The audio could not connect. Tap Listen to try again, or use the direct links below.');
-      show('unavailable', 'Audio unavailable', get('message').textContent);
-    }
-    function queueRetry(message = 'The audio connection dropped. Trying to reconnect…') {
-      if (!active() || retryTimer !== null) return;
-      stableSince = null;
-      if (navigator.onLine === false) {
-        show('offline', 'Waiting for connection', 'Your device reports no connection. Listening will retry when it returns.');
-        return;
-      }
-      if (retries >= retryDelays.length) { unavailable(); return; }
-      const delay = retryDelays[retries++] * (.8 + Math.random() * .4);
-      show('reconnecting', 'Reconnecting', message);
-      const ticket = generation;
-      retryTimer = setTimeout(() => {
-        retryTimer = null;
-        if (ticket === generation && active()) connect();
-      }, delay);
-    }
-    function playFailure(error, ticket) {
-      if (ticket !== generation || !active()) return;
-      if (error && error.name === 'NotAllowedError') {
-        stop('Tap Listen again to allow sound, or open the audio directly below.');
-        show('blocked', 'Tap to play', get('message').textContent);
-      } else if (!error || error.name !== 'AbortError') {
-        // A missing mount can surface as NotSupportedError; it is not proof of
-        // a permanently unsupported codec. Retry a bounded number of times.
-        queueRetry('The audio is not available yet. Trying again…');
-      }
-      // A current AbortError remains covered by the connection watchdog.
-    }
-    function markPlaying() {
-      if (!active() || audio.paused || audio.readyState < 2 || audio.error) return;
-      cancelRetry();
-      if (phase !== 'playing') stableSince = now();
-      show('playing', 'Playing', 'You’re listening to the turntable stream.');
-    }
-    function tick() {
-      if (!active()) return;
-      const time = audio.currentTime;
-      if (!audio.paused && time > lastTime + .01) {
-        lastTime = time;
-        lastProgress = now();
-        markPlaying();
-        if (stableSince !== null && now() - stableSince >= 20000) retries = 0;
-      } else if (now() - lastProgress >= silenceTimeout) {
-        queueRetry('The audio has stopped arriving. Trying to reconnect…');
-      }
-    }
-    function connect() {
-      if (!active()) return;
-      cancelRetry();
-      const ticket = ++generation;
-      lastTime = 0;
-      lastProgress = now();
-      stableSince = null;
-      resetting = true;
-      const url = new URL(source.href);
-      url.searchParams.set('_fountain', Date.now() + '-' + ticket);
-      audio.src = url.href;
-      audio.load();
-      show('connecting', 'Connecting', 'Joining the audio…');
-      // Keep play() in the original button event; never await a status fetch first.
-      try {
-        const attempt = audio.play();
-        if (attempt && typeof attempt.catch === 'function') attempt.catch(error => playFailure(error, ticket));
-      } catch (error) { playFailure(error, ticket); }
-      if (active() && watchdog === null) watchdog = setInterval(tick, 1000);
-    }
-    function startListening() {
-      if (active()) return;
-      removeVideo();
-      intent = true;
-      mode = 'audio';
-      retries = 0;
-      try {
-        if ('mediaSession' in navigator && 'MediaMetadata' in window) {
-          navigator.mediaSession.metadata = new MediaMetadata({title: 'From a Fountain', artist: 'Live vinyl'});
-        }
-      } catch (_) {}
-      connect();
-    }
-    function openVideo() {
-      if (mode === 'video') { stop(); return; }
-      stop();
-      if (!videoURL) return;
-      mode = 'video';
-      const frame = document.createElement('iframe');
-      const embed = validVideo ? new URL('https://www.youtube-nocookie.com/embed/' + videoId) :
-        new URL('https://www.youtube.com/embed/live_stream');
-      if (!validVideo) embed.searchParams.set('channel', channel);
-      embed.searchParams.set('playsinline', '1');
-      embed.searchParams.set('rel', '0');
-      embed.searchParams.set('autoplay', '0');
-      frame.src = embed.href;
-      frame.title = 'From a Fountain — optional live video';
-      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-      frame.allowFullscreen = true;
-      frame.referrerPolicy = 'strict-origin-when-cross-origin';
-      videoMount.appendChild(frame);
-      // Iframe load is not evidence that a stream exists or that sound is playing.
-      show('video', 'Video player', 'Press play in the video, or open it on YouTube below.');
-    }
+<script>
+(() => {
+  'use strict';
+  const projects = (window.PROJECTS || []).filter(p => !p.hidden);
+  const cats = (window.CATEGORIES || []).filter(c => projects.some(p => p.category === c.id));
+  const grid = document.getElementById('grid'), chips = document.getElementById('chips');
+  const q = document.getElementById('q'), count = document.getElementById('count');
 
-    audio.addEventListener('loadstart', () => { resetting = false; });
-    audio.addEventListener('playing', () => {
-      if (!active()) { audio.pause(); return; }
-      lastProgress = now();
-      markPlaying();
-    });
-    audio.addEventListener('waiting', () => {
-      if (!active() || phase === 'connecting' || retryTimer !== null) return;
-      stableSince = null;
-      show('buffering', 'Buffering', 'Waiting for more audio…');
-    });
-    audio.addEventListener('pause', () => {
-      if (active() && audio.paused && !resetting && !audio.error && !audio.ended) stop();
-    });
-    audio.addEventListener('error', () => { if (audio.error) queueRetry('The audio is not available yet. Trying again…'); });
-    audio.addEventListener('ended', () => { if (audio.ended) queueRetry(); });
-    // stalled alone can occur while buffered audio keeps playing. The watchdog
-    // observes actual playback-clock progress and gives recovery 12 seconds.
-    audio.addEventListener('stalled', tick);
-    listen.addEventListener('click', () => { if (active()) stop(); else startListening(); });
-    watch.addEventListener('click', openVideo);
-    for (const id of ['direct-audio', 'direct-video', 'video-fallback']) {
-      get(id).addEventListener('click', () => stop('Playback stopped here. Continue in the new tab.'));
+  let cat = new URLSearchParams(location.search).get('c') || 'all';
+  if (cat !== 'all' && !cats.some(c => c.id === cat)) cat = 'all';
+
+  const el = (tag, attrs, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v === undefined || v === null || v === false) continue;
+      if (k === 'class') n.className = v; else n.setAttribute(k, v);
     }
-    window.addEventListener('online', () => {
-      if (active() && phase !== 'playing') { cancelRetry(); connect(); }
-    });
-    window.addEventListener('offline', () => {
-      if (active() && phase !== 'playing') { cancelRetry(); queueRetry(); }
-    });
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && active()) tick();
-      // Do not pause on screen lock or tab hiding. The OS controls suspension.
-    });
-    window.addEventListener('pagehide', () => stop());
-    if ('mediaSession' in navigator) {
-      for (const [action, handler] of Object.entries({play: startListening, pause: stop, stop: stop})) {
-        try { navigator.mediaSession.setActionHandler(action, () => handler()); } catch (_) {}
-      }
+    for (const k of kids) if (k != null) n.append(k);
+    return n;
+  };
+
+  function buildChips() {
+    chips.textContent = '';
+    const all = [{ id: 'all', label: 'All' }, ...cats];
+    for (const c of all) {
+      const n = c.id === 'all' ? projects.length : projects.filter(p => p.category === c.id).length;
+      const b = el('button', { type: 'button', class: 'chip', 'aria-pressed': String(cat === c.id) }, c.label, el('span', { class: 'n' }, String(n)));
+      b.addEventListener('click', () => {
+        cat = c.id;
+        const u = new URL(location.href);
+        if (cat === 'all') u.searchParams.delete('c'); else u.searchParams.set('c', cat);
+        history.replaceState(null, '', u);
+        buildChips(); render();
+      });
+      chips.append(b);
     }
-    releaseAudio();
-    get('actions').hidden = false;
-    show('ready', 'A place to listen', 'Tap Listen to join the audio.');
-  })();
-  </script>
-  <script>
-  // What's on the turntable, from the letter book service (address in fountain-config.js)
-  (() => {
-    'use strict';
-    const api = (window.FOUNTAIN_API || '').replace(/\/$/, '');
+  }
+
+  const sorted = projects.slice().sort((a, b) =>
+    (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (b.year || 0) - (a.year || 0));
+
+  function render() {
+    const f = q.value.trim().toLowerCase();
+    const list = sorted.filter(p => (cat === 'all' || p.category === cat) && (!f ||
+      [p.title, p.description, p.category, ...(p.tags || [])].join(' ').toLowerCase().includes(f)));
+    grid.textContent = '';
+    for (const p of list) {
+      const catLabel = (cats.find(c => c.id === p.category) || {}).label || p.category;
+      const meta = el('div', { class: 'meta' },
+        el('span', { class: 'pill' }, catLabel),
+        p.status && p.status !== 'live' ? el('span', { class: 'pill' }, p.status) : null,
+        p.year ? el('span', { class: 'pill' }, String(p.year)) : null);
+      const sub = el('div', { class: 'sub' });
+      for (const l of p.links || []) sub.append(el('a', { href: l.href }, l.label));
+      if (p.repo) sub.append(el('a', { href: 'https://github.com/' + p.repo }, 'Source', el('span', { class: 'sr-only' }, ' for ' + p.title)));
+      grid.append(el('li', { class: 'card', id: p.id },
+        meta,
+        el('h3', {}, el('a', { href: p.href }, p.title)),
+        p.description ? el('p', {}, p.description) : null,
+        sub.childNodes.length ? sub : null));
+    }
+    if (!list.length) grid.append(el('li', { class: 'empty' }, 'Nothing matches that yet.'));
+    count.textContent = list.length + ' of ' + projects.length + ' project' + (projects.length === 1 ? '' : 's');
+  }
+
+  q.addEventListener('input', render);
+  buildChips(); render();
+  if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView({ block: 'center' }); }
+
+  // Live status for From a Fountain (same service its own page uses).
+  const api = (window.FOUNTAIN_API || '').replace(/\/$/, '');
+  const banner = document.getElementById('onair'), what = document.getElementById('onair-what');
+  async function check() {
     if (!api) return;
-    const card = document.getElementById('now'), stamp = document.getElementById('onair');
-    async function check() {
-      try {
-        const r = await fetch(api + '/api/now', { cache: 'no-store', headers: { 'ngrok-skip-browser-warning': '1' } });
-        const n = await r.json();
-        const on = !!(n.artist && n.source !== 'none');
-        stamp.textContent = '● ON AIR'; stamp.classList.add('live');
-        card.hidden = !on;
-        if (on) {
-          document.getElementById('now-song').textContent = n.song || n.album;
-          document.getElementById('now-by').textContent = n.artist;
-        }
-      } catch (_) {
-        stamp.textContent = 'OFF AIR'; stamp.classList.remove('live'); card.hidden = true;
-      }
-    }
-    check();
-    setInterval(() => { if (!document.hidden) check(); }, 20000);
-  })();
-  </script>
+    try {
+      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 6000);
+      const r = await fetch(api + '/api/now', { cache: 'no-store', signal: ctl.signal, headers: { 'ngrok-skip-browser-warning': '1' } });
+      clearTimeout(t);
+      const n = await r.json();
+      const on = !!(n.artist && n.source !== 'none');
+      banner.hidden = !on;
+      if (on) what.textContent = (n.song || n.album || 'Now playing') + ' · ' + n.artist;
+    } catch (_) { banner.hidden = true; }
+  }
+  check();
+  setInterval(() => { if (!document.hidden) check(); }, 30000);
+})();
+</script>
 </body>
 </html>

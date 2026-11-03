@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="A jazz kissa in the open. Live records, a place to listen, and no need to stay.">
+  <meta name="theme-color" content="#f1e9d8">
+  <title>From a Fountain — live vinyl</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@500;700&family=Special+Elite&display=swap">
+  <script src="../fountain-config.js"></script>
+  <style>
+    /* Paper on a counter: plain readable type for anything to read or tap; handwriting, tape and stamps for character */
+    :root {
+      --paper: #f1e9d8; --card: #fbf6ea; --ink: #1f1b16; --soft: #6b6152; --pencil: #8a8170;
+      --red: #c8402c; --tape: #e9dcae; --line: #cdbf9f;
+      --body: 'Atkinson Hyperlegible', system-ui, sans-serif; --hand: 'Caveat', 'Segoe Print', cursive; --type: 'Special Elite', 'Courier New', monospace;
+      --wobble: 255px 14px 225px 14px / 14px 225px 14px 255px;
+      color-scheme: light; background: var(--paper); color: var(--ink);
+    }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; font: 17px/1.5 var(--body); background: var(--paper);
+      background-image: radial-gradient(#00000008 1px, transparent 1px); background-size: 4px 4px; }
+    .fountain { max-width: 520px; margin: 0 auto;
+      padding: max(22px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(36px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
+    button { font: inherit; color: inherit; touch-action: manipulation; cursor: pointer; }
+    button:focus-visible, a:focus-visible, summary:focus-visible, audio:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
+    a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+    .stamp { display: inline-block; border: 2.5px solid var(--pencil); color: var(--pencil); font: 700 13px var(--body);
+      letter-spacing: .14em; padding: 3px 10px; transform: rotate(-4deg); border-radius: 4px; }
+    .stamp.live { border-color: var(--red); color: var(--red); }
+    .box { border: 2px solid var(--ink); border-radius: var(--wobble); }
+    .tape { position: absolute; width: 86px; height: 24px; background: var(--tape); opacity: .85; box-shadow: 0 1px 2px #0002;
+      top: -11px; left: 50%; transform: translateX(-50%) rotate(-3deg); }
+
+    h1 { font: 700 clamp(44px, 13vw, 58px)/1 var(--hand); margin: 14px 0 0; transform: rotate(-1.5deg); }
+    .scribble { display: block; width: 130px; height: 10px; margin: 2px 0 0 4px; }
+    .intro { color: var(--soft); margin: 12px 0 0; max-width: 32em; }
+
+    .now { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; margin: 26px 4px 22px;
+      padding: 16px 16px 14px; background: var(--card); color: var(--ink); text-decoration: none; transform: rotate(.8deg); box-shadow: 0 2px 6px #0002; }
+    .rec { width: 64px; height: 64px; border-radius: 50%; position: relative; background: repeating-radial-gradient(circle, #2a2622 0 1.5px, #141210 1.5px 3px);
+      animation: spin 2.4s linear infinite; }
+    .rec::after { content: ''; position: absolute; inset: 23px; border-radius: 50%; background: var(--red); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .rec { animation: none; } }
+    .now .label, .now .song, .now .by { display: block; }
+    .now .label { font: 700 12px var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+    .now .song { font: 700 19px/1.2 var(--body); margin: 2px 0 0; overflow-wrap: anywhere; }
+    .now .by { color: var(--soft); font-size: 15px; }
+    .now .go { grid-column: 1 / -1; font: 500 20px/1 var(--hand); color: var(--red); margin-top: 2px; }
+
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .controls .actions { display: contents; }
+    #listen { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px;
+      background: var(--ink); color: var(--card); border: 0; border-radius: var(--wobble); font: 700 22px var(--body); }
+    #listen .icon::before { content: '▶'; }
+    #listen[aria-pressed="true"] .icon::before { content: '■'; }
+    #listen .hint { font-weight: 400; font-size: 14px; color: #cfc6b3; }
+    .pick { display: grid; gap: 2px; align-content: center; min-height: 76px; padding: 12px 10px; text-align: center; background: var(--card);
+      text-decoration: none; color: var(--ink); font: 700 18px var(--body); }
+    .pick .hint { font: 400 13px/1.3 var(--body); color: var(--soft); }
+    #watch { transform: rotate(-1deg); }
+    .book { transform: rotate(1.2deg); }
+
+    .status { min-height: 4.2em; margin: 22px 0 4px; text-align: center; line-height: 1.45; }
+    .badge { display: block; font: 700 22px/1.1 var(--hand); color: var(--red); }
+    #message { display: block; font-size: 15px; color: var(--soft); margin-top: 4px; }
+    .audio-panel { padding: 14px; background: var(--card); }
+    audio { width: 100%; display: block; }
+    .video-frame { background: #181711; border-radius: 10px; overflow: hidden; border: 2px solid var(--ink); }
+    .video-frame iframe { display: block; width: 100%; aspect-ratio: 16 / 9; min-height: 200px; border: 0; }
+    .video-note { font-size: 14px; line-height: 1.55; color: var(--soft); }
+
+    details { margin-top: 18px; color: var(--soft); font-size: 15px; line-height: 1.55; border-top: 1.5px dashed var(--line); }
+    summary { padding: 12px 0; cursor: pointer; color: var(--ink); font-weight: 700; }
+    details a { display: inline-block; padding: 10px 0; min-height: 44px; }
+    details p { margin: 4px 0; }
+    footer { margin-top: 26px; padding-top: 16px; border-top: 1.5px dashed var(--line); display: flex; justify-content: space-between;
+      align-items: flex-end; gap: 12px; flex-wrap: wrap; color: var(--soft); font-size: 14px; }
+    footer .sig { font: 500 22px/1 var(--hand); color: var(--ink); }
+    footer .kissa { width: 100%; font: 13px var(--type); text-align: center; margin-top: 8px; }
+    footer a { color: var(--soft); }
+    @media (forced-colors: active) { #listen, .box { border: 2px solid ButtonText; } }
+  </style>
+</head>
+<body>
+  <!-- Configuration: keep the stream URL in the audio element and direct-audio link in sync.
+       Optional: set data-video-id to this session's 11-character YouTube video ID.
+       With no video ID, the existing channel embed is kept as a compatibility fallback.
+       No passwords, tokens, or private server configuration belong in this file. -->
+  <main class="fountain" id="fountain" data-state="ready"
+        data-channel="UCaOM2mNthp-3w-bGoTy8MAg" data-video-id="">
+    <header>
+      <span class="stamp" id="onair">OFF AIR</span>
+      <h1>From a Fountain</h1>
+      <svg class="scribble" viewBox="0 0 130 10" fill="none" stroke="#c8402c" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M2 6 C 27 2, 49 9, 71 5 S 108 3, 128 6"/></svg>
+      <p class="intro">Records played live, for whoever happens by. Put on headphones and stay as long as you like.</p>
+    </header>
+
+    <a class="now box" id="now" href="../letters/" hidden>
+      <span class="tape" aria-hidden="true"></span>
+      <span class="rec" aria-hidden="true"></span>
+      <span><span class="label">Playing right now</span>
+        <span class="song" id="now-song"></span>
+        <span class="by" id="now-by"></span></span>
+      <span class="go">Does it remind you of something? Write it down →</span>
+    </a>
+
+    <div class="controls">
+      <div class="actions" id="actions" hidden>
+        <button id="listen" type="button" aria-pressed="false" aria-controls="audio-panel">
+          <span class="icon" aria-hidden="true"></span><span class="label" id="listen-label">Listen</span><span class="hint">headphones on</span>
+        </button>
+        <button class="pick box" id="watch" type="button" aria-expanded="false" aria-controls="video-panel">
+          <span class="label" id="watch-label">Watch</span><span class="hint">video of the turntable</span>
+        </button>
+      </div>
+      <a class="pick box book" href="../letters/"><span>Letter book</span><span class="hint">write or read memories</span></a>
+    </div>
+
+    <div class="status" role="status" aria-live="polite" aria-atomic="true">
+      <span class="badge" id="badge">A place to listen</span>
+      <span id="message">Press play to join the audio.</span>
+    </div>
+    <section class="audio-panel box" id="audio-panel" aria-label="Live audio player">
+      <audio id="audio" controls preload="none" aria-label="Live vinyl audio"
+             src="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"></audio>
+    </section>
+    <section id="video-panel" aria-label="Optional live video" hidden>
+      <div class="video-frame" id="video-mount"></div>
+      <p class="video-note">Press play in the video player. Video has its own sound and may be delayed.</p>
+      <p class="video-note"><a id="video-fallback" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live"
+        target="_blank" rel="noopener">Open video on YouTube (new tab)</a></p>
+    </section>
+    <details>
+      <summary>About this listening space</summary>
+      <p>Records played here, shared with whoever happens by. No account or introduction needed.</p>
+      <p>Headphone audio can arrive after the nearby speakers. You can move a little farther away if you hear both.</p>
+      <p>The audio may be quiet between records. If it cannot connect, the set may have ended.</p>
+      <p><a id="direct-audio" href="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"
+        target="_blank" rel="noopener">Open audio directly (new tab)</a></p>
+      <p><a id="direct-video" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live"
+        target="_blank" rel="noopener">Visit the video on YouTube (new tab)</a></p>
+      <p>This page adds no analytics or account system. Your connection is handled by the hosting and streaming services. YouTube loads when you choose video.</p>
+    </details>
+    <noscript><p>The audio controls above work without JavaScript. Video is available through the YouTube link.</p></noscript>
+    <footer>
+      <a href="../">← All projects</a>
+      <span class="sig">— Andrew, on the decks</span>
+      <a href="../docent/">docent sign-in</a>
+      <span class="kissa">a jazz kissa in the open · vinyl only</span>
+    </footer>
+  </main>
+  <script>
+  (() => {
+    'use strict';
+    const root = document.getElementById('fountain');
+    if (!root || root.dataset.initialized) return;
+    const get = id => document.getElementById(id);
+    const audio = get('audio');
+    const listen = get('listen');
+    const watch = get('watch');
+    const audioPanel = get('audio-panel');
+    const videoPanel = get('video-panel');
+    const videoMount = get('video-mount');
+    let source;
+    try {
+      source = new URL(audio.getAttribute('src'), document.baseURI);
+      if (source.protocol !== 'https:' || source.username || source.password) throw new Error('Invalid stream URL');
+    } catch (_) {
+      get('message').textContent = 'The audio address needs attention. You can try the video link below.';
+      return; // Leave the plain HTML player and links available.
+    }
+    root.dataset.initialized = '1';
+    get('direct-audio').href = source.href;
+    const channel = root.dataset.channel || '';
+    const videoId = root.dataset.videoId || '';
+    const validVideo = /^[A-Za-z0-9_-]{11}$/.test(videoId);
+    const validChannel = /^UC[A-Za-z0-9_-]{22}$/.test(channel);
+    const videoURL = validVideo ? 'https://www.youtube.com/watch?v=' + videoId :
+      (validChannel ? 'https://www.youtube.com/channel/' + channel + '/live' : '');
+    if (videoURL) {
+      get('video-fallback').href = videoURL;
+      get('direct-video').href = videoURL;
+    } else {
+      watch.hidden = true;
+      get('direct-video').hidden = true;
+    }
+
+    // Intent belongs to the listener. Player events may report failure, but must
+    // never turn a pause/stop into permission to start again.
+    let mode = 'idle';
+    let intent = false;
+    let phase = 'ready';
+    let generation = 0;
+    let resetting = false;
+    let retries = 0;
+    let retryTimer = null;
+    let watchdog = null;
+    let lastTime = 0;
+    let lastProgress = 0;
+    let stableSince = null;
+    const retryDelays = [1000, 2000, 4000, 8000, 15000, 30000];
+    const silenceTimeout = 12000; // No playback-clock progress, NOT quiet music.
+    const now = () => performance.now();
+    const active = () => mode === 'audio' && intent;
+
+    function mediaState(value) {
+      try { if ('mediaSession' in navigator) navigator.mediaSession.playbackState = value; } catch (_) {}
+    }
+    function show(next, badge, message) {
+      phase = next;
+      root.dataset.state = next;
+      if (get('badge').textContent !== badge) get('badge').textContent = badge;
+      if (get('message').textContent !== message) get('message').textContent = message;
+      get('listen-label').textContent = active() ? 'Stop' : 'Listen';
+      listen.setAttribute('aria-pressed', String(active()));
+      get('watch-label').textContent = mode === 'video' ? 'Close video' : 'Watch';
+      watch.setAttribute('aria-expanded', String(mode === 'video'));
+      audioPanel.hidden = !active();
+      videoPanel.hidden = mode !== 'video';
+      mediaState(next === 'playing' ? 'playing' : (mode === 'audio' ? 'paused' : 'none'));
+    }
+    function cancelRetry() {
+      clearTimeout(retryTimer);
+      retryTimer = null;
+    }
+    function clearWork() {
+      cancelRetry();
+      clearInterval(watchdog);
+      watchdog = null;
+    }
+    function releaseAudio() {
+      resetting = true;
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load(); // Disconnect the live response and discard delayed audio.
+    }
+    function removeVideo() {
+      while (videoMount.firstChild) videoMount.removeChild(videoMount.firstChild);
+    }
+    function stop(message = 'Tap Listen whenever you want to rejoin.') {
+      const returnFocus = document.activeElement === audio;
+      intent = false;
+      generation++;
+      clearWork();
+      releaseAudio();
+      removeVideo();
+      mode = 'idle';
+      retries = 0;
+      stableSince = null;
+      show('paused', 'Paused', message);
+      if (returnFocus) listen.focus();
+    }
+    function unavailable() {
+      stop('The audio could not connect. Tap Listen to try again, or use the direct links below.');
+      show('unavailable', 'Audio unavailable', get('message').textContent);
+    }
+    function queueRetry(message = 'The audio connection dropped. Trying to reconnect…') {
+      if (!active() || retryTimer !== null) return;
+      stableSince = null;
+      if (navigator.onLine === false) {
+        show('offline', 'Waiting for connection', 'Your device reports no connection. Listening will retry when it returns.');
+        return;
+      }
+      if (retries >= retryDelays.length) { unavailable(); return; }
+      const delay = retryDelays[retries++] * (.8 + Math.random() * .4);
+      show('reconnecting', 'Reconnecting', message);
+      const ticket = generation;
+      retryTimer = setTimeout(() => {
+        retryTimer = null;
+        if (ticket === generation && active()) connect();
+      }, delay);
+    }
+    function playFailure(error, ticket) {
+      if (ticket !== generation || !active()) return;
+      if (error && error.name === 'NotAllowedError') {
+        stop('Tap Listen again to allow sound, or open the audio directly below.');
+        show('blocked', 'Tap to play', get('message').textContent);
+      } else if (!error || error.name !== 'AbortError') {
+        // A missing mount can surface as NotSupportedError; it is not proof of
+        // a permanently unsupported codec. Retry a bounded number of times.
+        queueRetry('The audio is not available yet. Trying again…');
+      }
+      // A current AbortError remains covered by the connection watchdog.
+    }
+    function markPlaying() {
+      if (!active() || audio.paused || audio.readyState < 2 || audio.error) return;
+      cancelRetry();
+      if (phase !== 'playing') stableSince = now();
+      show('playing', 'Playing', 'You’re listening to the turntable stream.');
+    }
+    function tick() {
+      if (!active()) return;
+      const time = audio.currentTime;
+      if (!audio.paused && time > lastTime + .01) {
+        lastTime = time;
+        lastProgress = now();
+        markPlaying();
+        if (stableSince !== null && now() - stableSince >= 20000) retries = 0;
+      } else if (now() - lastProgress >= silenceTimeout) {
+        queueRetry('The audio has stopped arriving. Trying to reconnect…');
+      }
+    }
+    function connect() {
+      if (!active()) return;
+      cancelRetry();
+      const ticket = ++generation;
+      lastTime = 0;
+      lastProgress = now();
+      stableSince = null;
+      resetting = true;
+      const url = new URL(source.href);
+      url.searchParams.set('_fountain', Date.now() + '-' + ticket);
+      audio.src = url.href;
+      audio.load();
+      show('connecting', 'Connecting', 'Joining the audio…');
+      // Keep play() in the original button event; never await a status fetch first.
+      try {
+        const attempt = audio.play();
+        if (attempt && typeof attempt.catch === 'function') attempt.catch(error => playFailure(error, ticket));
+      } catch (error) { playFailure(error, ticket); }
+      if (active() && watchdog === null) watchdog = setInterval(tick, 1000);
+    }
+    function startListening() {
+      if (active()) return;
+      removeVideo();
+      intent = true;
+      mode = 'audio';
+      retries = 0;
+      try {
+        if ('mediaSession' in navigator && 'MediaMetadata' in window) {
+          navigator.mediaSession.metadata = new MediaMetadata({title: 'From a Fountain', artist: 'Live vinyl'});
+        }
+      } catch (_) {}
+      connect();
+    }
+    function openVideo() {
+      if (mode === 'video') { stop(); return; }
+      stop();
+      if (!videoURL) return;
+      mode = 'video';
+      const frame = document.createElement('iframe');
+      const embed = validVideo ? new URL('https://www.youtube-nocookie.com/embed/' + videoId) :
+        new URL('https://www.youtube.com/embed/live_stream');
+      if (!validVideo) embed.searchParams.set('channel', channel);
+      embed.searchParams.set('playsinline', '1');
+      embed.searchParams.set('rel', '0');
+      embed.searchParams.set('autoplay', '0');
+      frame.src = embed.href;
+      frame.title = 'From a Fountain — optional live video';
+      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      frame.allowFullscreen = true;
+      frame.referrerPolicy = 'strict-origin-when-cross-origin';
+      videoMount.appendChild(frame);
+      // Iframe load is not evidence that a stream exists or that sound is playing.
+      show('video', 'Video player', 'Press play in the video, or open it on YouTube below.');
+    }
+
+    audio.addEventListener('loadstart', () => { resetting = false; });
+    audio.addEventListener('playing', () => {
+      if (!active()) { audio.pause(); return; }
+      lastProgress = now();
+      markPlaying();
+    });
+    audio.addEventListener('waiting', () => {
+      if (!active() || phase === 'connecting' || retryTimer !== null) return;
+      stableSince = null;
+      show('buffering', 'Buffering', 'Waiting for more audio…');
+    });
+    audio.addEventListener('pause', () => {
+      if (active() && audio.paused && !resetting && !audio.error && !audio.ended) stop();
+    });
+    audio.addEventListener('error', () => { if (audio.error) queueRetry('The audio is not available yet. Trying again…'); });
+    audio.addEventListener('ended', () => { if (audio.ended) queueRetry(); });
+    // stalled alone can occur while buffered audio keeps playing. The watchdog
+    // observes actual playback-clock progress and gives recovery 12 seconds.
+    audio.addEventListener('stalled', tick);
+    listen.addEventListener('click', () => { if (active()) stop(); else startListening(); });
+    watch.addEventListener('click', openVideo);
+    for (const id of ['direct-audio', 'direct-video', 'video-fallback']) {
+      get(id).addEventListener('click', () => stop('Playback stopped here. Continue in the new tab.'));
+    }
+    window.addEventListener('online', () => {
+      if (active() && phase !== 'playing') { cancelRetry(); connect(); }
+    });
+    window.addEventListener('offline', () => {
+      if (active() && phase !== 'playing') { cancelRetry(); queueRetry(); }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && active()) tick();
+      // Do not pause on screen lock or tab hiding. The OS controls suspension.
+    });
+    window.addEventListener('pagehide', () => stop());
+    if ('mediaSession' in navigator) {
+      for (const [action, handler] of Object.entries({play: startListening, pause: stop, stop: stop})) {
+        try { navigator.mediaSession.setActionHandler(action, () => handler()); } catch (_) {}
+      }
+    }
+    releaseAudio();
+    get('actions').hidden = false;
+    show('ready', 'A place to listen', 'Tap Listen to join the audio.');
+  })();
+  </script>
+  <script>
+  // What's on the turntable, from the letter book service (address in fountain-config.js)
+  (() => {
+    'use strict';
+    const api = (window.FOUNTAIN_API || '').replace(/\/$/, '');
+    if (!api) return;
+    const card = document.getElementById('now'), stamp = document.getElementById('onair');
+    async function check() {
+      try {
+        const r = await fetch(api + '/api/now', { cache: 'no-store', headers: { 'ngrok-skip-browser-warning': '1' } });
+        const n = await r.json();
+        const on = !!(n.artist && n.source !== 'none');
+        stamp.textContent = '● ON AIR'; stamp.classList.add('live');
+        card.hidden = !on;
+        if (on) {
+          document.getElementById('now-song').textContent = n.song || n.album;
+          document.getElementById('now-by').textContent = n.artist;
+        }
+      } catch (_) {
+        stamp.textContent = 'OFF AIR'; stamp.classList.remove('live'); card.hidden = true;
+      }
+    }
+    check();
+    setInterval(() => { if (!document.hidden) check(); }, 20000);
+  })();
+  </script>
+</body>
+</html>
