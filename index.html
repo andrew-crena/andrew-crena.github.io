@@ -8,6 +8,10 @@
 <meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#14130f" media="(prefers-color-scheme: dark)">
 <title>Andrew Crena</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Andrew Crena">
 <link rel="stylesheet" href="assets/site.css">
 <script src="fountain-config.js"></script>
 <script src="projects.js"></script>
@@ -30,12 +34,12 @@
 
   .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
   .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1 1 auto}
-  .chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:0 14px;min-height:40px;font-size:14px;color:var(--ink)}
+  .chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:0 16px;min-height:44px;font-size:14px;color:var(--ink)}
   .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
   .chip .n{color:var(--soft);margin-left:4px;font-size:12px}
   .chip[aria-pressed="true"] .n{color:inherit;opacity:.7}
   .search{flex:1 1 220px;max-width:320px;position:relative}
-  .search input{width:100%;min-height:40px;border:1px solid var(--line);border-radius:999px;background:var(--card);
+  .search input{width:100%;min-height:48px;border:1px solid var(--line);border-radius:999px;background:var(--card);
     padding:0 14px 0 36px;font-size:16px;color:var(--ink)}
   .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--soft)}
 
@@ -55,7 +59,7 @@
   .pill{border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--soft)}
   .pill.live{border-color:var(--accent);color:var(--accent);font-weight:700}
   .sub{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;position:relative;z-index:1}  /* above the card link */
-  .sub a{color:var(--ink);padding:4px 0}
+  .sub a{color:var(--ink);display:inline-flex;align-items:center;min-height:44px}
   .empty{color:var(--soft);padding:30px 0;text-align:center}
   #count{color:var(--soft);font-size:14px;margin:14px 0 0}
 </style>
