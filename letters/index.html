@@ -21,7 +21,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--body)
   background-image:radial-gradient(#00000008 1px,transparent 1px);background-size:4px 4px}
 .wrap{max-width:520px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) 56px max(20px,env(safe-area-inset-left))}
 button,input,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
+button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:3px solid var(--red);outline-offset:3px}
 a{color:var(--ink);text-underline-offset:3px}
 
@@ -29,7 +29,7 @@ a{color:var(--ink);text-underline-offset:3px}
 .tape{position:absolute;width:86px;height:24px;background:var(--tape);opacity:.85;box-shadow:0 1px 2px #0002;top:-11px;left:50%;transform:translateX(-50%) rotate(-3deg)}
 .stamp{display:inline-block;border:2.5px solid var(--red);color:var(--red);font:700 13px var(--body);letter-spacing:.14em;padding:3px 10px;transform:rotate(-4deg);border-radius:4px;text-transform:uppercase}
 .stamp.off{border-color:var(--pencil);color:var(--pencil)}
-.back{font:700 13px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--soft);text-decoration:none}
+.back{font:700 13px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--soft);text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
 
 /* now playing card */
 .nowcard{position:relative;background:var(--card);padding:20px 16px 16px;margin:22px 2px 0;transform:rotate(-.6deg);box-shadow:0 2px 6px #0002}
@@ -44,7 +44,7 @@ a{color:var(--ink);text-underline-offset:3px}
 .q{font:700 36px/1.05 var(--hand);margin:30px 0 6px;transform:rotate(-1deg);text-wrap:balance}
 .sub{margin:0 0 12px;color:var(--soft);font-size:15px}
 .which{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.which button{background:var(--card);padding:6px 13px;font-size:15px}
+.which button{background:var(--card);padding:6px 14px;font-size:15px;min-height:44px}
 .which button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
 .which button:disabled{opacity:.35;cursor:default}
 .about{margin:0 0 12px;font-size:14px;color:var(--soft)}
@@ -54,14 +54,14 @@ textarea{display:block;width:100%;min-height:150px;resize:vertical;background:va
   background-image:repeating-linear-gradient(transparent 0 29px,var(--rule) 29px 30px);background-attachment:local;background-position:0 6px}
 textarea::placeholder{color:var(--pencil)}
 .starts{display:flex;flex-wrap:wrap;gap:4px 14px;margin:10px 0 14px}
-.starts button{background:none;border:0;border-bottom:1.5px solid var(--ink);padding:0 2px 1px;font-size:15px}
-.name{width:100%;background:none;border:0;border-bottom:1.5px dashed var(--soft);padding:8px 0;margin-bottom:14px;font-size:16px;border-radius:0}
+.starts button{background:none;border:0;border-bottom:1.5px solid var(--ink);padding:12px 2px 1px;font-size:15px;min-height:44px}
+.name{width:100%;background:none;border:0;border-bottom:1.5px dashed var(--soft);padding:10px 0;min-height:44px;margin-bottom:14px;font-size:16px;border-radius:0}
 .name::placeholder{color:var(--pencil)}
 .big{display:block;width:100%;padding:17px;background:var(--ink);color:var(--card);border:0;border-radius:var(--wobble);font:700 20px var(--body)}
 .big:disabled{opacity:.6}
 .msg{margin:12px 0 0;font:700 24px/1.15 var(--hand);color:var(--red);text-align:center;transform:rotate(-1deg)}
 .other{margin:14px 0 0;font-size:15px;color:var(--soft);text-align:center}
-.other button{background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.other button{background:none;border:0;padding:12px 2px;min-height:44px;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 .picker{display:grid;gap:6px;margin-top:10px}
 .picker input{width:100%;background:var(--card);border:2px solid var(--ink);border-radius:var(--wobble);padding:11px 14px;font-size:16px}
 .pick{text-align:left;background:var(--card);padding:10px 14px;font-size:15px}
