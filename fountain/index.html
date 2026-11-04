@@ -127,7 +127,8 @@
     </div>
     <section class="audio-panel box" id="audio-panel" aria-label="Live audio player">
       <audio id="audio" controls preload="none" aria-label="Live vinyl audio"
-             src="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"></audio>
+             src="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"
+             data-alt-src="https://cuddly-doe-adversely.ngrok-free.app/stream.aac"></audio>
     </section>
     <section id="video-panel" aria-label="Optional live video" hidden>
       <div class="video-frame" id="video-mount"></div>
@@ -176,6 +177,13 @@
     }
     root.dataset.initialized = '1';
     get('direct-audio').href = source.href;
+    // The launcher puts the stream on one of two ngrok addresses; try the other
+    // one whenever a connection attempt fails.
+    const sources = [source];
+    for (const alt of (audio.dataset.altSrc || '').split(/\s+/).filter(Boolean)) {
+      try { const u = new URL(alt); if (u.protocol === 'https:' && !u.username && !u.password) sources.push(u); } catch (_) {}
+    }
+    let srcIdx = 0;
     const channel = root.dataset.channel || '';
     const videoId = root.dataset.videoId || '';
     const validVideo = /^[A-Za-z0-9_-]{11}$/.test(videoId);
@@ -267,6 +275,7 @@
         return;
       }
       if (retries >= retryDelays.length) { unavailable(); return; }
+      srcIdx = (srcIdx + 1) % sources.length;
       const delay = retryDelays[retries++] * (.8 + Math.random() * .4);
       show('reconnecting', 'Reconnecting', message);
       const ticket = generation;
@@ -291,6 +300,8 @@
       if (!active() || audio.paused || audio.readyState < 2 || audio.error) return;
       cancelRetry();
       if (phase !== 'playing') stableSince = now();
+      get('direct-audio').href = sources[srcIdx].href;
+      const stamp = get('onair'); stamp.textContent = '● ON AIR'; stamp.classList.add('live');
       show('playing', 'Playing', 'You’re listening to the turntable stream.');
     }
     function tick() {
@@ -313,7 +324,7 @@
       lastProgress = now();
       stableSince = null;
       resetting = true;
-      const url = new URL(source.href);
+      const url = new URL(sources[srcIdx].href);
       url.searchParams.set('_fountain', Date.now() + '-' + ticket);
       audio.src = url.href;
       audio.load();
@@ -424,7 +435,9 @@
           document.getElementById('now-by').textContent = n.artist;
         }
       } catch (_) {
-        stamp.textContent = 'OFF AIR'; stamp.classList.remove('live'); card.hidden = true;
+        card.hidden = true;
+        // The music can be live without the letter book service; trust the player.
+        if (document.getElementById('fountain').dataset.state !== 'playing') { stamp.textContent = 'OFF AIR'; stamp.classList.remove('live'); }
       }
     }
     check();
