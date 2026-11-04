@@ -128,7 +128,7 @@
     <section class="audio-panel box" id="audio-panel" aria-label="Live audio player">
       <audio id="audio" controls preload="none" aria-label="Live vinyl audio"
              src="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"
-             data-alt-src="https://cuddly-doe-adversely.ngrok-free.app/stream.aac"></audio>
+             data-alt-src="https://cuddly-doe-adversely.ngrok-free.app/stream.aac https://malika-unflaky-loan.ngrok-free.dev/stream.mp3 https://cuddly-doe-adversely.ngrok-free.app/stream.mp3"></audio>
     </section>
     <section id="video-panel" aria-label="Optional live video" hidden>
       <div class="video-frame" id="video-mount"></div>
@@ -177,8 +177,8 @@
     }
     root.dataset.initialized = '1';
     get('direct-audio').href = source.href;
-    // The launcher puts the stream on one of two ngrok addresses; try the other
-    // one whenever a connection attempt fails.
+    // The launcher puts the stream on one of two ngrok addresses, in AAC or MP3;
+    // move to the next one whenever a connection attempt fails.
     const sources = [source];
     for (const alt of (audio.dataset.altSrc || '').split(/\s+/).filter(Boolean)) {
       try { const u = new URL(alt); if (u.protocol === 'https:' && !u.username && !u.password) sources.push(u); } catch (_) {}
