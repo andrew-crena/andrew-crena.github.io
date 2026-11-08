@@ -11,7 +11,7 @@
     const pos = (me && me.dataset.position) || 'top-left';
     const [v, h] = pos.split('-');
     const a = document.createElement('a');
-    a.href = 'https://andrew-crena.github.io/';
+    a.href = 'https://andrew-crena.github.io/projects/';
     a.dataset.hubLink = '';
     a.textContent = '← ' + ((me && me.dataset.label) || 'All projects');
     a.style.cssText = 'position:fixed;' + v + ':max(10px,env(safe-area-inset-' + v + '));' + h + ':max(10px,env(safe-area-inset-' + h + '));' +
