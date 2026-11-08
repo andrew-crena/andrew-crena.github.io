@@ -1,247 +1,230 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
-<meta name="description" content="Andrew Crena studies how intense shared experiences, such as awe at a live concert, become lasting sources of meaning and connection.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Andrew Crena</title>
-<link rel="stylesheet" href="/style.css">
+<meta name="description" content="Andrew Crena, early career researcher in psychology. Awe, live music, the arts, and what happens after intense experiences.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎶</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #E9EDEF;        /* Ocean Beach fog */
+    --ink: #1D2B38;       /* navy */
+    --muted: #55636F;
+    --accent: #2F6470;    /* cold sea */
+    --sand: #B8912F;      /* sandstone arcade */
+    --vinyl: #1A1F24;
+    --groove: #2A3138;
+    --rule: #C9D1D6;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #172330;
+      --ink: #E5E9EC;
+      --muted: #9AA7B2;
+      --accent: #8FC3CC;
+      --sand: #D8B862;
+      --vinyl: #0E1318;
+      --groove: #232B33;
+      --rule: #2D3B48;
+    }
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 38rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 3rem;
+  }
+
+  /* Hero: the portrait sits in the middle of a record, like a center label */
+  .hero {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2.5rem;
+  }
+  .record {
+    width: 12rem;
+    height: 12rem;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, transparent 0 56%, var(--vinyl) 56% 58%, transparent 58%),
+      repeating-radial-gradient(circle, var(--vinyl) 0 2px, var(--groove) 2px 3px);
+    display: grid;
+    place-items: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .record img {
+    width: 56%;
+    height: 56%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: 50% 35%;
+    display: block;
+  }
+  h1 {
+    font-size: 2.75rem;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5rem;
+  }
+  .hero .line {
+    color: var(--muted);
+    font-size: 1.125rem;
+    margin: 0;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1rem;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-color: var(--sand);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.2em;
+  }
+  a:hover { text-decoration-thickness: 3px; }
+  a:focus-visible {
+    outline: 2px solid var(--sand);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .about p { margin: 0 0 1.1rem; }
+  .about p:first-child { font-size: 1.25rem; line-height: 1.55; }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 3.25rem 0 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+  figure { margin: 0 0 2.25rem; }
+  .video {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--vinyl);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  figcaption {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 0.6rem;
+  }
+  .clip p { margin: 0; }
+  .clip .where { color: var(--muted); font-size: 1rem; }
+
+  footer {
+    margin-top: 3.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+    font-size: 1rem;
+    color: var(--muted);
+  }
+  footer p { margin: 0 0 0.5rem; }
+
+  @media (max-width: 560px) {
+    main { padding-top: 2.5rem; }
+    .hero { grid-template-columns: 1fr; gap: 1.5rem; }
+    .record { width: 10rem; height: 10rem; }
+    h1 { font-size: 2.25rem; }
+  }
+</style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<main>
 
-<header>
-  <h1>Andrew Crena</h1>
-  <p class="lede">I study how awe, music, and the arts help people feel part of something larger than themselves, and what those moments do for wellbeing over time.</p>
-  <p class="links">
-    <a href="/cv.pdf">CV (PDF)</a> ·
-    <a href="https://www.linkedin.com/in/andrew-crena">LinkedIn</a> ·
-    <a href="mailto:adcrena27@gmail.com">adcrena27@gmail.com</a> ·
-    <a href="https://github.com/andrew-crena">GitHub</a> ·
-    <a href="/my-digital-garden/">Notes</a>
-  </p>
-  <!-- TODO: replace with a link to the short intro video, or delete this line. -->
-  <p class="todo">[TODO: optional link to a short intro video]</p>
-  <nav aria-label="On this page">
-    <ul class="toc">
-      <li><a href="#agenda">Research agenda</a></li>
-      <li><a href="#research">Research experience</a></li>
-      <li><a href="#output">Funding and presentations</a></li>
-      <li><a href="#listening">Listening rooms</a></li>
-      <li><a href="#teaching">Teaching and mentorship</a></li>
-      <li><a href="#community">Community</a></li>
-      <li><a href="#other">Other experience</a></li>
-      <li><a href="#education">Education</a></li>
-      <li><a href="#skills">Skills and training</a></li>
-    </ul>
-  </nav>
-</header>
-
-<main id="main">
-
-  <section id="agenda" aria-labelledby="agenda-h">
-    <h2 id="agenda-h">Research agenda</h2>
-    <!-- TODO: write a short research agenda here (a few paragraphs, separate from any application materials). -->
-    <p class="todo">[TODO: research agenda]</p>
-  </section>
-
-  <section id="research" aria-labelledby="research-h">
-    <h2 id="research-h">Research experience</h2>
-
-    <article>
-      <h3>Lab Manager and Study Coordinator</h3>
-      <p class="meta">Stanford University Mind &amp; Body Lab · PI: Dr. Alia Crum · June 2024 to September 2026</p>
-
-      <h4>EMBRACE trial (<a href="https://clinicaltrials.gov/study/NCT06705218">NCT06705218</a>)</h4>
-      <p>A nationwide, fully decentralized NIH R01 randomized controlled trial testing a digital mindset intervention in newly diagnosed cancer patients, with 444 participants across five longitudinal timepoints.</p>
-      <ul>
-        <li>Coordinated day-to-day operations from recruitment through data collection.</li>
-        <li>Wrote the study SOPs for recruitment, biospecimen collection, and participant tracking; built the trial’s REDCap instruments; implemented study materials on the participant-facing platform; and maintained PHI-compliant data systems.</li>
-        <li>Led community-facing recruitment across a nationally distributed patient population, partnering with and presenting to cancer support organizations and patient-advocacy networks.</li>
-        <li>Set up and ran the at-home biomarker pipeline for 2,400 Tasso-M20 dried blood spot kits: distribution, return logistics, processing, and −80°C storage for downstream inflammatory-marker assays, directly managing rotating groups of 3 to 6 RAs under BSL-1 protocol.</li>
-        <li>Recruited, trained, and supervised about 20 undergraduate research assistants over two years, responsible for high-volume biospecimen processing and participant messaging through the study’s custom chat platform; ran weekly team meetings; drafted sections of the annual NIH progress reports (RPPR); and assisted with IRB protocols and amendments.</li>
+  <header class="hero">
+    <div class="record">
+      <img src="headshot.jpg" alt="Andrew Crena" width="800" height="800">
+    </div>
+    <div>
+      <h1>Andrew Crena</h1>
+      <p class="line">Early career researcher in psychology. Redwood City, California.</p>
+      <ul class="links">
+        <li><a href="Andrew_Crena_CV.pdf">CV (PDF)</a></li>
+        <li><a href="https://www.linkedin.com/in/andrew-crena">LinkedIn</a></li>
+        <li><a href="https://github.com/andrew-crena">GitHub</a></li>
+        <li><a href="/fountain/">From a Fountain</a></li>
+        <li><a href="/projects/">Projects</a></li>
       </ul>
-      <ul>
-        <li class="todo">[TODO: link to REDCap build, de-identified screenshots]</li>
-      </ul>
+    </div>
+  </header>
 
-      <h4>Lab Manager</h4>
-      <ul>
-        <li>Supported preparation and launch of a doctoral researcher’s digital yoga-based stress-mindset study in a bar-exam-taker sample, adapting the lab’s decentralized study-platform framework for a new intervention and participant population, working with the researcher and web-development team.</li>
-        <li>Created a study-platform manual documenting reusable workflows for participant payments, biospecimen logistics, REDCap scheduling, platform content, and study administration, to support future decentralized studies in the lab.</li>
-        <li>Ran day-to-day lab operations: meetings and events, visiting scholars, onboarding, purchasing and reimbursements, and website upkeep. Served as EH&amp;S liaison for biohazardous waste disposal and safety documentation.</li>
-      </ul>
-    </article>
-
-    <article>
-      <h3>Affiliated Researcher</h3>
-      <p class="meta">ETH Zurich · Interventions for Promoting Effective Uncertainty Regulation (SNSF grant 207691) · August 2026 to present</p>
-      <p>Contributing to a multi-arm study of brief digital well-being interventions: supporting design decisions about intervention delivery and timing, and helping develop a digitally delivered breathwork condition.</p>
-    </article>
-
-    <article>
-      <h3>Research Assistant (post-baccalaureate)</h3>
-      <p class="meta">San Diego State University TEND Lab · PI: Dr. Jillian Lee Wiggins · May 2023 to May 2024 · volunteer, 20 hours/week</p>
-      <p>Performed R data cleaning and exploratory analysis for an R01 fMRI study and assisted with fMRI preprocessing and quality control in Linux, AFNI, and MATLAB. Supported data collection through mock-scan sessions, experimental stimuli, caregiver consent, assessments with 5- to 8-year-old participants, and RA training.</p>
-    </article>
+  <section class="about">
+    <p>I’m interested in acute, intense experiences, such as awe, self-transcendence, and immersion. Some happen in ordinary life: being swept up at a concert, being struck by beauty on a hike, watching your team with friends, or feeling elevation at an act of moral beauty. Others are cultivated through practices such as meditation, mindful yoga, or psychedelic experiences. What draws me is what comes after. The benefits rarely seem to come from the peak alone, but from how people integrate the experience into their lives, and how that shapes longer-term outcomes like meaning in life and well-being.</p>
+    <p>To study these questions, I draw on methods I’ve worked with in past research: longitudinal designs that follow people over months, physiological measures such as at-home blood sampling, and support for neuroimaging studies, with groups ranging from young children and their caregivers to adults with a recent cancer diagnosis. I’ve also helped develop brief digital interventions, including a breathwork condition.</p>
+    <p>Going forward, I want to do this work where these experiences actually happen. That means building lasting relationships with venues, community spaces, and arts organizations, so I can study concertgoers, workshop attendees, and others in their own setting. I’m currently developing a study on how people remember and revisit a concert in the weeks after.</p>
   </section>
 
-  <section id="output" aria-labelledby="output-h">
-    <h2 id="output-h">Funding and presentations</h2>
-    <h3>Funding</h3>
-    <p>Stanford University Department of Psychology Infrastructure Fund, two awards (2024 and 2025), EMBRACE Study, $100,000 total. Project contributor: lab management, study coordination, and web design and development.</p>
-    <h3>Conference posters</h3>
-    <p class="cite">Gasteiger, C., <strong>Crena, A. D.</strong>, Pagador, K., Jiang, T., Zion, S., Jo, B., Slavich, G. M., Spiegel, D., Steele, N., Berek, J. S., Shapira, L., &amp; Crum, A. J. (2025, November). <i>Changing mindsets to improve whole-person health: A decentralized randomized trial of a novel digital intervention</i> [Poster session]. Joint Meeting of the Clinical Oncology Society of Australia and the International Psycho-Oncology Society, Adelaide, Australia.</p>
-  </section>
+  <h2>Videos</h2>
 
-  <section id="listening" aria-labelledby="listening-h">
-    <h2 id="listening-h">Listening rooms</h2>
-    <p>In Japan, a jazz kissa is a small room people seek out to listen closely to records on a good system. My listening projects turn that around: a jazz kissa in the open. I play vinyl in a public space for whoever happens by, and anyone can join, stay as long as they like, or leave. It’s the same question as my research, asked with a turntable: what makes people stop and really listen together, and what do they carry away?</p>
-    <!-- TODO: check that this paragraph says what you mean by the "inverse" listening bar. -->
+  <figure>
+    <div class="video">
+      <iframe src="https://www.youtube-nocookie.com/embed/hCv4TkSzJXY" title="Guided cyclic sighing" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <figcaption>A guided cyclic sighing video I helped develop for a study of brief digital well-being interventions at ETH Zurich.</figcaption>
+  </figure>
 
-    <article>
-      <h3>From a Fountain</h3>
-      <p class="meta">Live vinyl, streamed and in person · 2026 · <a href="/fountain/">Listen</a> · <a href="/letters/">Letter book</a> · <a href="https://github.com/andrew-crena/from-a-fountain">Source</a></p>
-      <p>Records played live, for whoever happens by. People nearby hear the speakers or put on headphones and join the stream from their phone; people elsewhere can listen or watch the turntable online. Every record links to a letter book where listeners can write down a memory the song brings back, and read what others have left about the same song, album, or artist.</p>
+  <figure>
+    <div class="video">
+      <iframe src="https://www.youtube-nocookie.com/embed/U_phlb0loNQ" title="Cole surfing at Ocean Beach" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <figcaption>My friend Cole surfing at Ocean Beach in San Francisco, filmed on my phone and cut in Clipchamp. As of November 2026, he’s almost fully recovered from an ankle injury and will be chasing tubes again soon.</figcaption>
+  </figure>
 
-      <h4>Setting up the room</h4>
-      <p class="todo">[TODO: the physical side. Where it runs, the turntable, mixer and speaker setup, how headphone listeners join (sign or QR code), how long a set runs, and what it takes to set up and break down.]</p>
+  <figure>
+    <div class="video">
+      <iframe src="https://www.youtube-nocookie.com/embed/ybwXv0GDrJA" title="Jazz on vinyl" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <figcaption>A jazz mix, all on vinyl.</figcaption>
+  </figure>
 
-      <h4>How the stream works</h4>
-      <p>The audio path runs from the turntable through a USB audio interface into BUTT, which encodes it (AAC-LC at 256 kbps, or MP3 at 320 kbps) and sends it to an Icecast server on the same computer. A small service I wrote in Python, using only the standard library, sits in front of Icecast and is published through a single ngrok address, so one public link carries both the audio and the letter book. A separate video stream of the turntable runs on YouTube.</p>
-      <ul>
-        <li><b>Recognizing the record.</b> About once a minute the service samples roughly ten seconds of the stream and sends it to the AudD recognition service.</li>
-        <li><b>Matching it to my crate.</b> The result is matched against my own Discogs collection, so the page shows the exact pressing on the turntable: cover, label, year, where it was recorded, and the credited players. For a reissue, credits and recording details come from the original release.</li>
-        <li><b>The letter book.</b> Memories are stored in SQLite and shown closest match first: the same song, then the same album, then the same artist.</li>
-        <li><b>The docent desk.</b> A PIN-protected page lets whoever is running the room set the record by hand when recognition misses, and approve letters before they appear.</li>
-        <li><b>Privacy.</b> No accounts and no analytics. The page works without JavaScript, and video loads only if a listener chooses it.</li>
-      </ul>
-    </article>
+  <figure class="clip">
+    <p><a href="https://redwoodcity-ca.granicus.com/player/clip/3728?meta_id=138499&amp;entrytime=12250">Speaking to the Redwood City City Council about the Center for Creativity</a></p>
+    <p class="where">Opens the city’s meeting video at my comment.</p>
+  </figure>
 
-    <article>
-      <h3>Center for Creativity</h3>
-      <p class="meta">Redwood City · in design</p>
-      <p>I’m designing a listening installation for the building’s round foyer.</p>
-      <p class="todo">[TODO: what the installation will be, how it draws on From a Fountain, and its status]</p>
-    </article>
+  <footer>
+    <p>The best way to reach me is by email at <a href="mailto:adcrena27@gmail.com">adcrena27@gmail.com</a>.</p>
+  </footer>
 
-    <article>
-      <h3>Stanford Jazz Workshop</h3>
-      <p class="meta">Volunteer vinyl DJ · 2025 to present</p>
-      <p>Set up and play records at Stanford Jazz Workshop events, including during the Stanford Jazz Festival, and at Redwood City cafés and community events.</p>
-      <p class="todo">[TODO: how the listening-room setup is used here]</p>
-    </article>
-
-    <article>
-      <h3>Jazz at the Yard</h3>
-      <p class="todo">[TODO: what it is, where, when, your role, and how the listening-room idea applies]</p>
-    </article>
-
-    <article>
-      <h3>Mixtapes for Strangers</h3>
-      <p class="todo">[TODO: what it is, how it works, when it started, and any numbers (mixes made, people reached)]</p>
-    </article>
-
-    <article>
-      <h3>Music for Mental Health</h3>
-      <p class="meta">Founder · Chico, CA · July 2021 to April 2023</p>
-      <p>Founded a student-led music and mental-health fundraising project at CSU Chico that raised over $5,000 for NAMI Yolo County and the Boys &amp; Girls Club of North Valley through annual community events, including Sandypalooza. Brought together student DJs, local businesses, venues, and nonprofit partners, and gave emerging student musicians and DJs a platform.</p>
-    </article>
-
-    <p>Smaller tools and music projects, including my record collection and a tempo and key tool for DJs, are on the <a href="/projects/">projects page</a>.</p>
-  </section>
-
-  <section id="teaching" aria-labelledby="teaching-h">
-    <h2 id="teaching-h">Teaching and mentorship</h2>
-
-    <article>
-      <h3>Teaching Assistant, PSYCH 20N: How Beliefs Create Reality</h3>
-      <p class="meta">Stanford University · Instructor: Dr. Alia Crum · Spring 2026</p>
-      <p>Ran small discussion groups during each session of a weekly seminar on how mindsets and expectations shape health, performance, and well-being, and prepared class materials.</p>
-    </article>
-
-    <article>
-      <h3>Research Mentor, Stanford PsychSummer</h3>
-      <p class="meta">Stanford Undergraduate Psychology Association · Summers 2024 and 2025</p>
-      <p>Mentored undergraduate researchers on project conceptualization and on data management and statistical analysis in R.</p>
-    </article>
-
-    <article>
-      <h3>Youth Program Lead, WorkED</h3>
-      <p class="meta">San Diego, CA · June to July 2023</p>
-      <p>Developed and taught a three-week business and game-design curriculum to twenty 7th and 8th graders from underrepresented backgrounds, ending in a final project using Python, Canva, and Google Slides.</p>
-    </article>
-
-    <article>
-      <h3>Volunteer Science Educator, Brain Day</h3>
-      <p class="meta">Stanford Neuroscience Outreach · March 2025 to March 2026</p>
-      <p>Visited local middle-school classrooms each year with Stanford School of Medicine researchers, leading hands-on demonstrations with preserved human and animal brains and talking about paths into research.</p>
-    </article>
-
-    <article>
-      <h3>Volunteer Tutor, Project READ</h3>
-      <p class="meta">Redwood City Public Library · January 2026 to present</p>
-      <p>Completed multi-session tutor training; meet weekly with an adult ESL learner to practice reading, writing, and conversation built around the learner’s goals.</p>
-    </article>
-  </section>
-
-  <section id="community" aria-labelledby="community-h">
-    <h2 id="community-h">Community</h2>
-
-    <article>
-      <h3>Volunteer, Center for Creativity</h3>
-      <p class="meta">Redwood City, CA · September 2026 to present</p>
-      <p>Planning improvements to the center’s public-facing digital resources and internal administrative systems, which support private events, community workshops, youth performing arts, and other programming. Preparing to contribute to docent duties, community outreach, and grant writing as the role develops.</p>
-    </article>
-
-    <article>
-      <h3>Volunteer Archivist, Archive Project</h3>
-      <p class="meta">Johns Hopkins University · Dr. David Yaden’s lab · August 2026 to present</p>
-      <p class="todo">[TODO: one sentence on what the archive work involves]</p>
-    </article>
-  </section>
-
-  <section id="other" aria-labelledby="other-h">
-    <h2 id="other-h">Other experience</h2>
-
-    <article>
-      <h3>Recovery Coach</h3>
-      <p class="meta">Crestwood Behavioral Health · San Diego, CA · May 2023 to June 2024</p>
-      <p>Provided one-on-one support to a caseload of five clients with co-occurring mental health and substance-use challenges in a 20-person inpatient program, with medication pass and detailed documentation. Planned and ran breathwork meditation and focus groups, and took groups to community activities.</p>
-    </article>
-
-    <article>
-      <h3>Laboratory Technician I</h3>
-      <p class="meta">University of Pittsburgh Medical Center, Division of Laboratory Animal Resources · May 2022 to April 2023</p>
-      <p>Provided animal husbandry and daily health observations across species; oversaw breeding and weaning for immunocompromised and biohazardous strains; maintained sterilization and safety logs.</p>
-    </article>
-  </section>
-
-  <section id="education" aria-labelledby="education-h">
-    <h2 id="education-h">Education</h2>
-    <p><b>B.A., Psychology</b>, California State University, Chico, May 2022.</p>
-    <p>Postgraduate coursework (non-degree): Psychology, University of Pittsburgh (2022 to 2023); Statistics, Community College of Allegheny County (2023).</p>
-  </section>
-
-  <section id="skills" aria-labelledby="skills-h">
-    <h2 id="skills-h">Skills and training</h2>
-    <dl>
-      <dt>Research operations</dt>
-      <dd>Clinical-trial coordination, recruitment and retention, informed consent, questionnaire administration, IRB submissions and amendments, SOP development, QA/QC, participant scheduling, group-program logistics</dd>
-      <dt>Data and software</dt>
-      <dd>Proficient in R, REDCap, Qualtrics, SPSS, Microsoft Office, Google Sheets, WordPress, Canva, PHI-compliant file systems; familiar with Python, MATLAB, AFNI, UNIX</dd>
-      <dt>Training</dt>
-      <dd>Stanford Human Subjects Protection; Good Clinical Practice for Social and Behavioral Research; HIPAA/PHI; Biosafety; Bloodborne Pathogens; MRI safety</dd>
-      <dt>Memberships</dt>
-      <dd>Society for Personality and Social Psychology (SPSP); Association for Psychological Science (APS)</dd>
-    </dl>
-  </section>
 </main>
-
-<footer id="contact" aria-labelledby="contact-h">
-  <h2 id="contact-h">Get in touch</h2>
-  <p>The best way to reach me is by email at <a href="mailto:adcrena27@gmail.com">adcrena27@gmail.com</a>. You can also download my <a href="/cv.pdf">CV (PDF)</a> or find me on <a href="https://www.linkedin.com/in/andrew-crena">LinkedIn</a> and <a href="https://github.com/andrew-crena">GitHub</a>.</p>
-</footer>
 </body>
 </html>
