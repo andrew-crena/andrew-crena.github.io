@@ -64,11 +64,10 @@ window.PROJECTS = [
   },
   {
     id: 'garden',
-    title: 'My Digital Garden',
-    description: 'Notes and ideas in progress.',
+    title: 'Notes',
+    description: 'Research ideas in development, each with a record of how it changed, and an informal journal.',
     href: '/my-digital-garden/',
     category: 'writing',
-    status: 'in progress',
     repo: 'andrew-crena/my-digital-garden',
   },
 
