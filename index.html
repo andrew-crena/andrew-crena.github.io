@@ -2,200 +2,100 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Andrew Crena: notes, small tools, music and projects.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#14130f" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Andrew Crena studies awe, music, and the arts as paths to wellbeing.">
 <title>Andrew Crena</title>
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="Andrew Crena">
-<link rel="stylesheet" href="assets/site.css">
-<script src="fountain-config.js"></script>
-<script src="projects.js"></script>
-<style>
-  .hero{padding:8px 0 28px}
-  .hero h1{font:600 clamp(30px,7vw,42px)/1.1 var(--serif);letter-spacing:-.01em;margin:0}
-  .hero p{color:var(--soft);margin:10px 0 0;max-width:40em}
-  .hero .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-
-  .onair{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
-    padding:14px 16px;margin:0 0 26px;border:1px solid var(--line);border-radius:var(--r);
-    background:var(--card);text-decoration:none;color:inherit}
-  .onair:hover{border-color:var(--accent)}
-  .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
-  @media (prefers-reduced-motion:no-preference){ .dot{animation:pulse 2s ease-in-out infinite} }
-  @keyframes pulse{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 8%,transparent)}}
-  .onair b{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-  .onair span{display:block;overflow-wrap:anywhere}
-  .onair .go{color:var(--soft);font-size:14px;white-space:nowrap}
-
-  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1 1 auto}
-  .chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:0 16px;min-height:44px;font-size:14px;color:var(--ink)}
-  .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-  .chip .n{color:var(--soft);margin-left:4px;font-size:12px}
-  .chip[aria-pressed="true"] .n{color:inherit;opacity:.7}
-  .search{flex:1 1 220px;max-width:320px;position:relative}
-  .search input{width:100%;min-height:48px;border:1px solid var(--line);border-radius:999px;background:var(--card);
-    padding:0 14px 0 36px;font-size:16px;color:var(--ink)}
-  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--soft)}
-
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;list-style:none;margin:0;padding:0}
-  .card{position:relative;display:flex;flex-direction:column;gap:8px;height:100%;padding:18px 18px 16px;
-    border:1px solid var(--line);border-radius:var(--r);background:var(--card);transition:border-color .15s,transform .15s}
-  .card:hover{border-color:var(--accent)}
-  @media (prefers-reduced-motion:no-preference){ .card:hover{transform:translateY(-2px)} }
-  .card:target{outline:3px solid var(--accent);outline-offset:3px}
-  .card h3{margin:0;font:600 20px/1.2 var(--serif)}
-  .card h3 a{color:inherit;text-decoration:none}
-  .card h3 a::after{content:"";position:absolute;inset:0;border-radius:var(--r)}   /* whole card is the link */
-  .card h3 a:focus-visible{outline:none}
-  .card:focus-within{outline:3px solid var(--accent);outline-offset:3px}
-  .card p{margin:0;color:var(--soft);font-size:15px;flex:1}
-  .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
-  .pill{border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--soft)}
-  .pill.live{border-color:var(--accent);color:var(--accent);font-weight:700}
-  .sub{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;position:relative;z-index:1}  /* above the card link */
-  .sub a{color:var(--ink);display:inline-flex;align-items:center;min-height:44px}
-  .empty{color:var(--soft);padding:30px 0;text-align:center}
-  #count{color:var(--soft);font-size:14px;margin:14px 0 0}
-</style>
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<a class="skip" href="#projects">Skip to projects</a>
-<div class="wrap">
-  <header class="hero">
-    <h1>Andrew Crena</h1>
-    <p>Notes, small tools, and projects.</p>
-    <div class="links">
-      <a class="btn" href="https://github.com/andrew-crena">GitHub</a>
-    </div>
-  </header>
+<a class="skip" href="#main">Skip to content</a>
 
-  <a class="onair" id="onair" href="fountain/" hidden>
-    <span class="dot" aria-hidden="true"></span>
-    <span><b>On air · From a Fountain</b><span id="onair-what">Records playing live now</span></span>
-    <span class="go" aria-hidden="true">Listen →</span>
-  </a>
+<header>
+  <h1>Andrew Crena</h1>
+  <p>I study how awe, music, and the arts help people feel part of something larger than themselves, and what those moments do for wellbeing over time.</p>
+  <!-- TODO: replace with a link to the short intro video, or delete this line. -->
+  <p class="todo">[TODO: optional link to a short intro video]</p>
+</header>
 
-  <main id="projects" tabindex="-1">
-    <h2 class="sr-only">Projects</h2>
-    <div class="bar">
-      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
-      <label class="search">
-        <span class="sr-only">Search projects</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Search" autocomplete="off">
-      </label>
-    </div>
-    <ul class="grid" id="grid"></ul>
-    <p id="count" role="status" aria-live="polite"></p>
-    <noscript>
+<main id="main">
+  <section id="about" aria-labelledby="about-h">
+    <h2 id="about-h">About</h2>
+    <p>Until recently I was lab manager and research coordinator at Stanford’s Mind &amp; Body Lab, working with Dr. Alia Crum. I ran the day-to-day of a longitudinal clinical trial, from building the data systems to keeping the samples moving and the reports on time.</p>
+    <p>I’m now applying to graduate programs and research roles focused on flourishing, self-transcendence, and the place of music and the arts in a good life. <span class="todo">[TODO: degree, school, year]</span></p>
+  </section>
+
+  <section id="work" aria-labelledby="work-h">
+    <h2 id="work-h">Selected work</h2>
+
+    <article>
+      <h3>EMBRACE trial</h3>
+      <p class="meta">Research coordinator, Stanford Mind &amp; Body Lab</p>
+      <p>A longitudinal randomized controlled trial run out of the Crum Lab.</p>
       <ul>
-        <li><a href="fountain/">From a Fountain</a></li>
-        <li><a href="/not-quite-my-tempo/">Not Quite My Tempo</a></li>
-        <li><a href="/house-collection/">House Collection</a></li>
-        <li><a href="/my-digital-garden/">My Digital Garden</a></li>
+        <li>Built the REDCap infrastructure for surveys and longitudinal data capture</li>
+        <li>Managed the biospecimen pipeline from collection to storage</li>
+        <li>Prepared NIH accrual reporting</li>
       </ul>
-    </noscript>
-  </main>
+      <ul>
+        <li><a href="https://clinicaltrials.gov/study/NCT06705218">Trial registration</a></li>
+        <li class="todo">[TODO: link to REDCap build, de-identified screenshots]</li>
+      </ul>
+    </article>
 
-  <footer class="foot">
-    <span>Andrew Crena</span>
-    <a href="https://github.com/andrew-crena">github.com/andrew-crena</a>
-  </footer>
-</div>
+    <article>
+      <h3>Modeling longitudinal outcomes</h3>
+      <p class="meta">Analysis work for EMBRACE</p>
+      <p>Mixed-effects models for repeated-measures outcomes. <span class="todo">[TODO: one sentence on what the models tested]</span></p>
+      <ul>
+        <li class="todo">[TODO: link to code on GitHub, with trial data removed]</li>
+      </ul>
+    </article>
 
-<script>
-(() => {
-  'use strict';
-  const projects = (window.PROJECTS || []).filter(p => !p.hidden);
-  const cats = (window.CATEGORIES || []).filter(c => projects.some(p => p.category === c.id));
-  const grid = document.getElementById('grid'), chips = document.getElementById('chips');
-  const q = document.getElementById('q'), count = document.getElementById('count');
+    <article>
+      <h3>After the concert</h3>
+      <p class="meta">NSF GRFP research proposal</p>
+      <p>A proposed study of post-concert reactivation. <span class="todo">[TODO: one sentence on the question and design]</span></p>
+      <ul>
+        <li class="todo">[TODO: link to the proposal (PDF)]</li>
+      </ul>
+    </article>
+  </section>
 
-  let cat = new URLSearchParams(location.search).get('c') || 'all';
-  if (cat !== 'all' && !cats.some(c => c.id === cat)) cat = 'all';
+  <section id="methods" aria-labelledby="methods-h">
+    <h2 id="methods-h">Methods and tools</h2>
+    <dl>
+      <dt>Study design</dt>
+      <dd>Longitudinal RCTs, repeated measures</dd>
+      <dt>Data capture</dt>
+      <dd>REDCap survey and project design</dd>
+      <dt>Analysis</dt>
+      <dd>Mixed-effects models <span class="todo">[TODO: software, e.g. R or Python]</span></dd>
+      <dt>Operations</dt>
+      <dd>Biospecimen tracking, sample QC, NIH reporting</dd>
+    </dl>
+  </section>
 
-  const el = (tag, attrs, ...kids) => {
-    const n = document.createElement(tag);
-    for (const [k, v] of Object.entries(attrs || {})) {
-      if (v === undefined || v === null || v === false) continue;
-      if (k === 'class') n.className = v; else n.setAttribute(k, v);
-    }
-    for (const k of kids) if (k != null) n.append(k);
-    return n;
-  };
+  <section id="beyond" aria-labelledby="beyond-h">
+    <h2 id="beyond-h">Beyond the lab</h2>
+    <p>I DJ on vinyl, mostly house, jazz, soul, and funk, from a collection of a couple hundred records. At the Center for Creativity in Redwood City I work part-time and volunteer, and I’m designing a listening installation for the building’s round foyer. It’s the same question as my research, asked with a turntable: what makes people stop and really listen together?</p>
+    <ul>
+      <li><a href="/projects/">Projects</a>: From a Fountain, House Collection, Not Quite My Tempo, and other small tools</li>
+      <li class="todo">[TODO: link to a mix]</li>
+      <li class="todo">[TODO: link to record collection on Discogs]</li>
+    </ul>
+  </section>
+</main>
 
-  function buildChips() {
-    chips.textContent = '';
-    const all = [{ id: 'all', label: 'All' }, ...cats];
-    for (const c of all) {
-      const n = c.id === 'all' ? projects.length : projects.filter(p => p.category === c.id).length;
-      const b = el('button', { type: 'button', class: 'chip', 'aria-pressed': String(cat === c.id) }, c.label, el('span', { class: 'n' }, String(n)));
-      b.addEventListener('click', () => {
-        cat = c.id;
-        const u = new URL(location.href);
-        if (cat === 'all') u.searchParams.delete('c'); else u.searchParams.set('c', cat);
-        history.replaceState(null, '', u);
-        buildChips(); render();
-      });
-      chips.append(b);
-    }
-  }
-
-  const sorted = projects.slice().sort((a, b) =>
-    (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (b.year || 0) - (a.year || 0));
-
-  function render() {
-    const f = q.value.trim().toLowerCase();
-    const list = sorted.filter(p => (cat === 'all' || p.category === cat) && (!f ||
-      [p.title, p.description, p.category, ...(p.tags || [])].join(' ').toLowerCase().includes(f)));
-    grid.textContent = '';
-    for (const p of list) {
-      const catLabel = (cats.find(c => c.id === p.category) || {}).label || p.category;
-      const meta = el('div', { class: 'meta' },
-        el('span', { class: 'pill' }, catLabel),
-        p.status && p.status !== 'live' ? el('span', { class: 'pill' }, p.status) : null,
-        p.year ? el('span', { class: 'pill' }, String(p.year)) : null);
-      const sub = el('div', { class: 'sub' });
-      for (const l of p.links || []) sub.append(el('a', { href: l.href }, l.label));
-      if (p.repo) sub.append(el('a', { href: 'https://github.com/' + p.repo }, 'Source', el('span', { class: 'sr-only' }, ' for ' + p.title)));
-      grid.append(el('li', { class: 'card', id: p.id },
-        meta,
-        el('h3', {}, el('a', { href: p.href }, p.title)),
-        p.description ? el('p', {}, p.description) : null,
-        sub.childNodes.length ? sub : null));
-    }
-    if (!list.length) grid.append(el('li', { class: 'empty' }, 'Nothing matches that yet.'));
-    count.textContent = list.length + ' of ' + projects.length + ' project' + (projects.length === 1 ? '' : 's');
-  }
-
-  q.addEventListener('input', render);
-  buildChips(); render();
-  if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView({ block: 'center' }); }
-
-  // Live status for From a Fountain (same service its own page uses).
-  const api = (window.FOUNTAIN_API || '').replace(/\/$/, '');
-  const banner = document.getElementById('onair'), what = document.getElementById('onair-what');
-  async function check() {
-    if (!api) return;
-    try {
-      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 6000);
-      const r = await fetch(api + '/api/now', { cache: 'no-store', signal: ctl.signal, headers: { 'ngrok-skip-browser-warning': '1' } });
-      clearTimeout(t);
-      const n = await r.json();
-      const on = !!(n.artist && n.source !== 'none');
-      banner.hidden = !on;
-      if (on) what.textContent = (n.song || n.album || 'Now playing') + ' · ' + n.artist;
-    } catch (_) { banner.hidden = true; }
-  }
-  check();
-  setInterval(() => { if (!document.hidden) check(); }, 30000);
-})();
-</script>
+<footer id="contact" aria-labelledby="contact-h">
+  <h2 id="contact-h">Get in touch</h2>
+  <ul>
+    <li class="todo">[TODO: link to CV (PDF)]</li>
+    <li class="todo">[TODO: email address]</li>
+    <li class="todo">[TODO: LinkedIn]</li>
+    <li><a href="https://github.com/andrew-crena">GitHub</a></li>
+    <li class="todo">[TODO: ORCID]</li>
+  </ul>
+</footer>
 </body>
 </html>

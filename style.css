@@ -1,0 +1,56 @@
+/* Plain, single-column styles for the main page. */
+:root {
+  color-scheme: light dark;
+  --bg: #fff;
+  --fg: #111;
+  --muted: #555;
+  --link: #0000ee;
+  --visited: #551a8b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111;
+    --fg: #eee;
+    --muted: #aaa;
+    --link: #8ab4f8;
+    --visited: #c58af9;
+  }
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0 auto;
+  max-width: 40rem;
+  padding: 3rem 1rem 4rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: 1rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+h1, h2, h3 { line-height: 1.25; font-weight: 600; }
+h1 { font-size: 1.75rem; margin: 0 0 1rem; }
+h2 { font-size: 1.375rem; margin: 3rem 0 1rem; }
+h3 { font-size: 1.125rem; margin: 2rem 0 0.25rem; }
+
+p, ul, dl { margin: 0 0 1rem; }
+ul { padding-left: 1.25rem; }
+li { margin-bottom: 0.25rem; }
+
+dt { font-weight: 600; }
+dd { margin: 0 0 0.75rem; }
+
+a { color: var(--link); text-underline-offset: 0.15em; }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+.meta { color: var(--muted); margin-bottom: 0.5rem; }
+
+/* Unfinished text: easy to spot, easy to search for. */
+.todo { font-style: italic; color: var(--muted); }
+
+footer { margin-top: 3rem; }
+
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 1rem; top: 1rem; background: var(--bg); padding: 0.5rem; }
