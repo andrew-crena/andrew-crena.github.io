@@ -50,6 +50,8 @@
     .now .label { font: 700 12px var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
     .now .song { font: 700 19px/1.2 var(--body); margin: 2px 0 0; overflow-wrap: anywhere; }
     .now .by { color: var(--soft); font-size: 15px; }
+    .now .meta { display: block; color: var(--soft); font-size: 14px; line-height: 1.4; margin-top: 6px; overflow-wrap: anywhere; }
+    .now .meta span { display: block; }
     .now .go { grid-column: 1 / -1; font: 500 20px/1 var(--hand); color: var(--red); margin-top: 2px; }
 
     .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -105,7 +107,8 @@
       <span class="rec" aria-hidden="true"></span>
       <span><span class="label">Playing right now</span>
         <span class="song" id="now-song"></span>
-        <span class="by" id="now-by"></span></span>
+        <span class="by" id="now-by"></span>
+        <span class="meta" id="now-meta"></span></span>
       <span class="go">Does it remind you of something? Write it down →</span>
     </a>
 
@@ -417,27 +420,37 @@
   })();
   </script>
   <script>
-  // What's on the turntable, from the letter book service (address in fountain-config.js)
+  // What's on the turntable, from the letter book service (addresses in fountain-config.js).
+  // The service recognizes the record and matches it to the Discogs crate.
   (() => {
     'use strict';
-    const api = (window.FOUNTAIN_API || '').replace(/\/$/, '');
-    if (!api) return;
-    const card = document.getElementById('now'), stamp = document.getElementById('onair');
+    if (!window.fountainFetch) return;
+    const $ = id => document.getElementById(id);
+    const card = $('now'), stamp = $('onair'), meta = $('now-meta');
+    const line = text => { const el = document.createElement('span'); el.textContent = text; return el; };
     async function check() {
       try {
-        const r = await fetch(api + '/api/now', { cache: 'no-store', headers: { 'ngrok-skip-browser-warning': '1' } });
+        const r = await window.fountainFetch('/api/now');
         const n = await r.json();
         const on = !!(n.artist && n.source !== 'none');
         stamp.textContent = '● ON AIR'; stamp.classList.add('live');
         card.hidden = !on;
-        if (on) {
-          document.getElementById('now-song').textContent = n.song || n.album;
-          document.getElementById('now-by').textContent = n.artist;
-        }
+        if (!on) return;
+        $('now-song').textContent = n.song || n.album;
+        $('now-by').textContent = n.artist;
+        // Basic record details: album, pressing, and the first few credited players.
+        const lines = [];
+        if (n.song && n.album) lines.push('from ' + n.album);
+        const press = [[n.label && n.label.split(',')[0], n.catno].filter(Boolean).join(' '), n.year].filter(Boolean).join(' · ');
+        if (press) lines.push(press);
+        const credits = (n.credits || []).slice(0, 3).map(c => c.name + (c.role ? ', ' + c.role.toLowerCase() : ''));
+        if (credits.length) lines.push(credits.join(' · '));
+        meta.replaceChildren(...lines.map(line));
+        meta.hidden = !lines.length;
       } catch (_) {
         card.hidden = true;
         // The music can be live without the letter book service; trust the player.
-        if (document.getElementById('fountain').dataset.state !== 'playing') { stamp.textContent = 'OFF AIR'; stamp.classList.remove('live'); }
+        if ($('fountain').dataset.state !== 'playing') { stamp.textContent = 'OFF AIR'; stamp.classList.remove('live'); }
       }
     }
     check();
