@@ -134,7 +134,10 @@ const API = (window.FOUNTAIN_API || '').replace(/\/$/, '') + '/api';
 const H = { 'ngrok-skip-browser-warning': '1' };
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const get = p => fetch(API + p, { headers: H, cache: 'no-store' }).then(r => r.json());
+// On the website, fountain-config.js supplies fountainFetch, which tries each service address;
+// served by the service itself there is no config and requests stay same-origin.
+const req = (p, o) => window.fountainFetch ? window.fountainFetch('/api' + p, o) : fetch(API + p, o);
+const get = p => req(p, { headers: H, cache: 'no-store' }).then(r => r.json());
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const SHOW = 5;
 
@@ -236,7 +239,7 @@ $('#send').addEventListener('click', async () => {
   if (!body) { $('#body').focus(); return; }
   $('#send').disabled = true;
   try {
-    const r = await fetch(API + '/letters', { method: 'POST', headers: { ...H, 'Content-Type': 'application/json' },
+    const r = await req('/letters', { method: 'POST', headers: { ...H, 'Content-Type': 'application/json' },
       body: JSON.stringify({ kind, artist: about.artist, album: about.album, song: about.song, body, name: $('#name').value.trim() }) });
     const d = await r.json();
     if (!r.ok) throw new Error(d.error || 'Could not save it.');

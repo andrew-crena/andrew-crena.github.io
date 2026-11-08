@@ -183,11 +183,9 @@
   const api = (window.FOUNTAIN_API || '').replace(/\/$/, '');
   const banner = document.getElementById('onair'), what = document.getElementById('onair-what');
   async function check() {
-    if (!api) return;
+    if (!api || !window.fountainFetch) return;
     try {
-      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 6000);
-      const r = await fetch(api + '/api/now', { cache: 'no-store', signal: ctl.signal, headers: { 'ngrok-skip-browser-warning': '1' } });
-      clearTimeout(t);
+      const r = await window.fountainFetch('/api/now');   // tries each address (fountain-config.js)
       const n = await r.json();
       const on = !!(n.artist && n.source !== 'none');
       banner.hidden = !on;

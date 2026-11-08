@@ -95,11 +95,14 @@ input{width:100%;background:var(--card);border:2px solid var(--ink);border-radiu
 (() => {
 'use strict';
 const API = (window.FOUNTAIN_API || '').replace(/\/$/, '') + '/api';
+// On the website, fountain-config.js supplies fountainFetch, which tries each service address;
+// served by the service itself there is no config and requests stay same-origin.
+const req = (p, o) => window.fountainFetch ? window.fountainFetch('/api' + p, o) : fetch(API + p, o);
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let PIN = '';
 try { PIN = sessionStorage.getItem('pin') || ''; } catch {}
-const call = (p, body) => fetch(API + p, {
+const call = (p, body) => req(p, {
   method: body ? 'POST' : 'GET',
   headers: { 'X-Docent-Pin': PIN, 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': '1' },
   body: body ? JSON.stringify(body) : undefined }).then(async r => { const d = await r.json(); if (!r.ok) throw new Error(d.error); return d; });
@@ -127,7 +130,7 @@ function showNow(n) {
     ${manual ? '<p class="soft">Automatic recognition is paused.</p><button class="light box" id="auto" type="button">Turn automatic back on</button>' : ''}`;
   const a = $('#auto'); if (a) a.onclick = async () => showNow(await call('/now', { mode: 'auto' }));
 }
-const loadNow = () => fetch(API + '/now', { headers: { 'ngrok-skip-browser-warning': '1' } }).then(r => r.json()).then(showNow).catch(() => {});
+const loadNow = () => req('/now', { headers: { 'ngrok-skip-browser-warning': '1' } }).then(r => r.json()).then(showNow).catch(() => {});
 
 let t;
 $('#q').oninput = () => { clearTimeout(t); t = setTimeout(search, 250); };
