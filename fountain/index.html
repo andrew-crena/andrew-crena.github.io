@@ -6,7 +6,7 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="color-scheme" content="light">
   <meta name="description" content="Records played live on a turntable and streamed. Listen, watch, or leave a memory in the letter book.">
-  <title>From a Fountain · live vinyl</title>
+  <title>Live vinyl</title>
   <script src="../fountain-config.js"></script>
   <style>
     :root { --ink: #000; --bg: #fff; --red: #c00000; --link: #0000ee; color-scheme: light; }
@@ -14,7 +14,6 @@
     [hidden] { display: none !important; }
     html { background: var(--bg); }
     body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.4 Calibri, Carlito, "Segoe UI", system-ui, sans-serif; }
-    body.has-now { padding-bottom: 6.5rem; }
     main { max-width: 34rem; margin: 0 auto;
       padding: max(.75rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 1.5rem max(1rem, env(safe-area-inset-left)); }
     a { color: var(--link); }
@@ -24,8 +23,6 @@
     .bar a { display: inline-flex; align-items: center; min-height: 44px; }
     #onair { font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: .9rem; text-decoration: line-through; }
     #onair.live { color: var(--red); text-decoration: none; }
-    h1 { font-size: 1.9rem; line-height: 1.1; margin: .4rem 0 .15rem; }
-    .tag { margin: 0 0 1rem; }
 
     .options { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
     .options .actions { display: contents; }
@@ -42,15 +39,14 @@
     #video-panel p { margin: .35rem 0 .75rem; }
     footer { margin-top: 1rem; font-size: .95rem; }
 
-    /* What's playing: a small bar pinned to the bottom of the screen */
-    .now { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 2px solid var(--ink);
-      padding: .5rem max(1rem, env(safe-area-inset-right)) max(.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
-    .now .in { max-width: 34rem; margin: 0 auto; display: flex; gap: .65rem; align-items: center; }
-    .now img { width: 60px; height: 60px; object-fit: cover; flex: none; }
+    /* What's playing, at the top: cover, song, artist, album · year, and the question */
+    .now { margin: .25rem 0 .75rem; }
+    .now .in { display: flex; gap: .75rem; align-items: center; }
+    .now img { width: 76px; height: 76px; object-fit: cover; flex: none; }
     .now .txt { min-width: 0; line-height: 1.25; }
-    .now .song { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .now .line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .now a { display: inline-block; margin-top: .1rem; }
+    .now .song { font-weight: 700; font-size: 1.15rem; overflow-wrap: anywhere; }
+    .now .ask { display: flex; align-items: center; justify-content: center; gap: .4rem; min-height: 56px; margin-top: .6rem;
+      padding: .6rem .8rem; border: 2px solid var(--link); color: var(--link); font-size: 1.1rem; font-weight: 700; text-decoration: none; text-align: center; }
   </style>
 </head>
 <body>
@@ -64,8 +60,18 @@
       <a href="/projects/">&larr; All projects</a>
       <span id="onair">On air</span>
     </nav>
-    <h1>From a Fountain</h1>
-    <p class="tag">Records played live, for whoever happens by.</p>
+
+    <section class="now" id="now" aria-label="Playing now" hidden>
+      <div class="in">
+        <img id="now-cover" alt="" width="76" height="76" hidden>
+        <div class="txt">
+          <div class="song" id="now-song"></div>
+          <div id="now-by"></div>
+          <div id="now-meta"></div>
+        </div>
+      </div>
+      <a class="ask" href="../letters/">What does this song bring back? <span aria-hidden="true">&rarr;</span></a>
+    </section>
 
     <div class="options">
       <div class="actions" id="actions" hidden>
@@ -96,17 +102,6 @@
     </footer>
   </main>
 
-  <div class="now" id="now" role="region" aria-label="Playing now" hidden>
-    <div class="in">
-      <img id="now-cover" alt="" width="60" height="60" hidden>
-      <div class="txt">
-        <div class="song" id="now-song"></div>
-        <div class="line" id="now-by"></div>
-        <div class="line" id="now-meta"></div>
-        <a href="../letters/">What does this song bring back?</a>
-      </div>
-    </div>
-  </div>
   <script>
   (() => {
     'use strict';
@@ -296,7 +291,7 @@
       retries = 0;
       try {
         if ('mediaSession' in navigator && 'MediaMetadata' in window) {
-          navigator.mediaSession.metadata = new MediaMetadata({title: 'From a Fountain', artist: 'Live vinyl'});
+          navigator.mediaSession.metadata = new MediaMetadata({title: 'Live vinyl', artist: 'Andrew Crena'});
         }
       } catch (_) {}
       connect();
@@ -314,7 +309,7 @@
       embed.searchParams.set('rel', '0');
       embed.searchParams.set('autoplay', '0');
       frame.src = embed.href;
-      frame.title = 'From a Fountain — optional live video';
+      frame.title = 'Live video of the turntable';
       frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
       frame.allowFullscreen = true;
       frame.referrerPolicy = 'strict-origin-when-cross-origin';
@@ -376,7 +371,7 @@
     const $ = id => document.getElementById(id);
     const card = $('now'), stamp = $('onair'), cover = $('now-cover');
     function onAir(on) { stamp.classList.toggle('live', on); stamp.setAttribute('aria-label', on ? 'On air' : 'Off air'); }
-    function showCard(on) { card.hidden = !on; document.body.classList.toggle('has-now', on); }
+    function showCard(on) { card.hidden = !on; }
     async function check() {
       try {
         const r = await window.fountainFetch('/api/now');
