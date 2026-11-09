@@ -4,52 +4,53 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Records played live on a turntable and streamed. Listen, see what's playing, or leave a memory in the letter book.">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Records played live on a turntable and streamed. Listen, watch, or leave a memory in the letter book.">
   <title>From a Fountain · live vinyl</title>
   <script src="../fountain-config.js"></script>
   <style>
-    :root { --bg: #fff; --fg: #111; --muted: #555; --line: #ddd; --link: #0000ee; color-scheme: light dark; }
-    @media (prefers-color-scheme: dark) { :root { --bg: #111; --fg: #eee; --muted: #aaa; --line: #333; --link: #8ab4f8; } }
+    :root { --ink: #000; --bg: #fff; --red: #c00000; --link: #0000ee; color-scheme: light; }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    body { margin: 0; background: var(--bg); color: var(--fg); font: 1rem/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    main { max-width: 40rem; margin: 0 auto;
-      padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(2rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
-    a { color: var(--link); text-underline-offset: .15em; }
-    :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
-    h1 { font-size: 1.5rem; line-height: 1.2; margin: 0; }
-    h2 { font-size: 1.05rem; margin: 1.5rem 0 .4rem; }
-    p { margin: 0 0 .6rem; }
-    ul { margin: 0 0 .6rem; padding-left: 1.2rem; }
-    li { margin-bottom: .25rem; }
-    .muted { color: var(--muted); }
-    .top { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
-    #onair { font-size: .85rem; color: var(--muted); }
-    #onair.live { color: inherit; font-weight: 600; }
-    .intro { margin: .35rem 0 1rem; color: var(--muted); }
+    html { background: var(--bg); }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.4 Calibri, Carlito, "Segoe UI", system-ui, sans-serif; }
+    body.has-now { padding-bottom: 6.5rem; }
+    main { max-width: 34rem; margin: 0 auto;
+      padding: max(.75rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 1.5rem max(1rem, env(safe-area-inset-left)); }
+    a { color: var(--link); }
+    :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
-    .now { display: flex; gap: .75rem; align-items: flex-start; padding: .75rem 0; margin: 0 0 1rem;
-      border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-    .now img { width: 96px; height: 96px; object-fit: cover; flex: none; background: var(--line); }
-    .now .label { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-    .now .song { font-weight: 600; font-size: 1.1rem; line-height: 1.3; overflow-wrap: anywhere; }
-    .now .meta { font-size: .9rem; color: var(--muted); line-height: 1.4; overflow-wrap: anywhere; margin: .15rem 0 .2rem; }
-    .now .meta span { display: block; }
+    .bar { display: flex; justify-content: space-between; align-items: center; min-height: 44px; }
+    .bar a { display: inline-flex; align-items: center; min-height: 44px; }
+    #onair { font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: .9rem; text-decoration: line-through; }
+    #onair.live { color: var(--red); text-decoration: none; }
+    h1 { font-size: 1.9rem; line-height: 1.1; margin: .4rem 0 .15rem; }
+    .tag { margin: 0 0 1rem; }
 
-    .controls { display: flex; gap: .5rem; flex-wrap: wrap; margin: 0 0 .5rem; }
-    .controls .actions { display: contents; }
-    .controls button, .controls a.btn { font: inherit; padding: .55rem .9rem; min-height: 44px; border: 1px solid var(--fg);
-      background: transparent; color: var(--fg); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; }
-    #listen { background: var(--fg); color: var(--bg); font-weight: 600; }
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+    .options .actions { display: contents; }
+    .options button, .options a.opt { font: inherit; font-size: 1.05rem; min-height: 56px; padding: .6rem; border: 2px solid var(--ink);
+      background: var(--bg); color: var(--ink); cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: .45rem; }
+    .options:has(#watch[hidden]) a.opt { grid-column: 1 / -1; }
+    #listen { grid-column: 1 / -1; min-height: 64px; font-size: 1.3rem; font-weight: 700; background: var(--ink); color: var(--bg); }
     #listen .icon::before { content: '\25B6'; font-size: .8em; }
     #listen[aria-pressed="true"] .icon::before { content: '\25A0'; }
-    .controls .hint { font-size: .85rem; opacity: .75; }
-    .status { margin: 0 0 .75rem; font-size: .9rem; }
-    .status #badge { font-weight: 600; }
-    audio { width: 100%; display: block; margin: 0 0 1rem; }
+    .status { margin: .6rem 0 .75rem; font-size: .95rem; min-height: 1.4em; }
+    .status #badge { font-weight: 700; }
+    audio { width: 100%; display: block; margin: 0 0 .75rem; }
     .video-frame iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; background: #000; }
-    footer { margin-top: 1.5rem; padding-top: .75rem; border-top: 1px solid var(--line); font-size: .9rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    #video-panel p { margin: .35rem 0 .75rem; }
+    footer { margin-top: 1rem; font-size: .95rem; }
+
+    /* What's playing: a small bar pinned to the bottom of the screen */
+    .now { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 2px solid var(--ink);
+      padding: .5rem max(1rem, env(safe-area-inset-right)) max(.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
+    .now .in { max-width: 34rem; margin: 0 auto; display: flex; gap: .65rem; align-items: center; }
+    .now img { width: 60px; height: 60px; object-fit: cover; flex: none; }
+    .now .txt { min-width: 0; line-height: 1.25; }
+    .now .song { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .now .line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .now a { display: inline-block; margin-top: .1rem; }
   </style>
 </head>
 <body>
@@ -59,67 +60,53 @@
        No passwords, tokens, or private server configuration belong in this file. -->
   <main class="fountain" id="fountain" data-state="ready"
         data-channel="UCaOM2mNthp-3w-bGoTy8MAg" data-video-id="">
-    <header>
-      <div class="top"><h1>From a Fountain</h1><span id="onair">Off air</span></div>
-      <p class="intro">Records played live on a turntable, streamed for whoever happens by. Listen on headphones, see what's playing, or leave a memory about a song.</p>
-    </header>
+    <nav class="bar" aria-label="Site">
+      <a href="/projects/">&larr; All projects</a>
+      <span id="onair">On air</span>
+    </nav>
+    <h1>From a Fountain</h1>
+    <p class="tag">Records played live, for whoever happens by.</p>
 
-    <div class="now" id="now" hidden>
-      <img id="now-cover" alt="" width="96" height="96" hidden>
-      <div>
-        <div class="label">Playing now</div>
-        <div class="song" id="now-song"></div>
-        <div id="now-by"></div>
-        <div class="meta" id="now-meta"></div>
-        <a href="../letters/">Write about this song</a>
-      </div>
-    </div>
-
-    <div class="controls">
+    <div class="options">
       <div class="actions" id="actions" hidden>
         <button id="listen" type="button" aria-pressed="false" aria-controls="audio-panel">
           <span class="icon" aria-hidden="true"></span><span id="listen-label">Listen</span>
         </button>
-        <button id="watch" type="button" aria-expanded="false" aria-controls="video-panel">
-          <span id="watch-label">Watch</span><span class="hint">turntable video</span>
-        </button>
+        <button id="watch" type="button" aria-expanded="false" aria-controls="video-panel"><span id="watch-label">Watch</span></button>
       </div>
-      <a class="btn" href="../letters/">Letter book<span class="hint">write or read memories</span></a>
+      <a class="opt" href="../letters/">Letter book</a>
     </div>
 
-    <p class="status" role="status" aria-live="polite" aria-atomic="true">
-      <span id="badge">A place to listen</span> · <span id="message" class="muted">Press play to join the audio.</span>
-    </p>
+    <p class="status" role="status" aria-live="polite" aria-atomic="true"><span id="badge">A place to listen</span> · <span id="message">Press play to join the audio.</span></p>
     <section id="audio-panel" aria-label="Live audio player">
       <audio id="audio" controls preload="none" aria-label="Live vinyl audio"
              src="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"
              data-alt-src="https://cuddly-doe-adversely.ngrok-free.app/stream.aac https://malika-unflaky-loan.ngrok-free.dev/stream.mp3 https://cuddly-doe-adversely.ngrok-free.app/stream.mp3"></audio>
     </section>
-    <section id="video-panel" aria-label="Optional live video" hidden>
+    <section id="video-panel" aria-label="Live video of the turntable" hidden>
       <div class="video-frame" id="video-mount"></div>
-      <p class="muted">Press play in the video player. Video has its own sound and may run behind the audio.
-        <a id="video-fallback" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live" target="_blank" rel="noopener">Open on YouTube</a></p>
+      <p><a id="video-fallback" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live" target="_blank" rel="noopener">Open the video on YouTube</a></p>
     </section>
-
-    <h2>How it works</h2>
-    <ul>
-      <li><b>Stream:</b> turntable → USB audio interface → BUTT (AAC, 256 kbps) → Icecast → a small Python service → ngrok. The player tries two addresses and two formats, and reconnects if the audio drops.</li>
-      <li><b>What's playing:</b> while someone is here, the service sends Shazam about 13 seconds of the stream every 20 seconds (via the open-source shazamio library) and matches the answer to my Discogs collection, so the card shows the actual pressing. When no one is here, it asks nothing.</li>
-      <li><b>When Shazam misses:</b> I set the song on the docent page, and the service follows the rest of that side by the Discogs track lengths.</li>
-      <li><b>Letter book:</b> each song links to memories listeners have written about it, its album or its artist. Letters appear once I've read them.</li>
-      <li><b>Privacy:</b> no accounts, no analytics. YouTube loads only if you press Watch.</li>
-    </ul>
-    <p class="muted">The audio is quiet between records; if it can't connect, the set has probably ended. Headphones near the room may hear the speakers slightly ahead of the stream.
-      <a id="direct-audio" href="https://malika-unflaky-loan.ngrok-free.dev/stream.aac" target="_blank" rel="noopener">Open the audio directly</a> ·
-      <a id="direct-video" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live" target="_blank" rel="noopener">Video on YouTube</a></p>
-    <noscript><p>The audio controls above work without JavaScript. Video is available through the YouTube link.</p></noscript>
+    <noscript><p>The audio player above works without JavaScript.</p></noscript>
 
     <footer>
-      <a href="/projects/">All projects</a>
-      <a href="https://github.com/andrew-crena/from-a-fountain">Source code</a>
-      <a href="../docent/">Docent sign-in</a>
+      <a id="direct-audio" href="https://malika-unflaky-loan.ngrok-free.dev/stream.aac" target="_blank" rel="noopener">Audio only</a> ·
+      <a id="direct-video" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live" target="_blank" rel="noopener">YouTube</a> ·
+      <a href="../docent/">Docent</a>
     </footer>
   </main>
+
+  <div class="now" id="now" role="region" aria-label="Playing now" hidden>
+    <div class="in">
+      <img id="now-cover" alt="" width="60" height="60" hidden>
+      <div class="txt">
+        <div class="song" id="now-song"></div>
+        <div class="line" id="now-by"></div>
+        <div class="line" id="now-meta"></div>
+        <a href="../letters/">What does this song bring back?</a>
+      </div>
+    </div>
+  </div>
   <script>
   (() => {
     'use strict';
@@ -387,31 +374,24 @@
     'use strict';
     if (!window.fountainFetch) return;
     const $ = id => document.getElementById(id);
-    const card = $('now'), stamp = $('onair'), meta = $('now-meta'), cover = $('now-cover');
-    const line = text => { const el = document.createElement('span'); el.textContent = text; return el; };
-    function onAir(on) { stamp.textContent = on ? 'On air' : 'Off air'; stamp.classList.toggle('live', on); }
+    const card = $('now'), stamp = $('onair'), cover = $('now-cover');
+    function onAir(on) { stamp.classList.toggle('live', on); stamp.setAttribute('aria-label', on ? 'On air' : 'Off air'); }
+    function showCard(on) { card.hidden = !on; document.body.classList.toggle('has-now', on); }
     async function check() {
       try {
         const r = await window.fountainFetch('/api/now');
         const n = await r.json();
         onAir(true);
         const on = !!(n.artist && n.source !== 'none');
-        card.hidden = !on;
+        showCard(on);
         if (!on) return;
         $('now-song').textContent = n.song || n.album;
         $('now-by').textContent = n.artist;
+        $('now-meta').textContent = [n.song && n.album, n.year].filter(Boolean).join(' · ');
         if (n.cover && /^https:\/\//.test(n.cover)) { if (cover.src !== n.cover) cover.src = n.cover; cover.alt = 'Cover of ' + (n.album || n.song); cover.hidden = false; }
         else { cover.hidden = true; cover.removeAttribute('src'); }
-        const lines = [];
-        if (n.song && n.album) lines.push('from ' + n.album);
-        const press = [[n.label && n.label.split(',')[0], n.catno].filter(Boolean).join(' '), n.year].filter(Boolean).join(' · ');
-        if (press) lines.push(press);
-        const credits = (n.credits || []).slice(0, 3).map(c => c.name + (c.role ? ', ' + c.role.toLowerCase() : ''));
-        if (credits.length) lines.push(credits.join(' · '));
-        lines.push(n.source === 'manual' ? 'Set by the docent' : n.via ? 'Recognized by ' + n.via : 'Recognized automatically');
-        meta.replaceChildren(...lines.map(line));
       } catch (_) {
-        card.hidden = true;
+        showCard(false);
         // The music can be live without the letter book service; trust the player.
         if ($('fountain').dataset.state !== 'playing') onAir(false);
       }
