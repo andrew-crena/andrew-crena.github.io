@@ -4,88 +4,52 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="description" content="A jazz kissa in the open. Live records, a place to listen, and no need to stay.">
-  <meta name="theme-color" content="#f1e9d8">
-  <title>From a Fountain — live vinyl</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@500;700&family=Special+Elite&display=swap">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Records played live on a turntable and streamed. Listen, see what's playing, or leave a memory in the letter book.">
+  <title>From a Fountain · live vinyl</title>
   <script src="../fountain-config.js"></script>
   <style>
-    /* Paper on a counter: plain readable type for anything to read or tap; handwriting, tape and stamps for character */
-    :root {
-      --paper: #f1e9d8; --card: #fbf6ea; --ink: #1f1b16; --soft: #6b6152; --pencil: #8a8170;
-      --red: #c8402c; --tape: #e9dcae; --line: #cdbf9f;
-      --body: 'Atkinson Hyperlegible', system-ui, sans-serif; --hand: 'Caveat', 'Segoe Print', cursive; --type: 'Special Elite', 'Courier New', monospace;
-      --wobble: 255px 14px 225px 14px / 14px 225px 14px 255px;
-      color-scheme: light; background: var(--paper); color: var(--ink);
-    }
+    :root { --bg: #fff; --fg: #111; --muted: #555; --line: #ddd; --link: #0000ee; color-scheme: light dark; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #111; --fg: #eee; --muted: #aaa; --line: #333; --link: #8ab4f8; } }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    body { margin: 0; font: 17px/1.5 var(--body); background: var(--paper);
-      background-image: radial-gradient(#00000008 1px, transparent 1px); background-size: 4px 4px; }
-    .fountain { max-width: 520px; margin: 0 auto;
-      padding: max(22px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(36px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
-    button { font: inherit; color: inherit; touch-action: manipulation; cursor: pointer; }
-    button:focus-visible, a:focus-visible, summary:focus-visible, audio:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; }
-    a { color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 1rem/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    main { max-width: 40rem; margin: 0 auto;
+      padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(2rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left)); }
+    a { color: var(--link); text-underline-offset: .15em; }
+    :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+    h1 { font-size: 1.5rem; line-height: 1.2; margin: 0; }
+    h2 { font-size: 1.05rem; margin: 1.5rem 0 .4rem; }
+    p { margin: 0 0 .6rem; }
+    ul { margin: 0 0 .6rem; padding-left: 1.2rem; }
+    li { margin-bottom: .25rem; }
+    .muted { color: var(--muted); }
+    .top { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
+    #onair { font-size: .85rem; color: var(--muted); }
+    #onair.live { color: inherit; font-weight: 600; }
+    .intro { margin: .35rem 0 1rem; color: var(--muted); }
 
-    .stamp { display: inline-block; border: 2.5px solid var(--pencil); color: var(--pencil); font: 700 13px var(--body);
-      letter-spacing: .14em; padding: 3px 10px; transform: rotate(-4deg); border-radius: 4px; }
-    .stamp.live { border-color: var(--red); color: var(--red); }
-    .box { border: 2px solid var(--ink); border-radius: var(--wobble); }
-    .tape { position: absolute; width: 86px; height: 24px; background: var(--tape); opacity: .85; box-shadow: 0 1px 2px #0002;
-      top: -11px; left: 50%; transform: translateX(-50%) rotate(-3deg); }
-
-    h1 { font: 700 clamp(44px, 13vw, 58px)/1 var(--hand); margin: 14px 0 0; transform: rotate(-1.5deg); }
-    .scribble { display: block; width: 130px; height: 10px; margin: 2px 0 0 4px; }
-    .intro { color: var(--soft); margin: 12px 0 0; max-width: 32em; }
-
-    .now { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; margin: 26px 4px 22px;
-      padding: 16px 16px 14px; background: var(--card); color: var(--ink); text-decoration: none; transform: rotate(.8deg); box-shadow: 0 2px 6px #0002; }
-    .rec { width: 64px; height: 64px; border-radius: 50%; position: relative; background: repeating-radial-gradient(circle, #2a2622 0 1.5px, #141210 1.5px 3px);
-      animation: spin 2.4s linear infinite; }
-    .rec::after { content: ''; position: absolute; inset: 23px; border-radius: 50%; background: var(--red); }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (prefers-reduced-motion: reduce) { .rec { animation: none; } }
-    .now .label, .now .song, .now .by { display: block; }
-    .now .label { font: 700 12px var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
-    .now .song { font: 700 19px/1.2 var(--body); margin: 2px 0 0; overflow-wrap: anywhere; }
-    .now .by { color: var(--soft); font-size: 15px; }
-    .now .meta { display: block; color: var(--soft); font-size: 14px; line-height: 1.4; margin-top: 6px; overflow-wrap: anywhere; }
+    .now { display: flex; gap: .75rem; align-items: flex-start; padding: .75rem 0; margin: 0 0 1rem;
+      border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .now img { width: 96px; height: 96px; object-fit: cover; flex: none; background: var(--line); }
+    .now .label { font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .now .song { font-weight: 600; font-size: 1.1rem; line-height: 1.3; overflow-wrap: anywhere; }
+    .now .meta { font-size: .9rem; color: var(--muted); line-height: 1.4; overflow-wrap: anywhere; margin: .15rem 0 .2rem; }
     .now .meta span { display: block; }
-    .now .go { grid-column: 1 / -1; font: 500 20px/1 var(--hand); color: var(--red); margin-top: 2px; }
 
-    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .controls { display: flex; gap: .5rem; flex-wrap: wrap; margin: 0 0 .5rem; }
     .controls .actions { display: contents; }
-    #listen { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px;
-      background: var(--ink); color: var(--card); border: 0; border-radius: var(--wobble); font: 700 22px var(--body); }
-    #listen .icon::before { content: '▶'; }
-    #listen[aria-pressed="true"] .icon::before { content: '■'; }
-    #listen .hint { font-weight: 400; font-size: 14px; color: #cfc6b3; }
-    .pick { display: grid; gap: 2px; align-content: center; min-height: 76px; padding: 12px 10px; text-align: center; background: var(--card);
-      text-decoration: none; color: var(--ink); font: 700 18px var(--body); }
-    .pick .hint { font: 400 13px/1.3 var(--body); color: var(--soft); }
-    #watch { transform: rotate(-1deg); }
-    .book { transform: rotate(1.2deg); }
-
-    .status { min-height: 4.2em; margin: 22px 0 4px; text-align: center; line-height: 1.45; }
-    .badge { display: block; font: 700 22px/1.1 var(--hand); color: var(--red); }
-    #message { display: block; font-size: 15px; color: var(--soft); margin-top: 4px; }
-    .audio-panel { padding: 14px; background: var(--card); }
-    audio { width: 100%; display: block; }
-    .video-frame { background: #181711; border-radius: 10px; overflow: hidden; border: 2px solid var(--ink); }
-    .video-frame iframe { display: block; width: 100%; aspect-ratio: 16 / 9; min-height: 200px; border: 0; }
-    .video-note { font-size: 14px; line-height: 1.55; color: var(--soft); }
-
-    details { margin-top: 18px; color: var(--soft); font-size: 15px; line-height: 1.55; border-top: 1.5px dashed var(--line); }
-    summary { padding: 12px 0; cursor: pointer; color: var(--ink); font-weight: 700; }
-    details a { display: inline-block; padding: 10px 0; min-height: 44px; }
-    details p { margin: 4px 0; }
-    footer { margin-top: 26px; padding-top: 16px; border-top: 1.5px dashed var(--line); display: flex; justify-content: space-between;
-      align-items: flex-end; gap: 12px; flex-wrap: wrap; color: var(--soft); font-size: 14px; }
-    footer .sig { font: 500 22px/1 var(--hand); color: var(--ink); }
-    footer .kissa { width: 100%; font: 13px var(--type); text-align: center; margin-top: 8px; }
-    footer a { color: var(--soft); display: inline-flex; align-items: center; min-height: 44px; }
-    @media (forced-colors: active) { #listen, .box { border: 2px solid ButtonText; } }
+    .controls button, .controls a.btn { font: inherit; padding: .55rem .9rem; min-height: 44px; border: 1px solid var(--fg);
+      background: transparent; color: var(--fg); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem; }
+    #listen { background: var(--fg); color: var(--bg); font-weight: 600; }
+    #listen .icon::before { content: '\25B6'; font-size: .8em; }
+    #listen[aria-pressed="true"] .icon::before { content: '\25A0'; }
+    .controls .hint { font-size: .85rem; opacity: .75; }
+    .status { margin: 0 0 .75rem; font-size: .9rem; }
+    .status #badge { font-weight: 600; }
+    audio { width: 100%; display: block; margin: 0 0 1rem; }
+    .video-frame iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; background: #000; }
+    footer { margin-top: 1.5rem; padding-top: .75rem; border-top: 1px solid var(--line); font-size: .9rem; display: flex; gap: 1rem; flex-wrap: wrap; }
   </style>
 </head>
 <body>
@@ -96,66 +60,64 @@
   <main class="fountain" id="fountain" data-state="ready"
         data-channel="UCaOM2mNthp-3w-bGoTy8MAg" data-video-id="">
     <header>
-      <span class="stamp" id="onair">OFF AIR</span>
-      <h1>From a Fountain</h1>
-      <svg class="scribble" viewBox="0 0 130 10" fill="none" stroke="#c8402c" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M2 6 C 27 2, 49 9, 71 5 S 108 3, 128 6"/></svg>
-      <p class="intro">Records played live, for whoever happens by. Put on headphones and stay as long as you like.</p>
+      <div class="top"><h1>From a Fountain</h1><span id="onair">Off air</span></div>
+      <p class="intro">Records played live on a turntable, streamed for whoever happens by. Listen on headphones, see what's playing, or leave a memory about a song.</p>
     </header>
 
-    <a class="now box" id="now" href="../letters/" hidden>
-      <span class="tape" aria-hidden="true"></span>
-      <span class="rec" aria-hidden="true"></span>
-      <span><span class="label">Playing right now</span>
-        <span class="song" id="now-song"></span>
-        <span class="by" id="now-by"></span>
-        <span class="meta" id="now-meta"></span></span>
-      <span class="go">Does it remind you of something? Write it down →</span>
-    </a>
+    <div class="now" id="now" hidden>
+      <img id="now-cover" alt="" width="96" height="96" hidden>
+      <div>
+        <div class="label">Playing now</div>
+        <div class="song" id="now-song"></div>
+        <div id="now-by"></div>
+        <div class="meta" id="now-meta"></div>
+        <a href="../letters/">Write about this song</a>
+      </div>
+    </div>
 
     <div class="controls">
       <div class="actions" id="actions" hidden>
         <button id="listen" type="button" aria-pressed="false" aria-controls="audio-panel">
-          <span class="icon" aria-hidden="true"></span><span class="label" id="listen-label">Listen</span><span class="hint">headphones on</span>
+          <span class="icon" aria-hidden="true"></span><span id="listen-label">Listen</span>
         </button>
-        <button class="pick box" id="watch" type="button" aria-expanded="false" aria-controls="video-panel">
-          <span class="label" id="watch-label">Watch</span><span class="hint">video of the turntable</span>
+        <button id="watch" type="button" aria-expanded="false" aria-controls="video-panel">
+          <span id="watch-label">Watch</span><span class="hint">turntable video</span>
         </button>
       </div>
-      <a class="pick box book" href="../letters/"><span>Letter book</span><span class="hint">write or read memories</span></a>
+      <a class="btn" href="../letters/">Letter book<span class="hint">write or read memories</span></a>
     </div>
 
-    <div class="status" role="status" aria-live="polite" aria-atomic="true">
-      <span class="badge" id="badge">A place to listen</span>
-      <span id="message">Press play to join the audio.</span>
-    </div>
-    <section class="audio-panel box" id="audio-panel" aria-label="Live audio player">
+    <p class="status" role="status" aria-live="polite" aria-atomic="true">
+      <span id="badge">A place to listen</span> · <span id="message" class="muted">Press play to join the audio.</span>
+    </p>
+    <section id="audio-panel" aria-label="Live audio player">
       <audio id="audio" controls preload="none" aria-label="Live vinyl audio"
              src="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"
              data-alt-src="https://cuddly-doe-adversely.ngrok-free.app/stream.aac https://malika-unflaky-loan.ngrok-free.dev/stream.mp3 https://cuddly-doe-adversely.ngrok-free.app/stream.mp3"></audio>
     </section>
     <section id="video-panel" aria-label="Optional live video" hidden>
       <div class="video-frame" id="video-mount"></div>
-      <p class="video-note">Press play in the video player. Video has its own sound and may be delayed.</p>
-      <p class="video-note"><a id="video-fallback" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live"
-        target="_blank" rel="noopener">Open video on YouTube (new tab)</a></p>
+      <p class="muted">Press play in the video player. Video has its own sound and may run behind the audio.
+        <a id="video-fallback" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live" target="_blank" rel="noopener">Open on YouTube</a></p>
     </section>
-    <details>
-      <summary>About this listening space</summary>
-      <p>Records played here, shared with whoever happens by. No account or introduction needed.</p>
-      <p>Headphone audio can arrive after the nearby speakers. You can move a little farther away if you hear both.</p>
-      <p>The audio may be quiet between records. If it cannot connect, the set may have ended.</p>
-      <p><a id="direct-audio" href="https://malika-unflaky-loan.ngrok-free.dev/stream.aac"
-        target="_blank" rel="noopener">Open audio directly (new tab)</a></p>
-      <p><a id="direct-video" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live"
-        target="_blank" rel="noopener">Visit the video on YouTube (new tab)</a></p>
-      <p>This page adds no analytics or account system. Your connection is handled by the hosting and streaming services. YouTube loads when you choose video.</p>
-    </details>
+
+    <h2>How it works</h2>
+    <ul>
+      <li><b>Stream:</b> turntable → USB audio interface → BUTT (AAC, 256 kbps) → Icecast → a small Python service → ngrok. The player tries two addresses and two formats, and reconnects if the audio drops.</li>
+      <li><b>What's playing:</b> while someone is here, the service sends Shazam about 13 seconds of the stream every 20 seconds (via the open-source shazamio library) and matches the answer to my Discogs collection, so the card shows the actual pressing. When no one is here, it asks nothing.</li>
+      <li><b>When Shazam misses:</b> I set the song on the docent page, and the service follows the rest of that side by the Discogs track lengths.</li>
+      <li><b>Letter book:</b> each song links to memories listeners have written about it, its album or its artist. Letters appear once I've read them.</li>
+      <li><b>Privacy:</b> no accounts, no analytics. YouTube loads only if you press Watch.</li>
+    </ul>
+    <p class="muted">The audio is quiet between records; if it can't connect, the set has probably ended. Headphones near the room may hear the speakers slightly ahead of the stream.
+      <a id="direct-audio" href="https://malika-unflaky-loan.ngrok-free.dev/stream.aac" target="_blank" rel="noopener">Open the audio directly</a> ·
+      <a id="direct-video" href="https://www.youtube.com/channel/UCaOM2mNthp-3w-bGoTy8MAg/live" target="_blank" rel="noopener">Video on YouTube</a></p>
     <noscript><p>The audio controls above work without JavaScript. Video is available through the YouTube link.</p></noscript>
+
     <footer>
-      <a href="/projects/">← All projects</a>
-      <span class="sig">— Andrew, on the decks</span>
-      <a href="../docent/">docent sign-in</a>
-      <span class="kissa">a jazz kissa in the open · vinyl only</span>
+      <a href="/projects/">All projects</a>
+      <a href="https://github.com/andrew-crena/from-a-fountain">Source code</a>
+      <a href="../docent/">Docent sign-in</a>
     </footer>
   </main>
   <script>
@@ -304,7 +266,7 @@
       cancelRetry();
       if (phase !== 'playing') stableSince = now();
       get('direct-audio').href = sources[srcIdx].href;
-      const stamp = get('onair'); stamp.textContent = '● ON AIR'; stamp.classList.add('live');
+      const stamp = get('onair'); stamp.textContent = 'On air'; stamp.classList.add('live');
       show('playing', 'Playing', 'You’re listening to the turntable stream.');
     }
     function tick() {
@@ -421,36 +383,37 @@
   </script>
   <script>
   // What's on the turntable, from the letter book service (addresses in fountain-config.js).
-  // The service recognizes the record and matches it to the Discogs crate.
   (() => {
     'use strict';
     if (!window.fountainFetch) return;
     const $ = id => document.getElementById(id);
-    const card = $('now'), stamp = $('onair'), meta = $('now-meta');
+    const card = $('now'), stamp = $('onair'), meta = $('now-meta'), cover = $('now-cover');
     const line = text => { const el = document.createElement('span'); el.textContent = text; return el; };
+    function onAir(on) { stamp.textContent = on ? 'On air' : 'Off air'; stamp.classList.toggle('live', on); }
     async function check() {
       try {
         const r = await window.fountainFetch('/api/now');
         const n = await r.json();
+        onAir(true);
         const on = !!(n.artist && n.source !== 'none');
-        stamp.textContent = '● ON AIR'; stamp.classList.add('live');
         card.hidden = !on;
         if (!on) return;
         $('now-song').textContent = n.song || n.album;
         $('now-by').textContent = n.artist;
-        // Basic record details: album, pressing, and the first few credited players.
+        if (n.cover && /^https:\/\//.test(n.cover)) { if (cover.src !== n.cover) cover.src = n.cover; cover.alt = 'Cover of ' + (n.album || n.song); cover.hidden = false; }
+        else { cover.hidden = true; cover.removeAttribute('src'); }
         const lines = [];
         if (n.song && n.album) lines.push('from ' + n.album);
         const press = [[n.label && n.label.split(',')[0], n.catno].filter(Boolean).join(' '), n.year].filter(Boolean).join(' · ');
         if (press) lines.push(press);
         const credits = (n.credits || []).slice(0, 3).map(c => c.name + (c.role ? ', ' + c.role.toLowerCase() : ''));
         if (credits.length) lines.push(credits.join(' · '));
+        lines.push(n.source === 'manual' ? 'Set by the docent' : n.via ? 'Recognized by ' + n.via : 'Recognized automatically');
         meta.replaceChildren(...lines.map(line));
-        meta.hidden = !lines.length;
       } catch (_) {
         card.hidden = true;
         // The music can be live without the letter book service; trust the player.
-        if ($('fountain').dataset.state !== 'playing') { stamp.textContent = 'OFF AIR'; stamp.classList.remove('live'); }
+        if ($('fountain').dataset.state !== 'playing') onAir(false);
       }
     }
     check();
