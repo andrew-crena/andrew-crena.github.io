@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Opening the survey</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: #fff; color: #000; font: 17px/1.5 Calibri, Carlito, "Segoe UI", system-ui, sans-serif; padding: 1.5rem; }
+  main { max-width: 22rem; text-align: center; }
+  p { margin: 0 0 .5rem; }
+  a { color: #0000ee; font-weight: 700; display: inline-block; min-height: 44px; padding: .6rem 0; }
+</style>
+</head>
+<body>
+
+<!-- ==========================================================
+     TWO THINGS TO EDIT, both marked EDIT below.
+
+     1. The survey link, in the <a href="..."> on the next line.
+        That one link is the only copy; the script reads it.
+     2. GA_ID in the script, for scan counts. Optional: with it
+        left empty the page still forwards people to the survey.
+     ========================================================== -->
+
+<main>
+  <p>Opening the survey&hellip;</p>
+  <!-- EDIT 1: the survey link -->
+  <p><a id="go" href="https://stanforduniversity.qualtrics.com/jfe/form/SV_3Lg0oMelK5TfK6y">Tap here if it does not open</a></p>
+</main>
+
+<script>
+/* EDIT 2: Google Analytics measurement ID, like 'G-ABC123XYZ'.
+   Leave it empty to skip Analytics. */
+var GA_ID = 'G-S8V9DFJPGF';
+
+(function () {
+  'use strict';
+  var link = document.getElementById('go');
+  var survey = link.getAttribute('href');
+
+  // Carry anything after the ? straight through to Qualtrics, so a code
+  // printed as /yard/?src=cube arrives as an embedded field and each
+  // placement can be told apart.
+  var qs = location.search.replace(/^\?/, '');
+  var target = survey + (qs ? (survey.indexOf('?') === -1 ? '?' : '&') + qs : '');
+  link.href = target;
+
+  var went = false;
+  function go() {
+    if (went) return;
+    went = true;
+    location.replace(target);   // replace, so Back goes where they came from, not here
+  }
+
+  if (!/^G-[A-Z0-9]+$/i.test(GA_ID)) { go(); return; }   // Analytics not set up yet
+
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
+  s.onerror = go;                                        // blocked or offline: still go
+  document.head.appendChild(s);
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', GA_ID);
+
+  // Count the scan, then leave. transport_type 'beacon' lets the hit finish
+  // after the page is gone; the callback and timeouts mean nobody waits.
+  var params = { transport_type: 'beacon', event_callback: go, event_timeout: 700 };
+  var src = new URLSearchParams(location.search).get('src');
+  if (src) params.src = src.slice(0, 40);
+  gtag('event', 'qr_scan', params);
+
+  setTimeout(go, 1000);
+})();
+</script>
+</body>
+</html>
