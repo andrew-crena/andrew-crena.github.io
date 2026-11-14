@@ -3,198 +3,239 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Projects by Andrew Crena: small tools, music and live listening.">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#14130f" media="(prefers-color-scheme: dark)">
 <title>Projects · Andrew Crena</title>
-<link rel="manifest" href="/manifest.webmanifest">
+<meta name="description" content="Andrew Crena's projects: a portable turntable listening installation inspired by the jazz kissa of Japan, and other things built around records and listening.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f6f1e7">
+<meta property="og:title" content="Projects · Andrew Crena">
+<meta property="og:description" content="A portable turntable listening installation, and other things built around records and listening.">
+<meta property="og:image" content="https://andrew-crena.github.io/projects/images/kissa-fountain.jpg">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="Andrew Crena">
-<link rel="stylesheet" href="/assets/site.css">
-<script src="/fountain-config.js"></script>
-<script src="/projects.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 <style>
-  .hero{padding:8px 0 28px}
-  .hero h1{font:600 clamp(30px,7vw,42px)/1.1 var(--serif);letter-spacing:-.01em;margin:0}
-  .hero p{color:var(--soft);margin:10px 0 0;max-width:40em}
-  .hero .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  :root {
+    --paper: #f6f1e7;     /* the page: warm, like a zine's stock */
+    --card: #fbf8f1;
+    --ink: #221e18;
+    --soft: #5c5447;      /* 6.9:1 on paper */
+    --rule: #d8cfbd;
+    --accent: #9c3b25;    /* the one accent: record-label red */
+    --serif: "Newsreader", Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+    font: 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: var(--accent); text-underline-offset: .18em; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .wrap { max-width: 64rem; margin: 0 auto;
+    padding: max(2.5rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right)) 3rem max(1.25rem, env(safe-area-inset-left)); }
 
-  .onair{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
-    padding:14px 16px;margin:0 0 26px;border:1px solid var(--line);border-radius:var(--r);
-    background:var(--card);text-decoration:none;color:inherit}
-  .onair:hover{border-color:var(--accent)}
-  .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
-  @media (prefers-reduced-motion:no-preference){ .dot{animation:pulse 2s ease-in-out infinite} }
-  @keyframes pulse{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 8%,transparent)}}
-  .onair b{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-  .onair span{display:block;overflow-wrap:anywhere}
-  .onair .go{color:var(--soft);font-size:14px;white-space:nowrap}
+  /* masthead: left-aligned, like a zine's first page */
+  .mast { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    border-bottom: 1px solid var(--ink); padding-bottom: .6rem; margin-bottom: 3rem; }
+  .mast a { color: var(--ink); text-decoration: none; font: 500 1.05rem/1 var(--serif);
+    display: inline-flex; align-items: center; min-height: 44px; }
+  .mast a:hover { text-decoration: underline; }
+  .mast .issue { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
+  h1 { font: 400 clamp(2.4rem, 7vw, 3.6rem)/1.02 var(--serif); letter-spacing: -.015em; margin: 0 0 .9rem; }
+  .intro { max-width: 34rem; color: var(--soft); margin: 0 0 3.5rem; font-size: 1.05rem; }
 
-  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1 1 auto}
-  .chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:0 16px;min-height:44px;font-size:14px;color:var(--ink)}
-  .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-  .chip .n{color:var(--soft);margin-left:4px;font-size:12px}
-  .chip[aria-pressed="true"] .n{color:inherit;opacity:.7}
-  .search{flex:1 1 220px;max-width:320px;position:relative}
-  .search input{width:100%;min-height:48px;border:1px solid var(--line);border-radius:999px;background:var(--card);
-    padding:0 14px 0 36px;font-size:16px;color:var(--ink)}
-  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--soft)}
+  .kicker { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 .7rem; font-weight: 600; }
+  h2 { font: 400 clamp(1.8rem, 4.6vw, 2.5rem)/1.1 var(--serif); margin: 0 0 .9rem; letter-spacing: -.01em; }
+  .lede { font: 400 clamp(1.15rem, 2.6vw, 1.35rem)/1.5 var(--serif); max-width: 40rem; margin: 0 0 2rem; }
+  .onair { font-size: .95rem; margin: -1rem 0 2rem; }
+  .onair b { color: var(--accent); letter-spacing: .08em; font-size: .8rem; text-transform: uppercase; margin-right: .4rem; }
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;list-style:none;margin:0;padding:0}
-  .card{position:relative;display:flex;flex-direction:column;gap:8px;height:100%;padding:18px 18px 16px;
-    border:1px solid var(--line);border-radius:var(--r);background:var(--card);transition:border-color .15s,transform .15s}
-  .card:hover{border-color:var(--accent)}
-  @media (prefers-reduced-motion:no-preference){ .card:hover{transform:translateY(-2px)} }
-  .card:target{outline:3px solid var(--accent);outline-offset:3px}
-  .card h3{margin:0;font:600 20px/1.2 var(--serif)}
-  .card h3 a{color:inherit;text-decoration:none}
-  .card h3 a::after{content:"";position:absolute;inset:0;border-radius:var(--r)}   /* whole card is the link */
-  .card h3 a:focus-visible{outline:none}
-  .card:focus-within{outline:3px solid var(--accent);outline-offset:3px}
-  .card p{margin:0;color:var(--soft);font-size:15px;flex:1}
-  .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
-  .pill{border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--soft)}
-  .pill.live{border-color:var(--accent);color:var(--accent);font-weight:700}
-  .sub{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;position:relative;z-index:1}  /* above the card link */
-  .sub a{color:var(--ink);display:inline-flex;align-items:center;min-height:44px}
-  .empty{color:var(--soft);padding:30px 0;text-align:center}
-  #count{color:var(--soft);font-size:14px;margin:14px 0 0}
+  /* ---------- cards: index cards / record sleeves ---------- */
+  .card { position: relative; display: flex; flex-direction: column; background: var(--card);
+    border: 1px solid var(--rule); border-radius: 2px; }
+  .card .photo { display: block; width: 100%; height: auto; border-bottom: 1px solid var(--rule); background: var(--rule); }
+  .card .body { padding: 1.1rem 1.2rem 1.2rem; display: flex; flex-direction: column; flex: 1; }
+  .card .where { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); margin: 0 0 .45rem; }
+  .card h3 { font: 500 1.5rem/1.15 var(--serif); margin: 0 0 .5rem; }
+  .card h3 a { color: var(--ink); text-decoration: none; }
+  .card h3 a::after { content: ""; position: absolute; inset: 0; }    /* the whole card opens the main link */
+  .card h3 a:focus-visible { outline: none; }
+  .card:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .card p { margin: 0; color: var(--soft); }
+  .card .more { margin-top: auto; padding-top: .9rem; display: flex; flex-wrap: wrap; gap: 0 1.2rem;
+    position: relative; z-index: 1; font-size: .95rem; }           /* extra links sit above the card link */
+  .card .more a { display: inline-flex; align-items: center; min-height: 44px; }
+  .card:hover { border-color: var(--soft); }
+
+  /* ---------- flagship: one idea, two versions ---------- */
+  .flagship { margin-bottom: 4.5rem; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+  /* Outdoors at the fountain: the original page was paper, tape and rubber stamps. */
+  .v-fountain { background: #f1e8d6; border-color: #cdbf9f; }
+  .v-fountain .photo { border-bottom-color: #cdbf9f; }
+  .v-fountain::before { content: ""; position: absolute; top: -10px; left: 50%; width: 84px; height: 22px;
+    transform: translateX(-50%) rotate(-2.5deg); background: rgba(225, 210, 160, .82); z-index: 2; pointer-events: none; }
+  .v-fountain .where { display: inline-block; align-self: flex-start; color: var(--accent);
+    border: 1.5px solid var(--accent); border-radius: 3px; padding: .1rem .45rem; transform: rotate(-1.5deg); }
+
+  /* Indoors at the Center for Creativity: a gallery wall label. White, a hairline, nothing else. */
+  .v-center { background: #fff; border-color: #cfccc4; }
+  .v-center .photo { border-bottom-color: #cfccc4; }
+  .v-center .body { border-left: 3px solid var(--ink); margin: 1rem 1.2rem 1.2rem; padding: 0 0 0 .9rem; }
+  .v-center .where { color: var(--ink); }
+
+  /* ---------- the rest ---------- */
+  .others h2 { font-size: clamp(1.5rem, 3.6vw, 1.9rem); }
+  .others .intro { margin-bottom: 1.8rem; }
+  .grid { list-style: none; margin: 0; padding: 0; display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1.5rem; }
+  .grid .card { height: 100%; }
+
+  .todo { background: #fff3b0; color: #4a3b00; font-style: normal; padding: 0 .15em; }
+
+  footer { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--ink);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1.5rem; color: var(--soft); font-size: .95rem; }
+  footer a { display: inline-flex; align-items: center; min-height: 44px; }
+
+  @media (max-width: 680px) {
+    body { font-size: 16.5px; }
+    .mast { margin-bottom: 2.2rem; }
+    .intro { margin-bottom: 2.6rem; }
+    .pair { grid-template-columns: 1fr; gap: 2rem; }
+    .flagship { margin-bottom: 3.5rem; }
+    .v-fountain .where { letter-spacing: .06em; }
+    /* smaller projects: a thumbnail beside the text, like a catalogue listing */
+    .grid { grid-template-columns: 1fr; gap: 1rem; }
+    .grid .card { flex-direction: row; align-items: flex-start; }
+    .grid .card .photo { width: 6.5rem; flex: none; border-bottom: 0; border-right: 1px solid var(--rule); align-self: stretch; object-fit: cover; aspect-ratio: 1; }
+    .grid .card .body { padding: .8rem .95rem .9rem; }
+    .grid .card h3 { font-size: 1.3rem; }
+    .grid .card .more { padding-top: .3rem; }
+  }
+  @media (forced-colors: active) { .card { border: 1px solid CanvasText; } .v-fountain::before { display: none; } }
 </style>
 </head>
 <body>
-<a class="skip" href="#projects">Skip to projects</a>
 <div class="wrap">
-  <header class="hero">
-    <h1>Projects</h1>
-    <p>Notes, small tools, and projects.</p>
-    <div class="links">
-      <a class="btn" href="/">Andrew Crena</a>
-      <a class="btn" href="https://github.com/andrew-crena">GitHub</a>
-    </div>
+
+  <header class="mast">
+    <a href="/">Andrew Crena</a>
+    <span class="issue">Projects</span>
   </header>
 
-  <a class="onair" id="onair" href="/fountain/" hidden>
-    <span class="dot" aria-hidden="true"></span>
-    <span><b>On air · From a Fountain</b><span id="onair-what">Records playing live now</span></span>
-    <span class="go" aria-hidden="true">Listen →</span>
-  </a>
+  <h1>Projects</h1>
+  <p class="intro">Things I build outside the lab, mostly around records and listening.</p>
 
-  <main id="projects" tabindex="-1">
-    <h2 class="sr-only">Projects</h2>
-    <div class="bar">
-      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
-      <label class="search">
-        <span class="sr-only">Search projects</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Search" autocomplete="off">
-      </label>
+  <!-- =====================================================================
+       FLAGSHIP: one idea, two versions. Copy, links and photos are all
+       edited right here. Photos live in projects/images/; save yours over
+       the placeholder with the same file name.
+       ===================================================================== -->
+  <section class="flagship" aria-labelledby="kissa">
+    <p class="kicker">Listening installation</p>
+    <h2 id="kissa">A jazz kissa, set up wherever it’s needed</h2>
+    <p class="lede">A portable turntable setup, inspired by the jazz kissa of Japan, that I install in different spaces to complement the visual space with an auditory one. Think live concerts, or visual art.</p>
+    <p class="onair" id="onair" hidden><b>On air now</b><span id="onair-what"></span> · <a href="/fountain/">Listen</a></p>
+
+    <div class="pair">
+      <article class="card v-fountain" id="fountain">
+        <img class="photo" src="images/kissa-fountain.jpg" width="1200" height="900"
+             alt="[TODO: describe the photo, e.g. the turntables set up beside Terman Fountain]">
+        <div class="body">
+          <p class="where">Outdoors · Terman Fountain, Stanford</p>
+          <h3><a href="/fountain/">From a Fountain</a></h3>
+          <p>The first version. Records played live by the fountain for whoever happens by, with a stream for headphones and a letter book for what the songs bring back.</p>
+          <div class="more">
+            <a href="/fountain/">Listen live</a>
+            <a href="/letters/">Letter book</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card v-center" id="center-for-creativity">
+        <img class="photo" src="images/kissa-center-for-creativity.jpg" width="1200" height="900"
+             alt="[TODO: describe the photo, e.g. the setup in the gallery at the Center for Creativity]">
+        <div class="body">
+          <p class="where">Indoors · Redwood City</p>
+          <!-- TODO: point this at the right page once it exists (a page for this version, or the Center's event page). -->
+          <h3><a href="https://redwoodcity-ca.granicus.com/player/clip/3728?meta_id=138499&amp;entrytime=12250">Center for Creativity</a></h3>
+          <p>The same setup, adapted for a volunteer-run arts space in Redwood City. <em class="todo">[TODO: one sentence on what changed indoors: the room, the sound, how visitors take part.]</em></p>
+          <div class="more">
+            <a href="https://redwoodcity-ca.granicus.com/player/clip/3728?meta_id=138499&amp;entrytime=12250">My comment to the City Council about the Center</a>
+          </div>
+        </div>
+      </article>
     </div>
-    <ul class="grid" id="grid"></ul>
-    <p id="count" role="status" aria-live="polite"></p>
-    <noscript>
-      <ul>
-        <li><a href="/fountain/">From a Fountain</a></li>
-        <li><a href="/not-quite-my-tempo/">Not Quite My Tempo</a></li>
-        <li><a href="/house-collection/">House Collection</a></li>
-        <li><a href="/my-digital-garden/">Notes</a></li>
-      </ul>
-    </noscript>
-  </main>
+  </section>
 
-  <footer class="foot">
+  <!-- =====================================================================
+       OTHER PROJECTS. To add one, copy an <li> block and change the photo,
+       title, description (under 30 words) and link.
+       ===================================================================== -->
+  <section class="others" aria-labelledby="others">
+    <h2 id="others">Also on the shelf</h2>
+    <p class="intro">Other things I’ve made.</p>
+    <ul class="grid">
+      <li class="card" id="house">
+        <img class="photo" src="images/house-collection.jpg" width="1000" height="1000" loading="lazy"
+             alt="[TODO: describe the photo]">
+        <div class="body">
+          <p class="where">Records</p>
+          <h3><a href="/house-collection/">House Collection</a></h3>
+          <p>My record shelf, synced from Discogs. Follow a label through the years, pull a record at random, or look up the tempo of the tracks I play.</p>
+          <div class="more"><a href="/house-collection/#/pull">Pull a record</a></div>
+        </div>
+      </li>
+      <li class="card" id="tempo">
+        <img class="photo" src="images/not-quite-my-tempo.jpg" width="1000" height="1000" loading="lazy"
+             alt="[TODO: describe the photo]">
+        <div class="body">
+          <p class="where">A tool</p>
+          <h3><a href="/not-quite-my-tempo/">Not Quite My Tempo</a></h3>
+          <p>Hold your phone up to the music and it shows the tempo, the key with mixing hints, and the loudness. There’s a tuner for guitar and bass, too.</p>
+        </div>
+      </li>
+      <li class="card" id="garden">
+        <img class="photo" src="images/notes.jpg" width="1000" height="1000" loading="lazy"
+             alt="[TODO: describe the photo]">
+        <div class="body">
+          <p class="where">Writing</p>
+          <h3><a href="/my-digital-garden/">Notes</a></h3>
+          <p>Research ideas in development, each with a record of how it changed, and an informal journal.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
     <a href="/">Andrew Crena</a>
-    <a href="https://github.com/andrew-crena">github.com/andrew-crena</a>
+    <a href="mailto:adcrena27@gmail.com">adcrena27@gmail.com</a>
   </footer>
 </div>
 
+<!-- The one script: shows "On air now" while a record is streaming. The page works without it. -->
+<script src="/fountain-config.js" defer></script>
 <script>
-(() => {
-  'use strict';
-  const projects = (window.PROJECTS || []).filter(p => !p.hidden);
-  const cats = (window.CATEGORIES || []).filter(c => projects.some(p => p.category === c.id));
-  const grid = document.getElementById('grid'), chips = document.getElementById('chips');
-  const q = document.getElementById('q'), count = document.getElementById('count');
-
-  let cat = new URLSearchParams(location.search).get('c') || 'all';
-  if (cat !== 'all' && !cats.some(c => c.id === cat)) cat = 'all';
-
-  const el = (tag, attrs, ...kids) => {
-    const n = document.createElement(tag);
-    for (const [k, v] of Object.entries(attrs || {})) {
-      if (v === undefined || v === null || v === false) continue;
-      if (k === 'class') n.className = v; else n.setAttribute(k, v);
-    }
-    for (const k of kids) if (k != null) n.append(k);
-    return n;
-  };
-
-  function buildChips() {
-    chips.textContent = '';
-    const all = [{ id: 'all', label: 'All' }, ...cats];
-    for (const c of all) {
-      const n = c.id === 'all' ? projects.length : projects.filter(p => p.category === c.id).length;
-      const b = el('button', { type: 'button', class: 'chip', 'aria-pressed': String(cat === c.id) }, c.label, el('span', { class: 'n' }, String(n)));
-      b.addEventListener('click', () => {
-        cat = c.id;
-        const u = new URL(location.href);
-        if (cat === 'all') u.searchParams.delete('c'); else u.searchParams.set('c', cat);
-        history.replaceState(null, '', u);
-        buildChips(); render();
-      });
-      chips.append(b);
-    }
-  }
-
-  const sorted = projects.slice().sort((a, b) =>
-    (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (b.year || 0) - (a.year || 0));
-
-  function render() {
-    const f = q.value.trim().toLowerCase();
-    const list = sorted.filter(p => (cat === 'all' || p.category === cat) && (!f ||
-      [p.title, p.description, p.category, ...(p.tags || [])].join(' ').toLowerCase().includes(f)));
-    grid.textContent = '';
-    for (const p of list) {
-      const catLabel = (cats.find(c => c.id === p.category) || {}).label || p.category;
-      const meta = el('div', { class: 'meta' },
-        el('span', { class: 'pill' }, catLabel),
-        p.status && p.status !== 'live' ? el('span', { class: 'pill' }, p.status) : null,
-        p.year ? el('span', { class: 'pill' }, String(p.year)) : null);
-      const sub = el('div', { class: 'sub' });
-      for (const l of p.links || []) sub.append(el('a', { href: l.href }, l.label));
-      if (p.repo) sub.append(el('a', { href: 'https://github.com/' + p.repo }, 'Source', el('span', { class: 'sr-only' }, ' for ' + p.title)));
-      grid.append(el('li', { class: 'card', id: p.id },
-        meta,
-        el('h3', {}, el('a', { href: p.href }, p.title)),
-        p.description ? el('p', {}, p.description) : null,
-        sub.childNodes.length ? sub : null));
-    }
-    if (!list.length) grid.append(el('li', { class: 'empty' }, 'Nothing matches that yet.'));
-    count.textContent = list.length + ' of ' + projects.length + ' project' + (projects.length === 1 ? '' : 's');
-  }
-
-  q.addEventListener('input', render);
-  buildChips(); render();
-  if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView({ block: 'center' }); }
-
-  // Live status for From a Fountain (same service its own page uses).
-  const api = (window.FOUNTAIN_API || '').replace(/\/$/, '');
-  const banner = document.getElementById('onair'), what = document.getElementById('onair-what');
-  async function check() {
-    if (!api || !window.fountainFetch) return;
+addEventListener('load', () => {
+  if (!window.fountainFetch) return;
+  const line = document.getElementById('onair'), what = document.getElementById('onair-what');
+  const check = async () => {
     try {
-      const r = await window.fountainFetch('/api/now');   // tries each address (fountain-config.js)
-      const n = await r.json();
+      const n = await (await window.fountainFetch('/api/now')).json();
       const on = !!(n.artist && n.source !== 'none');
-      banner.hidden = !on;
-      if (on) what.textContent = (n.song || n.album || 'Now playing') + ' · ' + n.artist;
-    } catch (_) { banner.hidden = true; }
-  }
+      line.hidden = !on;
+      if (on) what.textContent = (n.song || n.album || 'a record') + ', ' + n.artist;
+    } catch (_) { line.hidden = true; }
+  };
   check();
   setInterval(() => { if (!document.hidden) check(); }, 30000);
-})();
+});
 </script>
 </body>
 </html>
