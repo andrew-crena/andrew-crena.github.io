@@ -35,7 +35,7 @@ All in `projects/images/`. To change one, save the new photo over it with the sa
 | File | Where |
 | --- | --- |
 | `kissa-fountain.jpg` | From a Fountain card; also the preview image when the link is shared |
-| `fountain-setup.jpg` | Setup diagram ("How it's set up") |
+| `from-a-fountain-signal-flow.jpg` | From a Fountain signal flow sheet ("Signal flow"); the PDF is `projects/from-a-fountain-signal-flow.pdf` |
 | `kissa-center-for-creativity.jpg` | Center for Creativity card |
 | `yard-aers.jpg` | Yard AERS card and page (playing vinyl outside at the Yard) |
 | `yard-aers-card-mockup.jpg` | Yard AERS page (survey card mock-up) |
