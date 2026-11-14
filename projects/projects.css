@@ -8,11 +8,13 @@ main { max-width:38rem; margin:0 auto; padding:1.5rem 1.25rem 3rem; }
 a { color:var(--accent); text-decoration-color:var(--sand); text-underline-offset:.2em; }
 h1 { font-size:2.25rem; font-weight:500; line-height:1.1; margin:.4em 0 .3em; }
 h2 { font-size:1.4rem; font-weight:500; margin:2em 0 .4em; }
-h3 { font-size:1.15rem; font-weight:600; margin:1.8em 0 .3em; }
+h3 { font-size:1.15rem; font-weight:600; margin:1.3em 0 0; }
 hr { border:0; border-top:1px solid var(--rule); margin:2.2em 0; }
 img { display:block; max-width:100%; height:auto; margin:.6em 0 .5em; }
 img.small { max-width:70%; }
-.links a, .top a, footer a { display:inline-block; padding:.35em 0; }
+/* taller tap areas on phones, same look */
+h3 a, .links a, .top a, footer a, a.button { display:inline-block; padding:.7em 0; }
+.links { margin:.2em 0; }
 .caption { font-size:.95em; color:var(--muted); margin-top:-.2em; }
 .button { font-weight:600; }
 footer { margin-top:3em; font-size:1rem; color:var(--muted); }

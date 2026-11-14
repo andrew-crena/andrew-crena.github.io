@@ -97,12 +97,14 @@
   .links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem 1.25rem;
-    margin: 1rem 0 0;
+    gap: 0 1.25rem;
+    margin: 0.4rem 0 0;
     padding: 0;
     list-style: none;
     font-size: 1rem;
   }
+  /* taller tap areas on phones, same look */
+  .links a, .projects > p > a { display: inline-block; padding: 0.7rem 0; }
 
   a {
     color: var(--accent);
