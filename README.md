@@ -26,7 +26,7 @@ Then open <http://localhost:8000/>.
 
 ## Projects page
 
-`projects/index.html` is plain HTML in three sections (listening installation, research and community, records and tools). Each project is a heading, a photo, a sentence or two, and a line of links; to add one, copy an existing block. Shared styles are in `projects/projects.css`. Project pages live in their own folders: `projects/yard-aers/`, `projects/music-for-mental-health/`.
+`projects/index.html` is plain HTML in three sections (listening installation, community projects, records and tools). Each project is a heading, a photo, a sentence or two, and a line of links; to add one, copy an existing block. Shared styles are in `projects/projects.css`. Project pages live in their own folders: `projects/yard-aers/`, `projects/music-for-mental-health/`.
 
 ### Photos
 
