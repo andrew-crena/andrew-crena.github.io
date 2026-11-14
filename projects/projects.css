@@ -1,15 +1,18 @@
-/* plain on purpose */
-body { margin: 0; background: #fffef9; color: #1a1a1a; font: 18px/1.55 Georgia, "Times New Roman", serif; -webkit-text-size-adjust: 100%; }
-main { max-width: 36em; margin: 0 auto; padding: 1.5em 1.1em 3em; }
-a { color: #1a0dab; }
-a:visited { color: #681da8; }
-h1 { font-size: 2em; font-weight: normal; margin: .3em 0 .2em; }
-h2 { font-size: 1.3em; margin: 2em 0 .4em; }
-h3 { font-size: 1.1em; margin: 1.8em 0 .3em; }
-hr { border: 0; border-top: 1px solid #bbb; margin: 2.2em 0; }
-img { display: block; max-width: 100%; height: auto; margin: .6em 0 .5em; }
-img.small { max-width: 70%; }
-.links a, .top a, footer a { display: inline-block; padding: .35em 0; }
-.caption { font-size: .9em; color: #555; margin-top: -.2em; }
-.button { font-weight: bold; }
-footer { margin-top: 3em; font-size: .9em; color: #555; }
+/* plain on purpose; same font and colours as the homepage */
+:root { --bg:#E9EDEF; --ink:#1D2B38; --muted:#55636F; --accent:#2F6470; --sand:#B8912F; --rule:#C9D1D6; color-scheme:light; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#172330; --ink:#E5E9EC; --muted:#9AA7B2; --accent:#8FC3CC; --sand:#D8B862; --rule:#2D3B48; color-scheme:dark; }
+}
+body { margin:0; background:var(--bg); color:var(--ink); font:1.125rem/1.6 "Newsreader", Georgia, "Times New Roman", serif; -webkit-text-size-adjust:100%; }
+main { max-width:38rem; margin:0 auto; padding:1.5rem 1.25rem 3rem; }
+a { color:var(--accent); text-decoration-color:var(--sand); text-underline-offset:.2em; }
+h1 { font-size:2.25rem; font-weight:500; line-height:1.1; margin:.4em 0 .3em; }
+h2 { font-size:1.4rem; font-weight:500; margin:2em 0 .4em; }
+h3 { font-size:1.15rem; font-weight:600; margin:1.8em 0 .3em; }
+hr { border:0; border-top:1px solid var(--rule); margin:2.2em 0; }
+img { display:block; max-width:100%; height:auto; margin:.6em 0 .5em; }
+img.small { max-width:70%; }
+.links a, .top a, footer a { display:inline-block; padding:.35em 0; }
+.caption { font-size:.95em; color:var(--muted); margin-top:-.2em; }
+.button { font-weight:600; }
+footer { margin-top:3em; font-size:1rem; color:var(--muted); }
