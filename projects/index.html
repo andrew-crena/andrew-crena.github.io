@@ -3,198 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Projects by Andrew Crena: small tools, music and live listening.">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f5f1e8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#14130f" media="(prefers-color-scheme: dark)">
 <title>Projects · Andrew Crena</title>
-<link rel="manifest" href="/manifest.webmanifest">
+<meta name="description" content="Andrew Crena's projects: a portable turntable listening installation, research in arts spaces, and things built around records.">
+<meta property="og:title" content="Projects · Andrew Crena">
+<meta property="og:image" content="https://andrew-crena.github.io/projects/images/kissa-fountain.jpg">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="Andrew Crena">
-<link rel="stylesheet" href="/assets/site.css">
-<script src="/fountain-config.js"></script>
-<script src="/projects.js"></script>
-<style>
-  .hero{padding:8px 0 28px}
-  .hero h1{font:600 clamp(30px,7vw,42px)/1.1 var(--serif);letter-spacing:-.01em;margin:0}
-  .hero p{color:var(--soft);margin:10px 0 0;max-width:40em}
-  .hero .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-
-  .onair{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
-    padding:14px 16px;margin:0 0 26px;border:1px solid var(--line);border-radius:var(--r);
-    background:var(--card);text-decoration:none;color:inherit}
-  .onair:hover{border-color:var(--accent)}
-  .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
-  @media (prefers-reduced-motion:no-preference){ .dot{animation:pulse 2s ease-in-out infinite} }
-  @keyframes pulse{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 8%,transparent)}}
-  .onair b{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-  .onair span{display:block;overflow-wrap:anywhere}
-  .onair .go{color:var(--soft);font-size:14px;white-space:nowrap}
-
-  .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1 1 auto}
-  .chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:0 16px;min-height:44px;font-size:14px;color:var(--ink)}
-  .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-  .chip .n{color:var(--soft);margin-left:4px;font-size:12px}
-  .chip[aria-pressed="true"] .n{color:inherit;opacity:.7}
-  .search{flex:1 1 220px;max-width:320px;position:relative}
-  .search input{width:100%;min-height:48px;border:1px solid var(--line);border-radius:999px;background:var(--card);
-    padding:0 14px 0 36px;font-size:16px;color:var(--ink)}
-  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--soft)}
-
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;list-style:none;margin:0;padding:0}
-  .card{position:relative;display:flex;flex-direction:column;gap:8px;height:100%;padding:18px 18px 16px;
-    border:1px solid var(--line);border-radius:var(--r);background:var(--card);transition:border-color .15s,transform .15s}
-  .card:hover{border-color:var(--accent)}
-  @media (prefers-reduced-motion:no-preference){ .card:hover{transform:translateY(-2px)} }
-  .card:target{outline:3px solid var(--accent);outline-offset:3px}
-  .card h3{margin:0;font:600 20px/1.2 var(--serif)}
-  .card h3 a{color:inherit;text-decoration:none}
-  .card h3 a::after{content:"";position:absolute;inset:0;border-radius:var(--r)}   /* whole card is the link */
-  .card h3 a:focus-visible{outline:none}
-  .card:focus-within{outline:3px solid var(--accent);outline-offset:3px}
-  .card p{margin:0;color:var(--soft);font-size:15px;flex:1}
-  .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px}
-  .pill{border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--soft)}
-  .pill.live{border-color:var(--accent);color:var(--accent);font-weight:700}
-  .sub{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;position:relative;z-index:1}  /* above the card link */
-  .sub a{color:var(--ink);display:inline-flex;align-items:center;min-height:44px}
-  .empty{color:var(--soft);padding:30px 0;text-align:center}
-  #count{color:var(--soft);font-size:14px;margin:14px 0 0}
-</style>
+<link rel="stylesheet" href="projects.css">
 </head>
 <body>
-<a class="skip" href="#projects">Skip to projects</a>
-<div class="wrap">
-  <header class="hero">
-    <h1>Projects</h1>
-    <p>Notes, small tools, and projects.</p>
-    <div class="links">
-      <a class="btn" href="/">Andrew Crena</a>
-      <a class="btn" href="https://github.com/andrew-crena">GitHub</a>
-    </div>
-  </header>
+<main>
+  <p class="top"><a href="/">← Andrew Crena</a></p>
+  <h1>Projects</h1>
+  <p>Things I build outside the lab, mostly around records and listening.</p>
 
-  <a class="onair" id="onair" href="/fountain/" hidden>
-    <span class="dot" aria-hidden="true"></span>
-    <span><b>On air · From a Fountain</b><span id="onair-what">Records playing live now</span></span>
-    <span class="go" aria-hidden="true">Listen →</span>
-  </a>
+  <hr>
+  <h2 id="kissa">Listening installation</h2>
+  <p>A portable turntable setup, inspired by the jazz kissa of Japan, that I install in different spaces to complement the visual space with an auditory one. Think live concerts, or visual art.</p>
 
-  <main id="projects" tabindex="-1">
-    <h2 class="sr-only">Projects</h2>
-    <div class="bar">
-      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
-      <label class="search">
-        <span class="sr-only">Search projects</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Search" autocomplete="off">
-      </label>
-    </div>
-    <ul class="grid" id="grid"></ul>
-    <p id="count" role="status" aria-live="polite"></p>
-    <noscript>
-      <ul>
-        <li><a href="/fountain/">From a Fountain</a></li>
-        <li><a href="/not-quite-my-tempo/">Not Quite My Tempo</a></li>
-        <li><a href="/house-collection/">House Collection</a></li>
-        <li><a href="/my-digital-garden/">Notes</a></li>
-      </ul>
-    </noscript>
-  </main>
+  <h3 id="fountain"><a href="/fountain/">From a Fountain</a></h3>
+  <img src="images/kissa-fountain.jpg" alt="Terman Fountain at dusk, lit from below, with lamps along the path">
+  <p>The first version, outdoors at Terman Fountain at Stanford. Records played live for whoever happens by, with a stream for headphones and a letter book for memories.</p>
+  <p class="links"><a href="/fountain/">Listen live</a> · <a href="/letters/">Letter book</a> · <a href="images/fountain-setup.jpg">How it’s set up</a></p>
 
-  <footer class="foot">
-    <a href="/">Andrew Crena</a>
-    <a href="https://github.com/andrew-crena">github.com/andrew-crena</a>
+  <h3 id="center-for-creativity"><a href="https://www.rwccfc.org/">Center for Creativity</a></h3>
+  <img src="images/kissa-center-for-creativity.jpg" alt="A crowd at an exhibition opening in a gallery at the Center for Creativity, paintings along the walls">
+  <p>The same setup, installed inside a gallery at a volunteer-run arts space in Redwood City. The room changes the dynamic, and the acoustics.</p>
+  <!-- TODO: link to this version -->
+
+  <hr>
+  <h2 id="research">Research and community</h2>
+
+  <h3 id="yard-aers"><a href="yard-aers/">Yard AERS</a></h3>
+  <img src="images/yard-aers.jpg" loading="lazy" alt="Playing vinyl outside at the Yard at night, turntables on a table beside a garden arbor">
+  <p>A grad school project at The Yard Coffee: visitors scan a QR code beside the art and answer a short survey on how deeply they engaged with it.</p>
+  <p class="links"><a href="yard-aers/">About the project</a> · <a href="https://www.theyard.coffee/">The Yard Coffee</a></p>
+
+  <h3 id="music-for-mental-health"><a href="music-for-mental-health/">Music for Mental Health</a></h3>
+  <img src="images/music-for-mental-health.jpg" loading="lazy" alt="A crowd dancing on an outdoor patio under shade sails at a Music for Mental Health event">
+  <p>A group of Chico State DJs I started with friends. Our events, including the annual Sahndypalooza, raised over $5,000 for mental health organizations.</p>
+  <p class="links"><a href="music-for-mental-health/">About the events</a> · <a href="https://adcrena27.wixsite.com/music-for-mental-hea">Event site</a></p>
+
+  <hr>
+  <h2 id="records">Records and tools</h2>
+
+  <h3 id="house"><a href="/house-collection/">House Collection</a></h3>
+  <img class="small" src="images/house-collection.jpg" loading="lazy" alt="Pulling a record from a crate of vinyl">
+  <p>My record shelf, synced from Discogs. Follow a label through the years, pull a record at random, or look up the tempo of the tracks I play.</p>
+  <p class="links"><a href="/house-collection/">Browse the records</a></p>
+
+  <h3 id="tempo"><a href="/not-quite-my-tempo/">Not Quite My Tempo</a></h3>
+  <img class="small" src="images/not-quite-my-tempo.jpg" loading="lazy" alt="A mirror ball throwing beams of blue light">
+  <p>Hold your phone up to the music and it shows the tempo, the key with mixing hints, and the loudness. There’s a tuner for guitar and bass, too.</p>
+  <p class="links"><a href="/not-quite-my-tempo/">Open the tool</a></p>
+
+  <footer>
+    <hr>
+    <a href="/">Andrew Crena</a> · <a href="mailto:adcrena27@gmail.com">adcrena27@gmail.com</a>
   </footer>
-</div>
-
-<script>
-(() => {
-  'use strict';
-  const projects = (window.PROJECTS || []).filter(p => !p.hidden);
-  const cats = (window.CATEGORIES || []).filter(c => projects.some(p => p.category === c.id));
-  const grid = document.getElementById('grid'), chips = document.getElementById('chips');
-  const q = document.getElementById('q'), count = document.getElementById('count');
-
-  let cat = new URLSearchParams(location.search).get('c') || 'all';
-  if (cat !== 'all' && !cats.some(c => c.id === cat)) cat = 'all';
-
-  const el = (tag, attrs, ...kids) => {
-    const n = document.createElement(tag);
-    for (const [k, v] of Object.entries(attrs || {})) {
-      if (v === undefined || v === null || v === false) continue;
-      if (k === 'class') n.className = v; else n.setAttribute(k, v);
-    }
-    for (const k of kids) if (k != null) n.append(k);
-    return n;
-  };
-
-  function buildChips() {
-    chips.textContent = '';
-    const all = [{ id: 'all', label: 'All' }, ...cats];
-    for (const c of all) {
-      const n = c.id === 'all' ? projects.length : projects.filter(p => p.category === c.id).length;
-      const b = el('button', { type: 'button', class: 'chip', 'aria-pressed': String(cat === c.id) }, c.label, el('span', { class: 'n' }, String(n)));
-      b.addEventListener('click', () => {
-        cat = c.id;
-        const u = new URL(location.href);
-        if (cat === 'all') u.searchParams.delete('c'); else u.searchParams.set('c', cat);
-        history.replaceState(null, '', u);
-        buildChips(); render();
-      });
-      chips.append(b);
-    }
-  }
-
-  const sorted = projects.slice().sort((a, b) =>
-    (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (b.year || 0) - (a.year || 0));
-
-  function render() {
-    const f = q.value.trim().toLowerCase();
-    const list = sorted.filter(p => (cat === 'all' || p.category === cat) && (!f ||
-      [p.title, p.description, p.category, ...(p.tags || [])].join(' ').toLowerCase().includes(f)));
-    grid.textContent = '';
-    for (const p of list) {
-      const catLabel = (cats.find(c => c.id === p.category) || {}).label || p.category;
-      const meta = el('div', { class: 'meta' },
-        el('span', { class: 'pill' }, catLabel),
-        p.status && p.status !== 'live' ? el('span', { class: 'pill' }, p.status) : null,
-        p.year ? el('span', { class: 'pill' }, String(p.year)) : null);
-      const sub = el('div', { class: 'sub' });
-      for (const l of p.links || []) sub.append(el('a', { href: l.href }, l.label));
-      if (p.repo) sub.append(el('a', { href: 'https://github.com/' + p.repo }, 'Source', el('span', { class: 'sr-only' }, ' for ' + p.title)));
-      grid.append(el('li', { class: 'card', id: p.id },
-        meta,
-        el('h3', {}, el('a', { href: p.href }, p.title)),
-        p.description ? el('p', {}, p.description) : null,
-        sub.childNodes.length ? sub : null));
-    }
-    if (!list.length) grid.append(el('li', { class: 'empty' }, 'Nothing matches that yet.'));
-    count.textContent = list.length + ' of ' + projects.length + ' project' + (projects.length === 1 ? '' : 's');
-  }
-
-  q.addEventListener('input', render);
-  buildChips(); render();
-  if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView({ block: 'center' }); }
-
-  // Live status for From a Fountain (same service its own page uses).
-  const api = (window.FOUNTAIN_API || '').replace(/\/$/, '');
-  const banner = document.getElementById('onair'), what = document.getElementById('onair-what');
-  async function check() {
-    if (!api || !window.fountainFetch) return;
-    try {
-      const r = await window.fountainFetch('/api/now');   // tries each address (fountain-config.js)
-      const n = await r.json();
-      const on = !!(n.artist && n.source !== 'none');
-      banner.hidden = !on;
-      if (on) what.textContent = (n.song || n.album || 'Now playing') + ' · ' + n.artist;
-    } catch (_) { banner.hidden = true; }
-  }
-  check();
-  setInterval(() => { if (!document.hidden) check(); }, 30000);
-})();
-</script>
+</main>
 </body>
 </html>

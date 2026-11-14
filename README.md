@@ -10,8 +10,8 @@ Source for <https://andrew-crena.github.io/>.
 | `headshot.jpg`, `Andrew_Crena_CV.pdf` | Homepage photo and the CV it links to |
 | `style.css` | Plain styles used by `404.html` |
 | `cv.pdf` | Older CV, kept but not linked from anywhere |
-| `projects/` | Project center (reads `projects.js`, styled by `assets/site.css`) |
-| `projects.js` | Project registry. Add an entry to list a project; the fields are explained at the top of the file. |
+| `projects/index.html` | Projects page: the listening installation, then the other projects. Plain HTML, edited directly. |
+| `projects/images/` | Photos for the projects page (see below) |
 | `fountain/`, `letters/`, `docent/` | From a Fountain listening page, letter book and docent desk |
 | `fountain-config.js` | Address of the From a Fountain service |
 | `assets/backlink.js` | Drop-in "← All projects" link for any project page |
@@ -30,3 +30,26 @@ Then open <http://localhost:8000/>.
 ```html
 <script src="https://andrew-crena.github.io/assets/backlink.js" defer></script>
 ```
+
+## Projects page
+
+`projects/index.html` is plain HTML: three sections of cards (listening installation, research and community, records and tools). To add a card, copy an `<li class="card">` block and change its photo, title, text and links. Shared styles are in `projects/projects.css`. Project pages live in their own folders: `projects/yard-aers/`, `projects/music-for-mental-health/`.
+
+### Photos
+
+All in `projects/images/`. To change one, save the new photo over it with the same name. Card photos are cropped to landscape 4:3; keep each under about 300 KB.
+
+| File | Where |
+| --- | --- |
+| `kissa-fountain.jpg` | From a Fountain card; also the preview image when the link is shared |
+| `fountain-setup.jpg` | Setup diagram ("How it's set up") |
+| `kissa-center-for-creativity.jpg` | Center for Creativity card |
+| `yard-aers.jpg` | Yard AERS card and page (playing vinyl outside at the Yard) |
+| `yard-aers-card-mockup.jpg` | Yard AERS page (survey card mock-up) |
+| `music-for-mental-health.jpg`, `music-for-mental-health-2.jpg` | Music for Mental Health card and page |
+| `house-collection.jpg` | House Collection card |
+| `not-quite-my-tempo.jpg` | Not Quite My Tempo card |
+
+### Not listed
+
+Notes (`/my-digital-garden/`) has no card, but the site still works. These repos have GitHub Pages turned on but no card: `spb-pacer`, `raise-scale`, `killer-miller`, `sounds-of-the-west-wing`, `temp-tool`, `tempo2`.
