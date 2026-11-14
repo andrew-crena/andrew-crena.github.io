@@ -37,17 +37,18 @@ Then open <http://localhost:8000/>.
 
 ### Photos
 
-Save each photo over its placeholder in `projects/images/`, keeping the file name. All are landscape 4:3, about 1200 × 900; export as JPEG around 80 % quality to keep each under about 300 KB.
+All in `projects/images/`. To change one, save the new photo over it with the same name. Card photos are cropped to landscape 4:3; keep each under about 300 KB.
 
-| File | Goes on |
+| File | Where |
 | --- | --- |
-| `kissa-fountain.jpg` | From a Fountain (done: Terman Fountain at dusk). Also the preview image when the link is shared. |
-| `fountain-setup.jpg` | The setup diagram, opened from "How it's set up" |
-| `kissa-center-for-creativity.jpg` | Center for Creativity |
-| `yard-aers.jpg` | Yard AERS card and page |
-| `music-for-mental-health.jpg` | Music for Mental Health card and page |
-| `house-collection.jpg` | House Collection |
-| `not-quite-my-tempo.jpg` | Not Quite My Tempo |
+| `kissa-fountain.jpg` | From a Fountain card; also the preview image when the link is shared |
+| `fountain-setup.jpg` | Setup diagram ("How it's set up") |
+| `kissa-center-for-creativity.jpg` | Center for Creativity card |
+| `yard-aers.jpg` | Yard AERS card and page (playing vinyl outside at the Yard) |
+| `yard-aers-card-mockup.jpg` | Yard AERS page (survey card mock-up) |
+| `music-for-mental-health.jpg`, `music-for-mental-health-2.jpg` | Music for Mental Health card and page |
+| `house-collection.jpg` | House Collection card |
+| `not-quite-my-tempo.jpg` | Not Quite My Tempo card |
 
 ### Not listed
 
