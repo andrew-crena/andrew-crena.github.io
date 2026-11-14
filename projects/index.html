@@ -4,238 +4,84 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Projects · Andrew Crena</title>
-<meta name="description" content="Andrew Crena's projects: a portable turntable listening installation inspired by the jazz kissa of Japan, and other things built around records and listening.">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#f6f1e7">
+<meta name="description" content="Andrew Crena's projects: a portable turntable listening installation, research in arts spaces, and things built around records.">
 <meta property="og:title" content="Projects · Andrew Crena">
-<meta property="og:description" content="A portable turntable listening installation, and other things built around records and listening.">
 <meta property="og:image" content="https://andrew-crena.github.io/projects/images/kissa-fountain.jpg">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper: #f6f1e7;     /* the page: warm, like a zine's stock */
-    --card: #fbf8f1;
-    --ink: #221e18;
-    --soft: #5c5447;      /* 6.9:1 on paper */
-    --rule: #d8cfbd;
-    --accent: #9c3b25;    /* the one accent: record-label red */
-    --serif: "Newsreader", Georgia, "Times New Roman", serif;
-    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    color-scheme: light;
-  }
-  * { box-sizing: border-box; }
-  [hidden] { display: none !important; }
-  html { -webkit-text-size-adjust: 100%; }
-  body { margin: 0; background: var(--paper); color: var(--ink);
-    font: 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
-  a { color: var(--accent); text-underline-offset: .18em; text-decoration-thickness: 1px; }
-  a:hover { text-decoration-thickness: 2px; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .wrap { max-width: 64rem; margin: 0 auto;
-    padding: max(2.5rem, env(safe-area-inset-top)) max(1.25rem, env(safe-area-inset-right)) 3rem max(1.25rem, env(safe-area-inset-left)); }
-
-  /* masthead: left-aligned, like a zine's first page */
-  .mast { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
-    border-bottom: 1px solid var(--ink); padding-bottom: .6rem; margin-bottom: 3rem; }
-  .mast a { color: var(--ink); text-decoration: none; font: 500 1.05rem/1 var(--serif);
-    display: inline-flex; align-items: center; min-height: 44px; }
-  .mast a:hover { text-decoration: underline; }
-  .mast .issue { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
-  h1 { font: 400 clamp(2.4rem, 7vw, 3.6rem)/1.02 var(--serif); letter-spacing: -.015em; margin: 0 0 .9rem; }
-  .intro { max-width: 34rem; color: var(--soft); margin: 0 0 3.5rem; font-size: 1.05rem; }
-
-  .kicker { font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
-    margin: 0 0 .7rem; font-weight: 600; }
-  h2 { font: 400 clamp(1.8rem, 4.6vw, 2.5rem)/1.1 var(--serif); margin: 0 0 .9rem; letter-spacing: -.01em; }
-  .lede { font: 400 clamp(1.15rem, 2.6vw, 1.35rem)/1.5 var(--serif); max-width: 40rem; margin: 0 0 2rem; }
-  .onair { font-size: .95rem; margin: -1rem 0 2rem; }
-  .onair b { color: var(--accent); letter-spacing: .08em; font-size: .8rem; text-transform: uppercase; margin-right: .4rem; }
-
-  /* ---------- cards: index cards / record sleeves ---------- */
-  .card { position: relative; display: flex; flex-direction: column; background: var(--card);
-    border: 1px solid var(--rule); border-radius: 2px; }
-  .card .photo { display: block; width: 100%; height: auto; border-bottom: 1px solid var(--rule); background: var(--rule); }
-  .card .body { padding: 1.1rem 1.2rem 1.2rem; display: flex; flex-direction: column; flex: 1; }
-  .card .where { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); margin: 0 0 .45rem; }
-  .card h3 { font: 500 1.5rem/1.15 var(--serif); margin: 0 0 .5rem; }
-  .card h3 a { color: var(--ink); text-decoration: none; }
-  .card h3 a::after { content: ""; position: absolute; inset: 0; }    /* the whole card opens the main link */
-  .card h3 a:focus-visible { outline: none; }
-  .card:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .card p { margin: 0; color: var(--soft); }
-  .card .more { margin-top: auto; padding-top: .9rem; display: flex; flex-wrap: wrap; gap: 0 1.2rem;
-    position: relative; z-index: 1; font-size: .95rem; }           /* extra links sit above the card link */
-  .card .more a { display: inline-flex; align-items: center; min-height: 44px; }
-  .card:hover { border-color: var(--soft); }
-
-  /* ---------- flagship: one idea, two versions ---------- */
-  .flagship { margin-bottom: 4.5rem; }
-  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-
-  /* Outdoors at the fountain: the original page was paper, tape and rubber stamps. */
-  .v-fountain { background: #f1e8d6; border-color: #cdbf9f; }
-  .v-fountain .photo { border-bottom-color: #cdbf9f; }
-  .v-fountain::before { content: ""; position: absolute; top: -10px; left: 50%; width: 84px; height: 22px;
-    transform: translateX(-50%) rotate(-2.5deg); background: rgba(225, 210, 160, .82); z-index: 2; pointer-events: none; }
-  .v-fountain .where { display: inline-block; align-self: flex-start; color: var(--accent);
-    border: 1.5px solid var(--accent); border-radius: 3px; padding: .1rem .45rem; transform: rotate(-1.5deg); }
-
-  /* Indoors at the Center for Creativity: a gallery wall label. White, a hairline, nothing else. */
-  .v-center { background: #fff; border-color: #cfccc4; }
-  .v-center .photo { border-bottom-color: #cfccc4; }
-  .v-center .body { border-left: 3px solid var(--ink); margin: 1rem 1.2rem 1.2rem; padding: 0 0 0 .9rem; }
-  .v-center .where { color: var(--ink); }
-
-  /* ---------- the rest ---------- */
-  .others h2 { font-size: clamp(1.5rem, 3.6vw, 1.9rem); }
-  .others .intro { margin-bottom: 1.8rem; }
-  .grid { list-style: none; margin: 0; padding: 0; display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1.5rem; }
-  .grid .card { height: 100%; }
-
-  .todo { background: #fff3b0; color: #4a3b00; font-style: normal; padding: 0 .15em; }
-
-  footer { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--ink);
-    display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1.5rem; color: var(--soft); font-size: .95rem; }
-  footer a { display: inline-flex; align-items: center; min-height: 44px; }
-
-  @media (max-width: 680px) {
-    body { font-size: 16.5px; }
-    .mast { margin-bottom: 2.2rem; }
-    .intro { margin-bottom: 2.6rem; }
-    .pair { grid-template-columns: 1fr; gap: 2rem; }
-    .flagship { margin-bottom: 3.5rem; }
-    .v-fountain .where { letter-spacing: .06em; }
-    /* smaller projects: a thumbnail beside the text, like a catalogue listing */
-    .grid { grid-template-columns: 1fr; gap: 1rem; }
-    .grid .card { flex-direction: row; align-items: flex-start; }
-    .grid .card .photo { width: 6.5rem; flex: none; border-bottom: 0; border-right: 1px solid var(--rule); align-self: stretch; object-fit: cover; aspect-ratio: 1; }
-    .grid .card .body { padding: .8rem .95rem .9rem; }
-    .grid .card h3 { font-size: 1.3rem; }
-    .grid .card .more { padding-top: .3rem; }
-  }
-  @media (forced-colors: active) { .card { border: 1px solid CanvasText; } .v-fountain::before { display: none; } }
-</style>
+<link rel="stylesheet" href="projects.css">
 </head>
 <body>
-<div class="wrap">
-
-  <header class="mast">
-    <a href="/">Andrew Crena</a>
-    <span class="issue">Projects</span>
-  </header>
-
+<main>
+  <p class="top"><a href="/">Andrew Crena</a></p>
   <h1>Projects</h1>
   <p class="intro">Things I build outside the lab, mostly around records and listening.</p>
 
-  <!-- =====================================================================
-       FLAGSHIP: one idea, two versions. Copy, links and photos are all
-       edited right here. Photos live in projects/images/; save yours over
-       the placeholder with the same file name.
-       ===================================================================== -->
-  <section class="flagship" aria-labelledby="kissa">
-    <p class="kicker">Listening installation</p>
-    <h2 id="kissa">A jazz kissa, set up wherever it’s needed</h2>
-    <p class="lede">A portable turntable setup, inspired by the jazz kissa of Japan, that I install in different spaces to complement the visual space with an auditory one. Think live concerts, or visual art.</p>
-    <p class="onair" id="onair" hidden><b>On air now</b><span id="onair-what"></span> · <a href="/fountain/">Listen</a></p>
+  <!-- To change a card: edit its photo (projects/images/), title, text and links below. -->
 
-    <div class="pair">
-      <article class="card v-fountain" id="fountain">
-        <img class="photo" src="images/kissa-fountain.jpg" width="1200" height="900"
-             alt="[TODO: describe the photo, e.g. the turntables set up beside Terman Fountain]">
-        <div class="body">
-          <p class="where">Outdoors · Terman Fountain, Stanford</p>
-          <h3><a href="/fountain/">From a Fountain</a></h3>
-          <p>The first version. Records played live by the fountain for whoever happens by, with a stream for headphones and a letter book for what the songs bring back.</p>
-          <div class="more">
-            <a href="/fountain/">Listen live</a>
-            <a href="/letters/">Letter book</a>
-          </div>
-        </div>
-      </article>
+  <h2 id="kissa">Listening installation</h2>
+  <p class="intro">A portable turntable setup, inspired by the jazz kissa of Japan, that I install in different spaces to complement the visual space with an auditory one. Think live concerts, or visual art.</p>
+  <ul class="cards">
+    <li class="card" id="fountain">
+      <img src="images/kissa-fountain.jpg" width="1200" height="900" alt="Terman Fountain at dusk, lit from below, with lamps along the path">
+      <div>
+        <h3>From a Fountain</h3>
+        <p>The first version, outdoors at Terman Fountain at Stanford. Records played live for whoever happens by, with a stream for headphones and a letter book for memories.</p>
+        <p class="links"><a href="/fountain/">Listen live</a> <a href="/letters/">Letter book</a> <a href="images/fountain-setup.jpg">How it’s set up</a></p>
+      </div>
+    </li>
+    <li class="card" id="center-for-creativity">
+      <img src="images/kissa-center-for-creativity.jpg" width="1200" height="900" alt="[TODO: describe the photo]">
+      <div>
+        <h3>Center for Creativity</h3>
+        <p>The same setup, adapted for a volunteer-run arts space in Redwood City. <span class="todo">[TODO: one sentence on what changed indoors.]</span></p>
+        <p class="links"><a href="https://www.rwccfc.org/">Center for Creativity</a> <span class="todo">[TODO: link to this version]</span></p>
+      </div>
+    </li>
+  </ul>
 
-      <article class="card v-center" id="center-for-creativity">
-        <img class="photo" src="images/kissa-center-for-creativity.jpg" width="1200" height="900"
-             alt="[TODO: describe the photo, e.g. the setup in the gallery at the Center for Creativity]">
-        <div class="body">
-          <p class="where">Indoors · Redwood City</p>
-          <!-- TODO: point this at the right page once it exists (a page for this version, or the Center's event page). -->
-          <h3><a href="https://redwoodcity-ca.granicus.com/player/clip/3728?meta_id=138499&amp;entrytime=12250">Center for Creativity</a></h3>
-          <p>The same setup, adapted for a volunteer-run arts space in Redwood City. <em class="todo">[TODO: one sentence on what changed indoors: the room, the sound, how visitors take part.]</em></p>
-          <div class="more">
-            <a href="https://redwoodcity-ca.granicus.com/player/clip/3728?meta_id=138499&amp;entrytime=12250">My comment to the City Council about the Center</a>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
+  <h2 id="research">Research and community</h2>
+  <ul class="cards">
+    <li class="card" id="yard-aers">
+      <img src="images/yard-aers.jpg" width="1200" height="900" loading="lazy" alt="[TODO: describe the photo]">
+      <div>
+        <h3>Yard AERS</h3>
+        <p>A grad school project in an art space: visitors scan a QR code and answer a short survey on how deeply they engaged with the work.</p>
+        <p class="links"><a href="yard-aers/">About the project</a></p>
+      </div>
+    </li>
+    <li class="card" id="music-for-mental-health">
+      <img src="images/music-for-mental-health.jpg" width="1200" height="900" loading="lazy" alt="[TODO: describe the photo]">
+      <div>
+        <h3>Music for Mental Health</h3>
+        <p>Community concerts I organized in Chico from 2021 to 2023, raising over $5,000 for local mental health nonprofits.</p>
+        <p class="links"><a href="music-for-mental-health/">About the events</a></p>
+      </div>
+    </li>
+  </ul>
 
-  <!-- =====================================================================
-       OTHER PROJECTS. To add one, copy an <li> block and change the photo,
-       title, description (under 30 words) and link.
-       ===================================================================== -->
-  <section class="others" aria-labelledby="others">
-    <h2 id="others">Also on the shelf</h2>
-    <p class="intro">Other things I’ve made.</p>
-    <ul class="grid">
-      <li class="card" id="house">
-        <img class="photo" src="images/house-collection.jpg" width="1000" height="1000" loading="lazy"
-             alt="[TODO: describe the photo]">
-        <div class="body">
-          <p class="where">Records</p>
-          <h3><a href="/house-collection/">House Collection</a></h3>
-          <p>My record shelf, synced from Discogs. Follow a label through the years, pull a record at random, or look up the tempo of the tracks I play.</p>
-          <div class="more"><a href="/house-collection/#/pull">Pull a record</a></div>
-        </div>
-      </li>
-      <li class="card" id="tempo">
-        <img class="photo" src="images/not-quite-my-tempo.jpg" width="1000" height="1000" loading="lazy"
-             alt="[TODO: describe the photo]">
-        <div class="body">
-          <p class="where">A tool</p>
-          <h3><a href="/not-quite-my-tempo/">Not Quite My Tempo</a></h3>
-          <p>Hold your phone up to the music and it shows the tempo, the key with mixing hints, and the loudness. There’s a tuner for guitar and bass, too.</p>
-        </div>
-      </li>
-      <li class="card" id="garden">
-        <img class="photo" src="images/notes.jpg" width="1000" height="1000" loading="lazy"
-             alt="[TODO: describe the photo]">
-        <div class="body">
-          <p class="where">Writing</p>
-          <h3><a href="/my-digital-garden/">Notes</a></h3>
-          <p>Research ideas in development, each with a record of how it changed, and an informal journal.</p>
-        </div>
-      </li>
-    </ul>
-  </section>
+  <h2 id="records">Records and tools</h2>
+  <ul class="cards">
+    <li class="card" id="house">
+      <img src="images/house-collection.jpg" width="1200" height="900" loading="lazy" alt="[TODO: describe the photo]">
+      <div>
+        <h3>House Collection</h3>
+        <p>My record shelf, synced from Discogs. Follow a label through the years, pull a record at random, or look up the tempo of the tracks I play.</p>
+        <p class="links"><a href="/house-collection/">Browse the records</a></p>
+      </div>
+    </li>
+    <li class="card" id="tempo">
+      <img src="images/not-quite-my-tempo.jpg" width="1200" height="900" loading="lazy" alt="[TODO: describe the photo]">
+      <div>
+        <h3>Not Quite My Tempo</h3>
+        <p>Hold your phone up to the music and it shows the tempo, the key with mixing hints, and the loudness. There’s a tuner for guitar and bass, too.</p>
+        <p class="links"><a href="/not-quite-my-tempo/">Open the tool</a></p>
+      </div>
+    </li>
+  </ul>
 
   <footer>
-    <a href="/">Andrew Crena</a>
-    <a href="mailto:adcrena27@gmail.com">adcrena27@gmail.com</a>
+    <a href="/">Andrew Crena</a> · <a href="mailto:adcrena27@gmail.com">adcrena27@gmail.com</a>
   </footer>
-</div>
-
-<!-- The one script: shows "On air now" while a record is streaming. The page works without it. -->
-<script src="/fountain-config.js" defer></script>
-<script>
-addEventListener('load', () => {
-  if (!window.fountainFetch) return;
-  const line = document.getElementById('onair'), what = document.getElementById('onair-what');
-  const check = async () => {
-    try {
-      const n = await (await window.fountainFetch('/api/now')).json();
-      const on = !!(n.artist && n.source !== 'none');
-      line.hidden = !on;
-      if (on) what.textContent = (n.song || n.album || 'a record') + ', ' + n.artist;
-    } catch (_) { line.hidden = true; }
-  };
-  check();
-  setInterval(() => { if (!document.hidden) check(); }, 30000);
-});
-</script>
+</main>
 </body>
 </html>

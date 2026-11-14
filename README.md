@@ -33,24 +33,22 @@ Then open <http://localhost:8000/>.
 
 ## Projects page
 
-Every card is written out in `projects/index.html`; comments there mark the flagship section and the grid. To add a project, copy one `<li class="card">` block in the grid and change its photo, title, description and link.
+`projects/index.html` is plain HTML: three sections of cards (listening installation, research and community, records and tools). To add a card, copy an `<li class="card">` block and change its photo, title, text and links. Shared styles are in `projects/projects.css`. Project pages live in their own folders: `projects/yard-aers/`, `projects/music-for-mental-health/`.
 
 ### Photos
 
-Save each photo over its placeholder, keeping the file name, and the page picks it up.
+Save each photo over its placeholder in `projects/images/`, keeping the file name. All are landscape 4:3, about 1200 × 900; export as JPEG around 80 % quality to keep each under about 300 KB.
 
-| File | Goes on | Shape |
-| --- | --- | --- |
-| `projects/images/kissa-fountain.jpg` | From a Fountain (outdoors, Terman Fountain) | Landscape 4:3, about 1200 × 900 |
-| `projects/images/kissa-center-for-creativity.jpg` | Center for Creativity (indoors, Redwood City) | Landscape 4:3, about 1200 × 900 |
-| `projects/images/house-collection.jpg` | House Collection | Square, about 1000 × 1000 |
-| `projects/images/not-quite-my-tempo.jpg` | Not Quite My Tempo | Square, about 1000 × 1000 |
-| `projects/images/notes.jpg` | Notes | Square, about 1000 × 1000 |
+| File | Goes on |
+| --- | --- |
+| `kissa-fountain.jpg` | From a Fountain (done: Terman Fountain at dusk). Also the preview image when the link is shared. |
+| `fountain-setup.jpg` | The setup diagram, opened from "How it's set up" |
+| `kissa-center-for-creativity.jpg` | Center for Creativity |
+| `yard-aers.jpg` | Yard AERS card and page |
+| `music-for-mental-health.jpg` | Music for Mental Health card and page |
+| `house-collection.jpg` | House Collection |
+| `not-quite-my-tempo.jpg` | Not Quite My Tempo |
 
-Keep each under about 300 KB (export as JPEG at around 80 % quality) so the page opens quickly from an email. If a photo is a different shape, it still shows; the `width` and `height` on its `<img>` just stop the page jumping while it loads, so update them to match.
+### Not listed
 
-The fountain photo is also the preview image when the link is shared.
-
-### Not listed yet
-
-These repos have GitHub Pages turned on but no card: `spb-pacer`, `raise-scale`, `killer-miller`, `sounds-of-the-west-wing`, `temp-tool`, `tempo2`. Add a card for any you want to show.
+Notes (`/my-digital-garden/`) has no card, but the site still works. These repos have GitHub Pages turned on but no card: `spb-pacer`, `raise-scale`, `killer-miller`, `sounds-of-the-west-wing`, `temp-tool`, `tempo2`.
