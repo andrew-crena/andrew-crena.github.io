@@ -394,6 +394,10 @@
     }
     check();
     setInterval(() => { if (!document.hidden) check(); }, 20000);
+    // Refresh as soon as the page is looked at again (phones pause timers while locked or in the background).
+    const again = () => { if (!document.hidden) check(); };
+    document.addEventListener('visibilitychange', again);
+    window.addEventListener('pageshow', again);
   })();
   </script>
 </body>
