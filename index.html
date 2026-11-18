@@ -12,30 +12,15 @@
 <style>
   :root {
     color-scheme: light;
-    --bg: #E9EDEF;        /* Ocean Beach fog */
+    --bg: #fff;
     --ink: #1D2B38;       /* navy */
     --muted: #55636F;
     --accent: #2F6470;    /* cold sea */
     --sand: #B8912F;      /* sandstone arcade */
-    --vinyl: #1A1F24;
-    --groove: #2A3138;
     --rule: #C9D1D6;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      color-scheme: dark;
-      --bg: #172330;
-      --ink: #E5E9EC;
-      --muted: #9AA7B2;
-      --accent: #8FC3CC;
-      --sand: #D8B862;
-      --vinyl: #0E1318;
-      --groove: #232B33;
-      --rule: #2D3B48;
-    }
   }
   *, *::before, *::after { box-sizing: inherit; }
   html { scroll-padding-top: env(safe-area-inset-top, 0px); }
@@ -54,7 +39,6 @@
     padding: 4rem 1.5rem 3rem;
   }
 
-  /* Hero: the portrait sits in the middle of a record, like a center label */
   .hero {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -62,25 +46,13 @@
     align-items: center;
     margin-bottom: 2.5rem;
   }
-  .record {
-    width: 12rem;
-    height: 12rem;
-    border-radius: 50%;
-    background:
-      radial-gradient(circle, transparent 0 56%, var(--vinyl) 56% 58%, transparent 58%),
-      repeating-radial-gradient(circle, var(--vinyl) 0 2px, var(--groove) 2px 3px);
-    display: grid;
-    place-items: center;
-    position: relative;
-    flex-shrink: 0;
-  }
-  .record img {
-    width: 56%;
-    height: 56%;
-    border-radius: 50%;
+  .portrait {
+    width: 9rem;
+    height: 9rem;
     object-fit: cover;
     object-position: 50% 35%;
     display: block;
+    flex-shrink: 0;
   }
   h1 {
     font-size: 2.75rem;
@@ -131,7 +103,7 @@
   .video {
     position: relative;
     aspect-ratio: 16 / 9;
-    background: var(--vinyl);
+    background: #000;   /* behind the player while it loads */
     border-radius: 6px;
     overflow: hidden;
   }
@@ -162,7 +134,7 @@
   @media (max-width: 560px) {
     main { padding-top: 2.5rem; }
     .hero { grid-template-columns: 1fr; gap: 1.5rem; }
-    .record { width: 10rem; height: 10rem; }
+    .portrait { width: 8rem; height: 8rem; }
     h1 { font-size: 2.25rem; }
   }
 </style>
@@ -171,9 +143,7 @@
 <main>
 
   <header class="hero">
-    <div class="record">
-      <img src="headshot.jpg" alt="Andrew Crena" width="800" height="800">
-    </div>
+    <img class="portrait" src="headshot.jpg" alt="Andrew Crena" width="800" height="800">
     <div>
       <h1>Andrew Crena</h1>
       <p class="line">Early career researcher in psychology. Redwood City, California.</p>
