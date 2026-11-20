@@ -7,7 +7,8 @@ Source for <https://andrew-crena.github.io/>.
 | Path | What |
 | --- | --- |
 | `index.html` | Personal homepage (self-contained: inline CSS, Google Fonts) |
-| `headshot.jpg`, `Andrew_Crena_CV.pdf` | Homepage photo and the CV it links to |
+| `headshot.jpg` | Homepage photo |
+| `Andrew_Crena_CV.pdf` | The CV the homepage links to. Do not edit by hand: `.github/workflows/cv.yml` refreshes it daily from the working CV in Google Docs, and only commits when the wording changes. Edit the doc; to publish straight away, run the workflow from the Actions tab. |
 | `projects/index.html` | Projects page: the listening installation, then the other projects. Plain HTML, edited directly. |
 | `projects/images/` | Photos for the projects page (see below) |
 | `fountain/`, `letters/`, `docent/` | From a Fountain listening page, letter book and docent desk |
