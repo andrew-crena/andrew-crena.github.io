@@ -1,0 +1,80 @@
+name: Update CV from the Google Doc
+
+# Keeps Andrew_Crena_CV.pdf on this site in step with the working CV in
+# Google Docs, so the link on the homepage always serves the current version.
+#
+# The doc is readable by anyone with the link, so no credentials are needed.
+# If that sharing is ever turned off, this job fails loudly and the last good
+# PDF stays on the site rather than the link breaking.
+#
+# Run it by hand any time from the Actions tab: "Run workflow".
+
+on:
+  schedule:
+    - cron: '23 12 * * *'   # daily, about 4:23am Pacific
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cv-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pdftotext
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
+      - name: Download the current CV
+        env:
+          DOC_ID: 1JFnjqbRiDza8YKNIi37WCRQ1fcLE2zeXalpxg1RnYqU
+        run: |
+          set -euo pipefail
+          curl -sSfL --retry 3 --retry-delay 5 --max-time 120 \
+            -o new.pdf "https://docs.google.com/document/d/${DOC_ID}/export?format=pdf"
+
+          # A revoked share or a sign-in wall returns HTML, not a PDF.
+          if [ "$(head -c 5 new.pdf)" != '%PDF-' ]; then
+            echo "::error::Google did not return a PDF. The doc is probably no longer shared with anyone who has the link."
+            exit 1
+          fi
+          size=$(stat -c%s new.pdf)
+          echo "downloaded ${size} bytes"
+          if [ "$size" -lt 20000 ]; then
+            echo "::error::PDF is only ${size} bytes, far smaller than expected. Not publishing it."
+            exit 1
+          fi
+
+      - name: Publish it if the text changed
+        run: |
+          set -euo pipefail
+          # Google stamps a new timestamp into every export, so the bytes differ
+          # each run even when nothing was edited. Compare the text instead, or
+          # this would commit once a day forever.
+          pdftotext -q new.pdf new.txt
+          if [ -f Andrew_Crena_CV.pdf ]; then
+            pdftotext -q Andrew_Crena_CV.pdf old.txt
+          else
+            : > old.txt
+          fi
+
+          if cmp -s old.txt new.txt; then
+            echo "No wording change since the last run. Leaving the published PDF alone."
+            exit 0
+          fi
+
+          echo "Changed. Diff of the extracted text:"
+          diff old.txt new.txt || true
+
+          mv new.pdf Andrew_Crena_CV.pdf
+          rm -f old.txt new.txt
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Andrew_Crena_CV.pdf
+          git commit -m 'Update CV from the Google Doc'
+          git push
